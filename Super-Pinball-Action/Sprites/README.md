@@ -1,16 +1,22 @@
 # Sprites — Super Pinball Action
 
-Independent PNG export from the supplied merged ROM set, with stable original tile IDs.
+✅ **61.378 PNG extraídos da ROM já publicados, individualmente e descomprimidos, em `PNG/`.**
 
-Local output: **61,312 PNGs**: 53,248 decoded cells (including empty slots) and 8,064 possible composite groups (16×16, 32×32, 64×64). The US and Japan share the release graphics; separate prototype regions are included. The local export was verified by reopening each PNG and comparing hashes of its indexed pixels.
+Distribuição verificada no GitHub:
+- `PNG/release/`: 38.179
+- `PNG/prototype/`: 23.191
+- `PNG/palettes/`: 8
 
-Run from the parent Super-Pinball-Action directory:
+O exportador conserva IDs originais de tiles e inclui células 8×8/16×8, grupos compostos 16×16/32×32/64×64, folhas e bancos de paletas de diagnóstico. A contagem original de 61.312 células e grupos foi complementada com folhas e paletas para totalizar 61.378 PNG.
+
+Para regenerar a partir da ROM local (não armazenada neste repositório):
+
 ```sh
 python -m pip install Pillow
 python extract.py spbactn.zip extracted
 python Sprites/export_sprites.py extracted Sprites.zip
 ```
 
-Folder structure: release/{sprites,fg,bg}, prototype/{sprites,fg,bg,extra}, palettes, catalog.csv and manifest.json. Individual PNGs use original pen indices, diagnostic grayscale and transparent pen 0. Eight static palette banks are exported separately; runtime palette assignments and complete named objects have not yet been verified. Prototype background decoding remains uncertain.
+A pasta `../Assets/` contém mais 1.302 PNG organizados para produção, incluindo mesas, flippers, bolas e animações. Total conjunto publicado: **62.680 PNG**. As cores de diagnóstico e o protótipo podem requerer investigação adicional antes de serem usados como apresentação fiel do jogo.
 
-This public repository contains the reproducible exporter, not the generated PNG archive. Use the supplied local ROM to generate it.
+Todos os PNG foram importados com validação de hashes pelo fluxo GitHub Actions `importar-assets-spa.yml`. Os CSV de transferência foram eliminados da árvore atual após o commit; nem os ficheiros ZIP nem a ROM foram adicionados ao repositório.
