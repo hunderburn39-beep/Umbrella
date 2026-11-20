@@ -1,0 +1,4 @@
+# Fase 10 — geometria
+ROM US verificada. Dispatch 0x840E: tipos 0/1 em 0x8420 (declive e limite de 15), 2/3 em 0x8560/0x8852 (pendentes), 4/5 em 0x8B3E, 6/7 em 0x8BAA (limites por eixo e tolerância estrita de 8), 8 em 0x8C1A (retângulo inclusivo). surface.js traduz os predicados geométricos isolados, não a resposta de velocidade nem os callbacks. Coordenadas internas x=0..511, y=16..239.
+Validação local: 78.350 comparações JS/Python, 200.704 centros de células, 443.464 consultas de registos; interface Chromium testada em 32 configurações e sobreposição nas quatro mesas. Não houve comparação contra execução original. Tipos curvos, resposta dinâmica, eventos e HUD permanecem pendentes. Não é uma versão jogável.
+Executar python decode10.py spbactn.zip data10.json com a ROM local. O repositório não contém ROM nem sprites extraídos.
