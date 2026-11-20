@@ -1,0 +1,86 @@
+name: Importar sprites PNG da ROM
+
+on:
+  push:
+    paths:
+      - "Super-Pinball-Action/Transferencias/*.csv"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: super-pinball-action-assets
+  cancel-in-progress: false
+
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: true
+
+      - name: Descompactar os PNG validados
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import base64, csv, hashlib
+          from pathlib import Path
+
+          csv.field_size_limit(40_000_000)
+          root = Path.cwd().resolve()
+          imports = root / "Super-Pinball-Action/Transferencias"
+          files = sorted(imports.glob("*.csv"))
+          if not files:
+              print("Não existem CSV para importar")
+              raise SystemExit(0)
+
+          assets_root = (root / "Super-Pinball-Action/Assets").resolve()
+          sprites_root = (root / "Super-Pinball-Action/Sprites/PNG").resolve()
+          seen = set()
+          total = 0
+          for source in files:
+              with source.open(newline="", encoding="utf-8") as f:
+                  rows = csv.DictReader(f)
+                  if not {"path","sha","data"} <= set(rows.fieldnames or []):
+                      raise ValueError(f"Colunas inválidas: {source}")
+                  for row in rows:
+                      path = (root / row["path"]).resolve()
+                      if not (path.is_relative_to(assets_root) or path.is_relative_to(sprites_root)):
+                          raise ValueError(f"Fora das pastas autorizadas: {path}")
+                      if path.suffix.lower() != ".png":
+                          raise ValueError(f"Não PNG: {path}")
+                      if path in seen:
+                          raise ValueError(f"Ficheiro duplicado na importação: {path}")
+                      seen.add(path)
+                      raw = base64.b64decode(row["data"], validate=True)
+                      if not raw.startswith(bytes.fromhex("89504e470d0a1a0a")):
+                          raise ValueError(f"Cabeçalho PNG inválido: {path}")
+                      sha = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+                      if sha != row["sha"]:
+                          raise ValueError(f"SHA de conteúdo incorreto: {path}")
+                      if path.exists() and path.read_bytes() != raw:
+                          raise ValueError(f"Conflito com asset existente: {path}")
+                      path.parent.mkdir(parents=True, exist_ok=True)
+                      path.write_bytes(raw)
+                      total += 1
+              print(f"{source.name}: importação validada")
+          print(f"PNG validados: {total}")
+          PY
+
+      - name: Guardar apenas os PNG na árvore Git
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- Super-Pinball-Action/Assets Super-Pinball-Action/Sprites/PNG
+          if ls Super-Pinball-Action/Transferencias/*.csv >/dev/null 2>&1; then
+            git rm -f -- Super-Pinball-Action/Transferencias/*.csv
+          fi
+          if ! git diff --cached --quiet; then
+            git commit -m "Importar PNG individuais da ROM e retirar ficheiros temporários"
+            git push origin HEAD:main
+          fi
