@@ -8,9 +8,9 @@ function readControls(in0,in1,system,previous=0){
  const current=(((system^0xfc)&255)<<8)|lo;
  return {current,previous:previous&65535,pressed:current&~previous&65535,released:previous&~current&65535};
 }
-function lookupIndex(word0,word4,stateByte){
- const packed=((((word0&65535)<<16)|(word4&65535))-0x10001010)>>>0;
- const d=((packed&0xffffff00)|(stateByte&255))>>>0;
+function lookupIndex(word0,word4){
+ // B18: SUB.L #$10001010 (six bytes); no state-byte substitution.
+ const d=((((word0&65535)<<16)|(word4&65535))-0x10001010)>>>0;
  const index=((((d&65535)>>>3)<<5)+((d>>>16)>>>4))&65535;
  return (index<<16)>>16;
 }
