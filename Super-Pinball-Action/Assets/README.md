@@ -1,5 +1,5 @@
 # Assets originais — Super Pinball Action
-72 PNGs já enviados: 16 bolas e 56 fotogramas dos dois conjuntos principais de flippers, distribuídos pelos quatro bancos. Os SHA Git correspondem aos ficheiros extraídos. A biblioteca completa contém 62.680 PNGs e ainda não foi enviada em lote.
+240 PNGs já enviados e confirmados na árvore Git: 16 bolas e os 224 PNGs de flippers (56 em cada um dos quatro bancos). Os SHA Git correspondem aos ficheiros extraídos. A biblioteca completa contém 62.680 PNGs e ainda não foi enviada em lote.
 
 ## Importação por Git bundle local
 Num clone atualizado do UMBRELLA, com a árvore de trabalho limpa, executar:
