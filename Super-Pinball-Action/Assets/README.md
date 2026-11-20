@@ -1,20 +1,28 @@
-# Assets originais — Super Pinball Action
-240 PNGs já enviados e confirmados na árvore Git: 16 bolas e os 224 PNGs de flippers (56 em cada um dos quatro bancos). Os SHA Git correspondem aos ficheiros extraídos. A biblioteca completa contém 62.680 PNGs e ainda não foi enviada em lote.
+# Super Pinball Action — Assets PNG
 
-## Importação por Git bundle local
-Num clone atualizado do UMBRELLA, com a árvore de trabalho limpa, executar:
-```sh
-git fetch /caminho/Super_Pinball_Action_Assets.gitbundle refs/heads/assets-import
-git merge --allow-unrelated-histories --no-edit FETCH_HEAD
-git push origin main
-```
-Ficheiro bundle SHA256: 8cd0f2ea284dc3568d864fdc66a11892f2761c4b19a5fd505e54253e9421df1c. Integração testada num repositório local com os 72 PNG já existentes e código separado; 62.680 PNG finais, sem conflitos no teste. O bundle não é colocado no GitHub.
+✅ **Biblioteca gráfica publicada em pastas, sem ficheiros ZIP na árvore atual.**
 
-## Alternativa: importador dos pacotes locais
-```sh
-python Super-Pinball-Action/importar_png.py /caminho/Super_Pinball_Action_Sprites.zip /caminho/Super_Pinball_Action_Assets_PNG.zip
-git add Super-Pinball-Action/Sprites/PNG Super-Pinball-Action/Assets
-git commit -m "Import original PNG sprites and assets"
-git push origin main
-```
-61.378 PNGs em Sprites/PNG e 1.302 PNGs em Assets. Paletas de diagnóstico e variantes ainda requerem associação ao estado original. Usar apenas materiais com autorização de distribuição.
+## Assets organizados (1.302 PNG)
+
+- `01_Folhas_e_paletas/`: 66 PNG
+- `02_Mesas/`: 76 PNG das quatro mesas e variantes de paleta
+- `03_Animacoes/`: 920 PNG de fragmentos e sequências
+- `04_Flippers/`: 224 PNG de fotogramas
+- `04_Bolas/`: 16 PNG
+
+## Sprites individuais (61.378 PNG)
+
+Em `../Sprites/PNG/`:
+- `release/`: 38.179 PNG
+- `prototype/`: 23.191 PNG
+- `palettes/`: 8 PNG
+
+**Total de ficheiros PNG publicados: 62.680.** Contagem confirmada através das árvores Git remotas em 20-11-2026. Os 36 CSV temporários de importação foram removidos da árvore atual após validação automática. A ROM e os ZIP originais não foram incluídos.
+
+Os PNG derivam da ROM fornecida pelo utilizador. Algumas paletas são de diagnóstico e ainda não traduzem necessariamente o estado de cor durante a execução. A organização em grupos de sprites não significa que todos os objetos ou animações completos estejam identificados.
+
+## Regenerar a partir da ROM local
+
+O exportador `../importar_png.py` permite reconstruir as pastas a partir dos ZIP já gerados. O fluxo `.github/workflows/importar-assets-spa.yml` valida o hash de cada PNG importado e limpa os ficheiros temporários após o commit.
+
+A utilização e distribuição de elementos gráficos extraídos da ROM estão sujeitas aos direitos aplicáveis.
