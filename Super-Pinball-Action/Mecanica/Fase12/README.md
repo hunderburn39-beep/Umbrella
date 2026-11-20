@@ -1,0 +1,3 @@
+# Fase 12 — primeiros ressaltos por eixo
+ROM US: em 0x8366 LSR.W #1 reduz X para coordenadas de geometria; corrigidos tipos 4–8. 0x8B3E–0x8C18: guardas de direção e correção da palavra alta da posição. 0x8E10/0x8E2E: ajuste de velocidade pelas palavras de RAM $404F6/$404F4. 0xA700: callbacks 0/1/2 invertem velocidade Y e fazem ASR 1/2/4. 0xA772: callbacks 1/2 invertem velocidade X e fazem ASR 3; callback 0 retorna.
+Validação local de 92.686 casos JS/Python, incluindo 11.135 reflexões. Chromium verificou 32 configurações, flippers, seleção, sobreposição e painel de parede. Comparação de fórmulas, não execução original. Resposta oblíqua/curva, estado completo de eventos e ciclo jogável pendentes. Valores de RAM de ajuste assumidos zero no visor. Não se publica a ROM.
