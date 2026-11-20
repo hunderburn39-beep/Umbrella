@@ -76,7 +76,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- Super-Pinball-Action/Assets Super-Pinball-Action/Sprites/PNG
+          git add -A -- Super-Pinball-Action/Assets
+          if [ -d Super-Pinball-Action/Sprites/PNG ]; then
+            git add -A -- Super-Pinball-Action/Sprites/PNG
+          fi
           if ls Super-Pinball-Action/Transferencias/*.csv >/dev/null 2>&1; then
             git rm -f -- Super-Pinball-Action/Transferencias/*.csv
           fi
