@@ -6,6 +6,8 @@ on:
       - 'Pinball-Action/**'
       - 'Reactor-Rush/**'
       - 'Super-Pinball-Action/**'
+      - 'Reactor-Rush/**'
+      - 'Super-Pinball-Action/**'
       - 'index.html'
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
