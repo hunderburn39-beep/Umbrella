@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V3.6 — Slot de Cascatas</title>
+<title>Reactor Rush V3.7 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -312,6 +312,24 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 .rr-skin.rr33 .app #spin{left:84.75%;top:81.0%;width:11.5%;height:19%;border-radius:50%}
 }
 
+
+/* V3.7 — living Gargantoon, not a stretched Wild texture. */
+.app .grid .fusion.rr-gargantoon{background:radial-gradient(ellipse,#6a2a9a 0%,#20124c 72%,#0d102b 100%)!important;border:1px solid #d2a5ff;border-radius:12%;box-shadow:inset 0 0 10px #a955ff,0 0 13px #bb5fff99;display:grid;place-items:center;overflow:hidden}
+.app .grid .fusion.rr-gargantoon>svg.rrg-alien{display:block;opacity:1!important;width:100%;height:100%;filter:none;overflow:visible}
+.rrg-body{transform-box:fill-box;transform-origin:50% 90%;animation:rrgBreath 1.45s ease-in-out infinite}
+.rrg-pupil{transform-box:fill-box;transform-origin:center;animation:rrgLook 2.1s ease-in-out infinite}
+.rrg-eye{transform-box:fill-box;transform-origin:center;animation:rrgBlink 3.4s linear infinite}
+.rrg-eye:nth-of-type(2){animation-delay:.12s}
+.rrg-eye:nth-of-type(3){animation-delay:.24s}
+.app .grid .fusion.rr-gargantoon.rrg-enter{animation:rrgEnter .62s cubic-bezier(.18,.8,.25,1) both}
+.app .grid .fusion.rr-gargantoon.rrg-split{animation:rrgSplit .48s ease-in both}
+@keyframes rrgBreath{0%,100%{transform:scale(1)}50%{transform:scale(1.025,.965)}}
+@keyframes rrgLook{0%,100%{transform:translate(0,0)}30%{transform:translate(-3px,1px)}65%{transform:translate(3px,-2px)}}
+@keyframes rrgBlink{0%,88%,96%,100%{transform:scaleY(1)}92%{transform:scaleY(.08)}}
+@keyframes rrgEnter{0%{transform:scale(.2) rotate(-9deg);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1);opacity:1}}
+@keyframes rrgSplit{0%{transform:scale(1);opacity:1}30%{transform:scale(1.08,.82)}65%{transform:scale(.72,1.05)}100%{transform:scale(.15);opacity:0}}
+@media(prefers-reduced-motion:reduce){.rrg-body,.rrg-eye,.rrg-pupil,.app .grid .fusion.rr-gargantoon{animation:none!important}}
+
 </style>
 <link rel="stylesheet" href="./approved-skins.css?v=30">
 <link rel="stylesheet" href="./celebration-art.css?v=30">
@@ -328,7 +346,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.6 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.6</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.7 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.7</strong></footer>
 </div>
 <div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais, com ligações ortogonais e Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias tem 18% de probabilidade de receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
 <p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b> · GARGANTOONS: <b id="gargantoonCount">0</b></p><p class="separate"><button id="testGargantoon" type="button" style="background:#593c91;padding:10px;border-radius:8px;font-weight:900">TESTAR GARGANTOON (SEM CRÉDITOS)</button><br>Mostra as três fases; não altera o saldo, prémios ou estatísticas.</p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p class="separate"><b>Novo grafismo horizontal V3.3</b><br><label for="skin33">Selecionar imagem Reactor-Rush-V3.3-horizontal.webp</label><input id="skin33" type="file" accept="image/webp,image/png,image/jpeg" style="display:block;width:100%;margin:8px 0"><span id="skin33Status" role="status">Grafismo anterior ativo</span> <button id="skin33Reset" type="button" style="background:#124d75;padding:6px;border-radius:6px">Repor</button></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="25" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="100" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
@@ -378,6 +396,33 @@ const tiles=Array.from({length:N*N},(_,id)=>{
  const el=document.createElement('div');el.className='cell';el.dataset.i=String(id);
  el.innerHTML=spriteRef('t0');el.dataset.symbol='t0';gridEl.appendChild(el);return el;
 });
+
+/* Original living alien artwork, shared by the 3x3 and 2x2 Gargantoon. */
+function gargantoonSVG(r,c,n){
+ const p='rrg-'+r+'-'+c+'-'+n,mini=n===2;
+ const eyes=(x,y,rx,ry)=>`<g class="rrg-eye"><ellipse cx="${x}" cy="${y}" rx="${rx+3}" ry="${ry+3}" fill="#3d145d"/><ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${ry}" fill="url(#${p}-eye)"/><g class="rrg-pupil"><ellipse cx="${x+2}" cy="${y+2}" rx="${rx*.53}" ry="${ry*.64}" fill="#00b9a9" stroke="#106777" stroke-width="2"/><ellipse cx="${x+2}" cy="${y+2}" rx="${rx*.28}" ry="${ry*.46}" fill="#15122f"/><circle cx="${x-2}" cy="${y-4}" r="${rx*.2}" fill="white"/></g></g>`;
+ return `<svg class="rrg-alien" viewBox="0 0 200 200" role="img" aria-label="${mini?'Mini Gargantoon':'Gargantoon de três olhos'}" xmlns="http://www.w3.org/2000/svg"><defs>
+ <radialGradient id="${p}-body" cx=".36" cy=".18" r=".94"><stop stop-color="#ffe1ff"/><stop offset=".21" stop-color="#f78aff"/><stop offset=".52" stop-color="#ab42e7"/><stop offset=".83" stop-color="#6123a8"/><stop offset="1" stop-color="#2a0b61"/></radialGradient>
+ <linearGradient id="${p}-horn" x2=".8" y2="1"><stop stop-color="#baffb8"/><stop offset=".5" stop-color="#64ed94"/><stop offset="1" stop-color="#198d89"/></linearGradient>
+ <radialGradient id="${p}-eye" cx=".4" cy=".2"><stop stop-color="#fff"/><stop offset=".75" stop-color="#e5faff"/><stop offset="1" stop-color="#93dce0"/></radialGradient>
+ <radialGradient id="${p}-belly" cy=".24"><stop stop-color="#fbc5ff"/><stop offset="1" stop-color="#d971ed"/></radialGradient></defs>
+ <ellipse cx="100" cy="181" rx="75" ry="12" fill="#080321" opacity=".63"/>
+ <g class="rrg-body" stroke-linejoin="round">
+ <path d="M43 68 Q21 44 29 20 Q36 45 64 48 M137 48 Q164 45 171 20 Q179 44 157 68" fill="url(#${p}-horn)" stroke="#194752" stroke-width="4"/>
+ <path d="M82 43 Q74 22 99 12 Q96 31 118 43" fill="url(#${p}-horn)" stroke="#194752" stroke-width="4"/>
+ <path d="M37 103 Q13 98 10 121 Q9 143 31 148 L41 135 M162 103 Q188 98 190 121 Q191 143 169 148 L159 135" fill="url(#${p}-body)" stroke="#351160" stroke-width="4"/>
+ <path d="M48 155 Q24 179 42 187 Q56 192 76 175 M152 155 Q176 179 158 187 Q144 192 124 175" fill="url(#${p}-body)" stroke="#351160" stroke-width="4"/>
+ <path d="M100 32 C145 28 170 56 175 97 C181 154 153 181 100 182 C47 181 19 154 25 97 C30 56 55 28 100 32Z" fill="url(#${p}-body)" stroke="#351160" stroke-width="4"/>
+ <path d="M54 49 Q77 35 103 41 Q60 48 43 82" fill="none" stroke="#ffeaff" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+ <ellipse cx="100" cy="148" rx="39" ry="24" fill="url(#${p}-belly)" opacity=".82"/>
+ <g fill="#7ef4b8" opacity=".86"><circle cx="40" cy="115" r="4"/><circle cx="47" cy="125" r="3"/><circle cx="160" cy="115" r="4"/><circle cx="153" cy="125" r="3"/></g>
+ ${eyes(100,65,19,24)}${eyes(57,91,21,25)}${eyes(143,91,21,25)}
+ <path d="M67 123 Q100 140 133 123 Q128 153 101 155 Q74 153 67 123Z" fill="#36104f" stroke="#6d2493" stroke-width="3"/>
+ <path d="M75 126 L83 139 L91 133 L100 142 L110 133 L119 139 L126 126 Q100 138 75 126Z" fill="#fff3dc"/>
+ <path d="M87 151 Q100 141 114 151 Q102 158 87 151" fill="#f67acb"/>
+ </g></svg>`;
+}
+
 function paint(motions=null){
  const occupied=new Set(),fusions=[];
  if(!motions)for(let r=0;r<N-1;r++)for(let c=0;c<N-1;c++){
@@ -396,7 +441,7 @@ function paint(motions=null){
   if(m){el.style.setProperty('--from-y',(-Math.round(step*m.steps))+'px');el.style.setProperty('--fall-ms',duration+'ms');el.style.setProperty('--delay-ms',(state.turbo?0:(c%3)*12)+'ms');el.style.setProperty('--appear',m.fresh?'.72':'1');}
  }
  gridEl.querySelectorAll('.fusion').forEach(el=>el.remove());
- if(fusions.length)gridEl.insertAdjacentHTML('beforeend',fusions.map(({r,c,t,n=2})=>`<div class="fusion" data-symbol="${t==='wild'?'wild':'t'+t}" style="--gx:${c};--gy:${r};--gn:${n}" aria-hidden="true">${spriteRef(t==='wild'?'wild':'t'+t)}${t==='wild'?'':'<span class="boost">×2</span>'}</div>`).join(''));
+ if(fusions.length)gridEl.insertAdjacentHTML('beforeend',fusions.map(({r,c,t,n=2})=>t==='wild'?`<div class="fusion rr-gargantoon" data-symbol="gargantoon" style="--gx:${c};--gy:${r};--gn:${n}">${gargantoonSVG(r,c,n)}</div>`:`<div class="fusion" data-symbol="t${t}" style="--gx:${c};--gy:${r};--gn:${n}" aria-hidden="true">${spriteRef('t'+t)}<span class="boost">×2</span></div>`).join(''));
 }
 
 function update(){const bet=BETS[state.betIndex];$('balance').textContent=money(state.balance);$('bet').textContent=money(bet);$('lastwin').textContent=money(state.lastWin);$('bestWin').textContent=money(state.bestWin||0);$('bestCascades').textContent=String(state.bestCascades||0);$('lastFeature').textContent=state.lastFeature==='GIGANTE'?'GARGANTOON':state.lastFeature||'—';$('gargantoonCount').textContent=String(state.gargantoonCount||0);$('featureCount').textContent=String(state.features);$('cascades').textContent=String(cascadeCount);document.querySelector('.app').classList.toggle('is-turbo',state.turbo);$('chargeTotal').textContent=state.charged+' / 125';$('quantumBars').innerHTML=Array.from({length:5},(_,i)=>'<div class="qbar"><span>'+(i+1)+'</span><div><i style="--q:'+Math.min(100,Math.max(0,(state.charged-i*CHARGE)/CHARGE*100))+'%"></i></div></div>').join('');$('queueLive').textContent=featureQueue.length?featureQueue.map(f=>f==='GIGANTE'?'GARGANTOON':f).join(' → '):'SEM BÓNUS EM ESPERA';$('giantStage').textContent=giantPhase?'GARGANTOON · FASE '+giantPhase+'/3':(activeFeature==='GIGANTE'?'GARGANTOON':activeFeature||'GARGANTOON · 5.º NÍVEL');$('fluctIcon').dataset.symbol='t'+floatingType;$('roundCascades').textContent='CASCATAS '+cascadeCount;$('spin').disabled=busy||state.balance+1e-5<bet;$('spin').classList.toggle('active',busy);$('spin').setAttribute('aria-label',busy?'Rodada em curso':'Rodar');$('minus').disabled=busy||state.betIndex===0;$('plus').disabled=busy||state.betIndex===BETS.length-1;$('turbo').classList.toggle('sel',state.turbo);$('auto').classList.toggle('sel',autoLeft>0);$('auto').textContent=autoLeft>0?'■ PARAR ('+autoLeft+')':'↻ AUTO ×10';$('sound').textContent=state.sound?'♫':'♪';$('sound').classList.toggle('active',state.sound);}
@@ -635,8 +680,8 @@ function giantPlan(phase){const changes=new Map();const remove=new Set(allIds().
  for(const id of changes.keys())remove.delete(id);
  return {title:'GIGANTE · '+phase+'/3',changes,remove};
 }
-async function animateFall(removals){if(!removals.size)return;for(const i of removals)tiles[i].classList.add('clearing');pieceClearSound(removals.size);await sleep(state.turbo?45:145);const motions=fall(removals);paint(motions);pieceDropSound(motions,state.turbo?.14:.365);await sleep(state.turbo?190:475);paint();}
-async function revealPlan(plan){banner(plan.title.startsWith('GIGANTE · 1/')?'GARGANTOON!':plan.title);message('⚡ <strong>'+plan.title+'</strong>');arena.classList.add('quantum-burst');const entries=[...plan.changes];for(let k=0;k<entries.length;k+=4){for(const [id,t] of entries.slice(k,k+4))put(id,t);paint();for(const [id] of entries.slice(k,k+4))tiles[id].classList.add('quantum-reveal');featureRevealSound(k);await waitMs(150)}paint();await animateFall(plan.remove);if(plan.title.startsWith('GIGANTE ·')){await sleep(plan.title.endsWith('1/3')?1450:1000);}arena.classList.remove('quantum-burst');}
+async function animateFall(removals){if(!removals.size)return;const aliens=[...gridEl.querySelectorAll('.rr-gargantoon')];let splitting=false;for(const alien of aliens){const x=Number(alien.style.getPropertyValue('--gx')),y=Number(alien.style.getPropertyValue('--gy')),n=Number(alien.style.getPropertyValue('--gn'));if([...removals].some(id=>Math.floor(id/N)>=y&&Math.floor(id/N)<y+n&&id%N>=x&&id%N<x+n)){alien.classList.add('rrg-split');splitting=true}}if(splitting){squeak(0,320,.08);await sleep(480);}for(const i of removals)tiles[i].classList.add('clearing');pieceClearSound(removals.size);await sleep(state.turbo?45:145);const motions=fall(removals);paint(motions);pieceDropSound(motions,state.turbo?.14:.365);await sleep(state.turbo?190:475);paint();}
+async function revealPlan(plan){banner(plan.title.startsWith('GIGANTE · 1/')?'GARGANTOON!':plan.title);message('⚡ <strong>'+plan.title+'</strong>');arena.classList.add('quantum-burst');const entries=[...plan.changes];for(let k=0;k<entries.length;k+=4){for(const [id,t] of entries.slice(k,k+4))put(id,t);paint();for(const [id] of entries.slice(k,k+4))tiles[id].classList.add('quantum-reveal');featureRevealSound(k);await waitMs(150)}paint();await animateFall(plan.remove);if(plan.title.startsWith('GIGANTE ·')){gridEl.querySelectorAll('.rr-gargantoon').forEach(el=>el.classList.add('rrg-enter'));await sleep(plan.title.endsWith('1/3')?2200:1450);}arena.classList.remove('quantum-burst');}
 async function runFeature(name){activeFeature=name;state.lastFeature=name;state.features++;update();const key=name==='GIGANTE'?'GARGANTOON!':name;featureSound(key);if(name==='GIGANTE'){state.gargantoonCount=(Number(state.gargantoonCount)||0)+1;giantPhase=1;update();await revealPlan(giantPlan(1))}else await revealPlan(quantumPlan(name));activeFeature='';update();}
 async function settle(){let cycles=0,initial=true;while(cycles++<200){
  const groups=findGroups();
