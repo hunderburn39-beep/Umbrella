@@ -267,8 +267,13 @@ function updateInfo(){
  const rows=flipperRows(currentMap);
  by("detail").textContent="Mesa "+(currentMap+1)+"  |  Paleta "+bank+"  |  "+rows.length+" grupos\n"+
  rows.map(row=>{
-   const base=row.frameBases[row.channel==="left"?a:b];
+   const activeFrame=row.channel==="left"?a:b;
+   const base=row.frameBases[activeFrame],entry=oam?.get(row.selector+":"+activeFrame);
+   const attribute=entry?.pieces[0]?.attributes_base;
+   const romPriority=attribute===undefined?"?":String((attribute>>4)&3);
+   const blendBase=attribute===undefined?"?":((attribute&0x40)?"1":"0");
    return "#"+row.selector+" "+(row.channel==="left"?"E":"D")+" ecrã ("+row.displayRect.x+","+row.displayRect.y+") ROM ("+row.rawX+","+row.rawY+") "+row.romAddress+
+       " · P"+romPriority+" blendBase="+blendBase+
        " · tiles 0x"+base.toString(16).toUpperCase()+" / 0x"+(base+16).toString(16).toUpperCase();
  }).join("\n")+
  "\nAcumuladores: "+accL+" / "+accR;
