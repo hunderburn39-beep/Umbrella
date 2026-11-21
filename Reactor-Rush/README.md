@@ -1,4 +1,4 @@
-# Reactor Rush — V1.9
+# Reactor Rush — V2.0
 
 **[Jogar Reactor Rush](https://reactor-rush-umbrella.vercel.app/?v=1.9)**
 
@@ -28,3 +28,12 @@ O código está em `Umbrella/Reactor-Rush/index.html`. O Vercel recebe manualmen
 ## V1.9 — Locutor português maduro
 - Nove anúncios MP3 em português de Portugal, voz masculina sintética grave e pausada, com efeito metálico reduzido.
 - Mantém grafismo horizontal HD, lógica de jogo, efeitos sonoros e pré-escuta.
+
+
+## V2.0 — música e mistura de áudio
+- Banda sonora synthwave original, sintetizada localmente, em loop de 16 segundos.
+- Quedas, encaixes, remoções e combinações com sons distintos e reforçados.
+- Misturador de efeitos com compressão dinâmica; volumes iniciais da música 45% e efeitos 85%, ajustáveis no menu de informações.
+- Música reduzida durante a locução portuguesa madura; recuperação automática após a fala.
+- Silêncio ao desligar o som, ocultar a página ou rodar para modo vertical; reinício mediante interação.
+- Grafismo, mecânica e ficheiros da locução da V1.9 preservados. Teste de audição no iPhone físico pendente.
