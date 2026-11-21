@@ -57,7 +57,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <body>
 <main>
 <header>
-<div class="eyebrow">Estúdio gráfico · V0.5 — máscara e prioridades</div>
+<div class="eyebrow">Estúdio gráfico · V0.6 — auditoria de mistura</div>
 <h1>Super Pinball Action</h1>
 <p class="note">Quatro mesas originais com flippers montados a partir dos sprites e coordenadas da ROM. Testa os sete fotogramas de cada comando antes de criar os elementos HD.</p>
 <p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Os grupos esquerdo/direito foram corrigidos após conferir a rotação da ROM. Esta é uma bancada gráfica, não a física completa do jogo.</p>
@@ -95,6 +95,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 </div>
 <div class="switchRow">
 <label><input type="checkbox" id="anchors"> Mostrar caixas e posições</label>
+<label><input type="checkbox" id="blendAudit"> Assinalar sobreposições incertas</label>
 <label><input type="checkbox" id="smooth"> Suavizar visualização*</label>
 </div>
 <div class="detail" id="detail">ROM US: a aguardar parâmetros.</div>
@@ -103,12 +104,13 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <button id="export" class="main" disabled>Capturar mesa PNG</button>
 <button id="sheet" disabled>Folha dos 7 fotogramas PNG</button>
 </div>
-<p class="tiny">*Modo Mesa ROM + máscara OAM: mantém a mistura aditiva estática do fundo e oculta os sprites de prioridade 1 nas zonas opacas do FG. Ainda não reproduz a mistura em tempo real entre sprite e FG translúcido, a paleta dinâmica, outras entidades móveis ou a cadência original. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
+<p class="tiny">*Modo Mesa ROM + máscara OAM: mantém a mistura aditiva estática do fundo e oculta os sprites de prioridade 1 nas zonas opacas do FG. A opção de auditoria marca a magenta as intersecções cujo tratamento pode envolver mistura FG/sprite; são suspeitas obtidas por comparação de PNG, não prova da lógica em execução. Ainda não reproduz a mistura em tempo real entre sprite e FG translúcido, a paleta dinâmica, outras entidades móveis ou a cadência original. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
 <p class="tiny"><a href="../Assets/02_Mesas/">Mesas no GitHub</a> · <a href="../Assets/04_Flippers/">Flippers originais</a> · <a href="../Assets-HD/">Área dos futuros assets HD</a></p>
 </section>
 </div>
 </main>
 <script id="spa-data" type="application/json">null</script>
+<script src="mixer_auditoria.js"></script>
 <script>
 "use strict";
 (function(){
@@ -117,7 +119,7 @@ const ctx=by("stage").getContext("2d",{alpha:false});
 let embedded=null;
 try{embedded=JSON.parse(by("spa-data").textContent)}catch(_){}
 const imageCache=new Map();
-let data=null,oam=null,revision=0,currentMap=0,bank=0,layer="mixmask",showAnchors=false;
+let data=null,oam=null,revision=0,currentMap=0,bank=0,layer="mixmask",showAnchors=false,showBlendAudit=false,lastBlendCount=0;
 let mode="live",left=false,right=false,accL=0,accR=0,manualL=0,manualR=0;
 let tickMs=0,lastDraw="",assetsReady=false;
 const fallback="Não consegui carregar as imagens. Abre esta página através do GitHub Pages ou do HTML autónomo.";
@@ -149,12 +151,44 @@ function loaded(path){
 }
 function scenePaths(map,bank,layer){
  if(layer==="sprites")return [];
- const layers=layer==="mixmask"?["mixed","foreground"]:layer==="priority"?["background","foreground"]:[layer];
+ const layers=layer==="mixmask"?["mixed","foreground","combined"]:layer==="priority"?["background","foreground"]:[layer];
  return layers.map(l=>tablePath(map,bank,l));
 }
 const spriteMaskCanvas=document.createElement("canvas");
 spriteMaskCanvas.width=224;spriteMaskCanvas.height=512;
 const spriteMaskCtx=spriteMaskCanvas.getContext("2d",{willReadFrequently:false});
+const probe=document.createElement("canvas");probe.width=224;probe.height=512;
+const probeCtx=probe.getContext("2d",{willReadFrequently:true});
+const uncertain=document.createElement("canvas");uncertain.width=224;uncertain.height=512;
+const uncertainCtx=uncertain.getContext("2d");
+const staticPixelCache=new Map();
+function pixelBuffer(image){
+ probeCtx.clearRect(0,0,224,512);
+ probeCtx.drawImage(image,0,0);
+ return probeCtx.getImageData(0,0,224,512);
+}
+function auditStatic(map,bank){
+ const key=map+":"+bank;
+ if(!staticPixelCache.has(key)){
+  staticPixelCache.set(key,{
+   mixed:pixelBuffer(loaded(tablePath(map,bank,"mixed"))),
+   fg:pixelBuffer(loaded(tablePath(map,bank,"foreground"))),
+   combined:pixelBuffer(loaded(tablePath(map,bank,"combined")))
+  });
+ }
+ return staticPixelCache.get(key);
+}
+function overlayUncertain(destination,map,bank,fl,fr){
+ if(!globalThis.SpaMixerAudit)throw Error("Módulo de auditoria em falta");
+ const still=auditStatic(map,bank);
+ probeCtx.clearRect(0,0,224,512);
+ drawSprites(probeCtx,map,bank,fl,fr,1);
+ const sprite=probeCtx.getImageData(0,0,224,512);
+ const stats=globalThis.SpaMixerAudit.auditOverlap(still.fg,still.combined,still.mixed,sprite);
+ uncertainCtx.putImageData(new ImageData(stats.rgba,224,512),0,0);
+ destination.drawImage(uncertain,0,0);
+ lastBlendCount=stats.overlapPixels;
+}
 function drawSprites(destination,map,bank,fl,fr,priority=null){
  destination.save();
  destination.translate(224,0);
@@ -199,6 +233,7 @@ function paintScene(destination,map,bank,layer,fl,fr,anchors,ox=0){
   spriteMaskCtx.globalCompositeOperation="source-over";
   destination.drawImage(spriteMaskCanvas,0,0);
   drawSprites(destination,map,bank,fl,fr,3);
+  if(showBlendAudit)overlayUncertain(destination,map,bank,fl,fr);
  }else{
   destination.drawImage(loaded(paths[0]),0,0);
   if(layer==="priority"){
@@ -240,10 +275,10 @@ function updateInfo(){
 }
 function render(){
  if(!data||!assetsReady)return;
- const key=[currentMap,bank,layer,frameL(),frameR(),showAnchors].join(":");
+ const key=[currentMap,bank,layer,frameL(),frameR(),showAnchors,showBlendAudit].join(":");
  if(key===lastDraw)return;
  try{paintScene(ctx,currentMap,bank,layer,frameL(),frameR(),showAnchors);
-   lastDraw=key;updateInfo();setStatus("ROM: "+flipperRows(currentMap).length+" grupos · 112 peças auditadas · 224 × 512");
+   lastDraw=key;updateInfo();setStatus("ROM: "+flipperRows(currentMap).length+" grupos · 112 peças auditadas · 224 × 512"+(showBlendAudit&&layer==="mixmask"?" · mistura incerta: "+lastBlendCount+" px":""));
  }catch(e){setStatus(e.message,true)}
 }
 async function prepare(){
@@ -317,6 +352,7 @@ for(const id of ["map","bank","layer"]){
  });
 }
 by("anchors").onchange=()=>{showAnchors=by("anchors").checked;lastDraw="";render()};
+by("blendAudit").onchange=()=>{showBlendAudit=by("blendAudit").checked;lastDraw="";render()};
 by("smooth").onchange=()=>{by("stage").style.imageRendering=by("smooth").checked?"auto":"pixelated"};
 by("live").onclick=()=>setMode("live");
 by("freeze").onclick=()=>setMode("manual");
@@ -341,7 +377,8 @@ by("sheet").onclick=async()=>{
  try{
   const c=document.createElement("canvas");c.width=224*7;c.height=512;
   const g=c.getContext("2d");
-  for(let i=0;i<7;i++)paintScene(g,currentMap,bank,layer,i,i,false,i*224);
+  const savedAudit=showBlendAudit;showBlendAudit=false;
+  try{for(let i=0;i<7;i++)paintScene(g,currentMap,bank,layer,i,i,false,i*224)}finally{showBlendAudit=savedAudit}
   download(c,"SPA_mesa"+(currentMap+1)+"_banco"+bank+"_7_fotogramas.png");
   setStatus("Folha de referência gerada: 7 fotogramas (não é HD).");
  }catch(e){setStatus(e.message,true)}
