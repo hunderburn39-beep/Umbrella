@@ -5,3 +5,4 @@ fonts {
 }
 material: "/builtins/materials/gui.material"
 max_nodes: 256
+textures { name: "symbols" texture: "/assets/symbols.atlas" }
