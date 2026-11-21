@@ -468,7 +468,7 @@ document.addEventListener('touchstart',e=>{
 document.addEventListener('touchmove',e=>{
  if(e.touches.length>1||rrMulti){rrMulti=true;rrTouch=null;rrCancel(e);return}
  if(rrModalArea(e.target))return;
- if(rrTouch){const t=Array.from(e.touches).find(t=>t.identifier===rrTouch.id);if(!t||Math.hypot(t.clientX-rrTouch.x,t.clientY-rrTouch.y)>10)rrTouch.moved=true;}
+ if(rrTouch){const t=Array.from(e.touches).find(t=>t.identifier===rrTouch.id);if(!t||Math.hypot(t.clientX-rrTouch.x,t.clientY-rrTouch.y)>10)rrTouch.moved=true;if(!rrTouch.moved)return;}
  rrCancel(e);
 },rrOpts);
 document.addEventListener('touchend',e=>{
