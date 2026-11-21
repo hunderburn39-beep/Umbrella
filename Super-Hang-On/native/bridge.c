@@ -20,6 +20,7 @@ static int16_t audio_buffer[2 * 802];
 static int audio_frames;
 static double audio_phase;
 static int loaded;
+static uint32_t completed_frames;
 static float bounded(float x, float low, float high) {
     if (!(x >= low)) return low;
     return x > high ? high : x;
@@ -36,6 +37,7 @@ API int browser_load(const char *rom_path) {
     sho_set_dips(0x00, 0xfe);
     sho_set_view_width(SHO_W);
     memset(&input, 0, sizeof input);
+    completed_frames = 0;
     audio_phase = 0;
     audio_frames = 0;
     loaded = 1;
@@ -54,16 +56,17 @@ API void browser_input(float steer, float throttle, float brake,
     input.nav_up = !!up; input.nav_down = !!down;
     input.nav_left = !!left; input.nav_right = !!right;
 }
-API int browser_frame(void) {
-    if (!loaded) return 0;
+API void browser_frame(void) {
+    if (!loaded) return;
     sho_set_input(&input);
     sho_run_frame();
     audio_phase += 48000.0 / SHO_FPS;
     audio_frames = (int)audio_phase;
     audio_phase -= audio_frames;
     sho_audio(audio_buffer, audio_frames);
-    return 1;
+    completed_frames++;
 }
+API uint32_t browser_completed_frames(void) { return completed_frames; }
 API const uint32_t *browser_pixels(void) { return loaded ? sho_framebuffer() : NULL; }
 API int browser_width(void) { return loaded ? sho_width() : 0; }
 API int browser_height(void) { return SHO_H; }
