@@ -1,0 +1,49 @@
+name: Fortuna 777 Defold V6
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Fortuna-777-Defold/**'
+      - '.github/workflows/fortuna-defold.yml'
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: fortuna-defold
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+      - name: Download Defold
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download 1.14.1 --repo defold/defold --pattern bob.jar --output "$RUNNER_TEMP/bob.jar"
+      - name: Build WebAssembly
+        working-directory: Fortuna-777-Defold
+        run: |
+          java -jar "$RUNNER_TEMP/bob.jar" --platform wasm-web --architectures wasm-web --archive --bundle-output "$RUNNER_TEMP/fortuna-out" resolve distclean build bundle
+          test -s "$RUNNER_TEMP/fortuna-out/Fortuna777/index.html"
+      - name: Publish built game without replacing V5
+        run: |
+          mkdir -p Fortuna-777-V6
+          cp -a "$RUNNER_TEMP/fortuna-out/Fortuna777/." Fortuna-777-V6/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Fortuna-777-V6
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish Fortuna 777 Defold V6"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - name: Request Pages build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/$GITHUB_REPOSITORY/pages/builds"
