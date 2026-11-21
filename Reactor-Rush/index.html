@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V3.1 — Slot de Cascatas</title>
+<title>Reactor Rush V3.2 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -243,6 +243,29 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 .rr-art-banner .rr-banner-value{position:relative;margin-top:-.18em;font-size:.96em;z-index:1}
 @keyframes rrArtReveal{0%{transform:scale(.72);opacity:0}13%{transform:scale(1.015);opacity:1}25%,83%{transform:scale(1);opacity:1}100%{transform:scale(1.03);opacity:0}}
 @media(prefers-reduced-motion:reduce){.app .banner.rr-art-banner{animation:none}}
+
+/* V3.2: horizontal artwork reflow. Split original artwork around the live square
+   grid, keeping the center frame tight; the footer and portrait are untouched. */
+.rr-landscape-art{display:none}
+@media (orientation:landscape){
+.app{--rr-side:min(68.8cqh,50cqw);--rr-left:calc(45.85cqw - var(--rr-side)/2);--rr-right:calc(45.85cqw + var(--rr-side)/2);--rr-rw:calc(100cqw - var(--rr-right))}
+.rr-skin .app .rr-landscape-art{display:block;position:absolute;inset:0;z-index:-1;pointer-events:none}
+.rr-landscape-art>span{position:absolute;top:0;display:block;background-image:var(--rr-landscape);background-repeat:no-repeat;pointer-events:none}
+.rr-landscape-art .rr-art-left{left:0;width:var(--rr-left);height:83.5cqh;background-size:calc(var(--rr-left)/.253) 100cqh;background-position:left top}
+.rr-landscape-art .rr-art-center{left:var(--rr-left);width:var(--rr-side);height:83.5cqh;background-size:calc(var(--rr-side)/.411) 100cqh;background-position:42.9541596% top}
+.rr-landscape-art .rr-art-right{left:var(--rr-right);width:var(--rr-rw);height:78.4cqh;background-size:calc(var(--rr-rw)/.336) 100cqh;background-position:right top}
+.app .arena{left:var(--rr-left);top:calc(44.1cqh - var(--rr-side)/2);width:var(--rr-side);height:var(--rr-side);min-width:0;min-height:0;aspect-ratio:1;padding:0;display:block;border-radius:.5cqh}
+.app .arena .grid{width:100%;height:100%;max-height:none;aspect-ratio:1;margin:0;gap:clamp(1px,.35cqh,3px)}
+.app .arena .cell{min-width:0;min-height:0;aspect-ratio:1}
+.app .message{left:var(--rr-left);width:var(--rr-side);font-size:min(.95cqw,2.1cqh)}
+.rr-skin .app .version-top{left:calc(var(--rr-left) * 0.3241107);width:calc(var(--rr-left) * 0.3636364)}
+.rr-skin .app #topup{left:calc(var(--rr-left) * 0.1185771);width:calc(var(--rr-left) * 0.6324111)}
+.rr-skin .app #quantumBars{left:calc(var(--rr-right) + var(--rr-rw) * 0.1339286);width:calc(var(--rr-rw) * 0.7410714);gap:calc(var(--rr-rw) * 0.0401786)}
+.rr-skin .app .charge-total{left:calc(var(--rr-right) + var(--rr-rw) * 0.2708333);width:calc(var(--rr-rw) * 0.4761905)}
+.rr-skin .app .queue-live{left:calc(var(--rr-right) + var(--rr-rw) * 0.1071429);width:calc(var(--rr-rw) * 0.7976190)}
+.rr-skin .app .giant-stage,.rr-skin .app .fluct-wrap,.rr-skin .app .round-cascades{left:calc(var(--rr-right) + var(--rr-rw) * 0.2261905);width:calc(var(--rr-rw) * 0.5595238)}
+}
+
 </style>
 <link rel="stylesheet" href="./approved-skins.css?v=30">
 <link rel="stylesheet" href="./celebration-art.css?v=30">
@@ -251,6 +274,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 <body>
 <div class="rotate-screen" role="status"><div class="rotate-icon">↻ 📱</div><b>REACTOR RUSH</b><p>Roda o telemóvel para a posição horizontal para jogar.</p></div>
 <div class="app" aria-label="Reactor Rush, jogo original de cascatas em modo livre">
+ <div class="rr-landscape-art" aria-hidden="true"><span class="rr-art-left"></span><span class="rr-art-center"></span><span class="rr-art-right"></span></div>
  <header class="top"><button id="settings" aria-label="Configurações">⚙</button><button class="round-btn" id="info" aria-label="Informações">ⓘ</button><div><div class="brand">REACTOR <span>RUSH</span></div><div class="strap">NEON CASCADE • FREE PLAY</div></div><button class="round-btn" id="sound" aria-label="Ativar ou desativar o som">♪</button></header>
  <section class="quantum-panel" aria-label="Medidores e fila quântica"><h2>ENERGIA QUÂNTICA</h2><div id="quantumBars"></div><div class="charge-total" id="chargeTotal">0 / 125</div><h2>FILA DE BÓNUS</h2><div id="queueLive" class="queue-live">SEM BÓNUS</div><div class="giant-stage" id="giantStage">GIGANTE · 5.º NÍVEL</div><h2>SÍMBOLO FLUTUANTE</h2><div class="fluct-wrap"><div id="fluctIcon" class="fluct-icon"></div><span>2 WILDS<br>QUANDO VENCE</span></div><div id="roundCascades" class="round-cascades">CASCATAS 0</div></section><section class="rules-panel"><h2>EFEITOS QUÂNTICOS</h2><p><b>◉ IMPLOSÃO</b><br>3–6 Wilds + elimina vizinhos.</p><p><b>✧ ALTERAÇÃO</b><br>Transforma um tipo de símbolo.</p><p><b>✦ DEMOLIÇÃO</b><br>Elimina criaturas de um olho.</p><p><b>╳ INCISÃO</b><br>Cria um X com Wild no centro.</p></section>
  <div class="meters"><div><div class="meter-title">ENERGIA QUÂNTICA</div><div class="meter-info" id="meterLabel">0/5 CARGAS</div><div class="meter-next" id="nextGiant">GIGANTE EM 5 ATIVAÇÕES</div></div><div class="pips" id="pips"></div></div>
@@ -258,7 +282,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.1 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.1</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.2 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.2</strong></footer>
 </div>
 <div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais com Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias pode receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
 <p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b></p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="45" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="85" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
