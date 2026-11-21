@@ -6,14 +6,15 @@
 button,input{font:inherit}button{cursor:pointer;background:#213354;color:#fff;border:1px solid #536a8e;border-radius:10px;padding:7px 8px;font-weight:800;touch-action:manipulation}
 button:active,.pressed{filter:brightness(1.35)}
 #app{width:100%;height:100dvh;display:flex;flex-direction:column;gap:4px;padding:max(4px,env(safe-area-inset-top)) max(5px,env(safe-area-inset-right)) max(6px,env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-left))}
-#top{display:grid;grid-template-columns:.95fr .85fr .7fr .9fr;gap:4px;min-height:42px}
+#top{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px;min-height:42px}
 #top button{min-width:0;font-size:clamp(10px,2.65vw,14px)}#top #start{background:linear-gradient(#2c7757,#175138);border-color:#86dfb8}
 #hud{min-height:39px;display:flex;justify-content:space-between;align-items:center;gap:7px;font-size:clamp(10px,2.6vw,14px);font-weight:800;color:#ffe0a3;padding:0 6px;background:#101b30;border:1px solid #30435e;border-radius:8px}
 #hud b{font-size:clamp(12px,3vw,18px);color:white;font-variant-numeric:tabular-nums}
-#stageWrap{position:relative;flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden;background:#0b1427;border:1px solid #32445b;border-radius:9px}
+#stageWrap{position:relative;flex:1;min-height:0;display:flex;justify-content:center;align-items:center;overflow:hidden;background:linear-gradient(90deg,#1a2140,#0b1427 29%,#0b1427 71%,#1a2140);border:1px solid #32445b;border-radius:9px}
 #game{display:block;width:auto;height:100%;max-width:100%;object-fit:contain;image-rendering:pixelated;touch-action:none;background:#050819}
 #banner{position:absolute;top:7px;left:50%;transform:translateX(-50%);padding:5px 10px;background:#080d1acc;border:1px solid #4f6281;border-radius:8px;white-space:nowrap;font-size:11px;pointer-events:none}
-#controls{height:clamp(72px,12dvh,110px);display:grid;grid-template-columns:1.15fr .83fr .83fr 1.15fr;gap:5px}
+#controls{height:clamp(84px,14dvh,120px);display:grid;grid-template-columns:1.15fr .85fr .9fr 1.15fr;gap:5px}
+#middle{display:flex;flex-direction:column;gap:5px;min-width:0;min-height:0}#middle button{flex:1;min-height:0;padding:3px 1px;font-size:clamp(11px,2.9vw,16px)}#middle #start{background:linear-gradient(#2c7757,#175138);border:2px solid #86dfb8}
 #controls button{font-size:clamp(11px,3.2vw,19px);border-radius:12px;touch-action:none}
 #left,#right{background:linear-gradient(#344b76,#1e2c4a);border:2px solid #9cb5e6}
 #launch{background:linear-gradient(#b67d31,#775021);border:2px solid #f4d391}
@@ -27,14 +28,14 @@ button:active,.pressed{filter:brightness(1.35)}
 #intro p{font-size:12px;max-width:420px;color:#c8d5e7;line-height:1.5;margin:0}
 #romInput{display:none}#romLabel{font-size:12px;text-decoration:underline;color:#9ad5fa;cursor:pointer;touch-action:manipulation}
 #loading{color:#f9d790;font-size:13px;max-width:330px}
-@media(orientation:landscape){#top{min-height:32px}#hud{min-height:26px}#controls{height:60px}#info{display:none}}
+@media(orientation:landscape){#top{min-height:32px}#hud{min-height:26px}#controls{height:76px}#info{display:none}}
 </style></head><body>
 <div id="app">
- <div id="top"><button id="start">START / P1</button><button id="start2">2 JOGADORES</button><button id="sound">🔊 SOM</button><button id="romBtn">ROM ÁUDIO</button></div>
+ <div id="top"><button id="start2">2 JOGADORES</button><button id="sound">🔊 SOM</button><button id="romBtn">ROM ÁUDIO</button></div>
  <div id="hud"><span id="player">1 JOGADOR</span><span>PONTOS <b id="score">000000</b></span><span id="balls">BOLAS 3</span></div>
  <div id="stageWrap"><canvas id="game" width="224" height="512" aria-label="Super Pinball Action — mesa jogável"></canvas><div id="banner">A carregar mesa...</div></div>
- <div id="controls"><button id="left">◀ ESQUERDO</button><button id="launch">LANÇAR</button><button id="shake">SHAKE</button><button id="right">DIREITO ▶</button></div>
- <div id="info"><span id="version">V0.9 · FREE PLAY · simulação física experimental</span><span id="audioState">YM3812 FM / OKI pendente</span></div>
+ <div id="controls"><button id="left">◀ ESQUERDO</button><button id="launch">LANÇAR</button><div id="middle"><button id="start">START / P1</button><button id="shake">SHAKE</button></div><button id="right">DIREITO ▶</button></div>
+ <div id="info"><span id="version">V1.0 · FREE PLAY · física em ajuste</span><span id="audioState">YM3812 FM / OKI pendente</span></div>
 </div>
 <section id="intro">
  <div class="tag">TECMO · 1991</div>
@@ -54,7 +55,7 @@ button:active,.pressed{filter:brightness(1.35)}
  const chips=window.SpaChips.create(),ROOT="../Assets/",AUDIT="../Estudio-Grafico/";
  const w=224,h=512;const cached=new Map();
  let layout=null,oam=null,ready=false,soundOn=true,started=false,gameOver=false,players=1,player=0,score=[0,0],balls=[3,3],level=0;
- let ball={x:204,y:475,vx:0,vy:0,r:4.2,alive:false,waiting:true},leftDown=false,rightDown=false,lf=0,rf=0,shakeCount=0,shakeTick=0,launchAt=0,frameNo=0;
+ let ball={x:204,y:475,vx:0,vy:0,r:4.2,alive:false,waiting:true,inLane:false},leftDown=false,rightDown=false,lf=0,rf=0,shakeCount=0,shakeTick=0,launchAt=0,frameNo=0,tilted=false;
  let last=0,acc=0,hitCooldown=0,flash=0,flashMessage="",titleTick=0,okiLoaded=false;
  const selected={bank:0};
  function pathTile(n){let hex=n.toString(16).toUpperCase().padStart(4,"0");return "04_Flippers/bank"+selected.bank+"/tile_"+String(n).padStart(5,"0")+"_0x"+hex+".png"}
@@ -84,11 +85,14 @@ button:active,.pressed{filter:brightness(1.35)}
  }
  function message(s,duration=105){flashMessage=s;flash=duration;$("banner").textContent=s}
  function newBall(){
-  ball={x:207,y:474,vx:0,vy:0,r:4.2,alive:false,waiting:true};
+  ball={x:207,y:474,vx:0,vy:0,r:4.2,alive:false,waiting:true,inLane:false};
+  tilted=false;shakeCount=0;
   message("CARREGA LANÇAR",150);
  }
  function startGame(n=1){
   if(!ready){message("A carregar os sprites…");return}
+  if(started&&!gameOver){message("PARTIDA EM CURSO · USA LANÇAR",100);return}
+  if(soundOn){try{chips.start()}catch{}}
   players=n;player=0;score=[0,0];balls=[3,3];level=0;gameOver=false;started=true;
   lf=rf=0;leftDown=rightDown=false;shakeCount=0;newBall();hud();chips.event("start");
  }
@@ -114,9 +118,17 @@ button:active,.pressed{filter:brightness(1.35)}
  }
  function launch(){
   if(!started||gameOver){message("CARREGA START PRIMEIRO",90);return}
-  if(ball.waiting){ball.waiting=false;ball.alive=true;ball.vy=-8.7;ball.vx=-1.55;ball.x=205;ball.y=474;chips.event("launch");message("BOLA EM JOGO",75)}
+  if(ball.waiting){
+    if(soundOn){try{chips.start()}catch{}}
+    // Percurso de lançamento separado; a bola só entra na mesa pelo topo.
+    ball.waiting=false;ball.alive=true;ball.inLane=true;
+    ball.vx=0;ball.vy=-8;ball.x=207;ball.y=474;
+    launchAt=frameNo;chips.event("launch");message("BOLA EM JOGO",75);
+  }
  }
  function flipperHold(which,v){
+  if(tilted){leftDown=rightDown=false;$(which).classList.remove("pressed");return}
+  if(v&&soundOn){try{chips.start()}catch{}}
   if(which==="left")leftDown=v;else rightDown=v;
   $(which).classList.toggle("pressed",v);
   if(v&&ball.alive&&ball.y>430&&ball.y<510){
@@ -125,10 +137,15 @@ button:active,.pressed{filter:brightness(1.35)}
   }
  }
  function doShake(){
-  if(!ball.alive)return;
+  if(!ball.alive||tilted)return;
   if(frameNo-shakeTick>180)shakeCount=0;
   shakeTick=frameNo;shakeCount++;
-  if(shakeCount>=5){message("TILT !!!",160);chips.event("tilt");leftDown=rightDown=false;ball.vy+=3;return}
+  if(shakeCount>=5){
+    tilted=true;message("TILT !!!",200);chips.event("tilt");
+    leftDown=rightDown=false;lf=rf=0;
+    $("left").classList.remove("pressed");$("right").classList.remove("pressed");
+    return;
+  }
   ball.vx+=(Math.random()-.5)*1.8;ball.vy-=.9;chips.event("bumper")
  }
  function axis(ax,ay,bx,by){
@@ -160,7 +177,7 @@ button:active,.pressed{filter:brightness(1.35)}
   if(ball.y>=356&&ball.y<435){axis(15,358,44,433);axis(208,358,179,433)}
   if(ball.y>420){axis(8,425,53,488);axis(216,425,171,488)}
   // Flipper collision follows the seven ROM animation states; physical impulse is a current approximation.
-  if(ball.y>448&&ball.y<503){
+  if(!tilted&&ball.y>448&&ball.y<503){
    const e=lf/6,d=rf/6;
    const lhit=axis(72,482,113,496-29*e);
    const rhit=axis(152,482,111,496-29*d);
@@ -174,9 +191,17 @@ button:active,.pressed{filter:brightness(1.35)}
   rf=Math.max(0,Math.min(6,rf+(rightDown?1:-1)));
   if(hitCooldown>0)hitCooldown--;if(flash>0)flash--;
   if(!ball.alive)return;
-  ball.vy+=.105;ball.vx*=.999;
+  if(ball.inLane){
+    ball.y-=8;
+    if(ball.y<=38){
+      ball.inLane=false;ball.x=189;ball.y=38;
+      ball.vx=-2.6;ball.vy=1.1;
+    }
+    return;
+  }
+  ball.vy+=.085;ball.vx*=.999;
   const speed=Math.hypot(ball.vx,ball.vy);
-  if(speed>11){ball.vx*=11/speed;ball.vy*=11/speed}
+  if(speed>9.5){ball.vx*=9.5/speed;ball.vy*=9.5/speed}
   for(let i=0;i<3;i++){ball.x+=ball.vx/3;ball.y+=ball.vy/3;collide()}
   if(ball.y>517){drain();return}
  
@@ -202,8 +227,13 @@ button:active,.pressed{filter:brightness(1.35)}
    ctx.fillStyle="#ffffff";ctx.beginPath();ctx.arc(ball.x-1.25,ball.y-1.4,1.5,0,Math.PI*2);ctx.fill();
    ctx.restore();
   }
+  if(tilted&&started&&!gameOver){
+    ctx.fillStyle="#270606dd";ctx.fillRect(40,230,144,50);
+    ctx.font="bold 25px sans-serif";ctx.textAlign="center";ctx.fillStyle="#ff2626";
+    ctx.fillText("TILT !!!",112,264);ctx.textAlign="left";
+  }
   if(gameOver){ctx.fillStyle="#050817d9";ctx.fillRect(18,220,188,70);ctx.font="bold 17px sans-serif";ctx.textAlign="center";ctx.fillStyle="#ffe58c";ctx.fillText("GAME OVER",112,255);ctx.textAlign="left"}
-  if(flash<=0&&started&&ball.alive&&$("banner").textContent!=="FREE PLAY")$("banner").textContent="FREE PLAY · MESA "+(level+1);
+  if(flash<=0&&started&&ball.alive&&!tilted&&$("banner").textContent!=="FREE PLAY")$("banner").textContent="FREE PLAY · MESA "+(level+1);
  }
  function animation(t){
   if(!last)last=t;acc+=Math.min(.1,(t-last)/1000);last=t;
@@ -234,7 +264,7 @@ button:active,.pressed{filter:brightness(1.35)}
  });
  window.addEventListener("blur",()=>{leftDown=rightDown=false;$("left").classList.remove("pressed");$("right").classList.remove("pressed");held.clear()});
  $("start").onclick=()=>startGame(1);$("start2").onclick=()=>startGame(2);
- $("sound").onclick=()=>{soundOn=!soundOn;chips.mute(!soundOn);hud();if(soundOn)chips.event("start")};
+ $("sound").onclick=()=>{soundOn=!soundOn;chips.mute(!soundOn);if(soundOn){try{chips.start()}catch{}chips.event("start")}hud()};
  $("romBtn").onclick=()=>{
   if(!okiLoaded){$("romInput").click();return}
   const requested=window.prompt("Ouvir sample OKIM6295 original da ROM (número 0–127). Para trocar a ROM escreve ROM.", "0");
