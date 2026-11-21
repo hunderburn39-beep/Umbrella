@@ -57,7 +57,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <body>
 <main>
 <header>
-<div class="eyebrow">Estúdio gráfico · V0.6 — auditoria de mistura</div>
+<div class="eyebrow">Estúdio gráfico · V0.7 — flippers por lado</div>
 <h1>Super Pinball Action</h1>
 <p class="note">Quatro mesas originais com flippers montados a partir dos sprites e coordenadas da ROM. Testa os sete fotogramas de cada comando antes de criar os elementos HD.</p>
 <p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Os grupos esquerdo/direito foram corrigidos após conferir a rotação da ROM. Esta é uma bancada gráfica, não a física completa do jogo.</p>
@@ -99,10 +99,15 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <label><input type="checkbox" id="smooth"> Suavizar visualização*</label>
 </div>
 <div class="detail" id="detail">ROM US: a aguardar parâmetros.</div>
-<h2>3 · Exportar referências PNG</h2>
+<h2>3 · Comparar flippers independentemente</h2>
+<div class="controls">
+<div class="control"><label for="sheetMode">Animar na folha dos 7 fotogramas</label><select id="sheetMode"><option value="both">Esquerdo + direito</option><option value="left">Só esquerdo (direito parado)</option><option value="right">Só direito (esquerdo parado)</option></select></div>
+</div>
+<p class="tiny">O lado que não está a ser comparado mantém o fotograma selecionado no momento da exportação. Permite verificar o encaixe de cada flipper na mesa sem deslocar as coordenadas da ROM.</p>
 <div class="actions">
 <button id="export" class="main" disabled>Capturar mesa PNG</button>
 <button id="sheet" disabled>Folha dos 7 fotogramas PNG</button>
+<button id="report" disabled>Relatório OAM em JSON</button>
 </div>
 <p class="tiny">*Modo Mesa ROM + máscara OAM: mantém a mistura aditiva estática do fundo e oculta os sprites de prioridade 1 nas zonas opacas do FG. A opção de auditoria marca a magenta as intersecções cujo tratamento pode envolver mistura FG/sprite; são suspeitas obtidas por comparação de PNG, não prova da lógica em execução. Ainda não reproduz a mistura em tempo real entre sprite e FG translúcido, a paleta dinâmica, outras entidades móveis ou a cadência original. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
 <p class="tiny"><a href="../Assets/02_Mesas/">Mesas no GitHub</a> · <a href="../Assets/04_Flippers/">Flippers originais</a> · <a href="../Assets-HD/">Área dos futuros assets HD</a></p>
@@ -111,6 +116,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 </main>
 <script id="spa-data" type="application/json">null</script>
 <script src="mixer_auditoria.js"></script>
+<script src="frame_auditoria.js"></script>
 <script>
 "use strict";
 (function(){
@@ -289,7 +295,7 @@ function render(){
 async function prepare(){
  if(!data)return;
  assetsReady=false;lastDraw="";const id=++revision;
- by("export").disabled=by("sheet").disabled=true;setStatus("A carregar mesa e sprites...");
+ by("export").disabled=by("sheet").disabled=by("report").disabled=true;setStatus("A carregar mesa e sprites...");
  const req=scenePaths(currentMap,bank,layer);
  for(const row of flipperRows(currentMap)){
   for(const base of row.frameBases){req.push(pngPath(base,bank),pngPath(base+16,bank))}
@@ -299,7 +305,7 @@ async function prepare(){
    const results=await Promise.all(unique.map(p=>getImage(p).then(img=>[p,img])));
    if(id!==revision)return;
    for(const [path,img] of results){imageCache.get(path).loaded=img}
-   assetsReady=true;by("export").disabled=by("sheet").disabled=false;
+   assetsReady=true;by("export").disabled=by("sheet").disabled=by("report").disabled=false;
    render();
  }catch(e){if(id===revision)setStatus(e.message||fallback,true)}
 }
@@ -383,11 +389,33 @@ by("sheet").onclick=async()=>{
   const c=document.createElement("canvas");c.width=224*7;c.height=512;
   const g=c.getContext("2d");
   const savedAudit=showBlendAudit;showBlendAudit=false;
-  try{for(let i=0;i<7;i++)paintScene(g,currentMap,bank,layer,i,i,false,i*224)}finally{showBlendAudit=savedAudit}
+  try{
+    const comparison=by("sheetMode").value,fixedL=frameL(),fixedR=frameR();
+    if(!globalThis.SpaFrameAudit)throw Error("Módulo de comparação em falta");
+    for(let i=0;i<7;i++){
+      const pair=globalThis.SpaFrameAudit.framePair(comparison,i,fixedL,fixedR);
+      paintScene(g,currentMap,bank,layer,pair.left,pair.right,false,i*224);
+    }
+  }finally{showBlendAudit=savedAudit}
   download(c,"SPA_mesa"+(currentMap+1)+"_banco"+bank+"_7_fotogramas.png");
   setStatus("Folha de referência gerada: 7 fotogramas (não é HD).");
  }catch(e){setStatus(e.message,true)}
  by("sheet").disabled=false;
+};
+by("report").onclick=()=>{
+ if(!assetsReady)return;
+ try{
+  if(!globalThis.SpaFrameAudit)throw Error("Módulo de comparação em falta");
+  const mode=by("sheetMode").value;
+  const report=globalThis.SpaFrameAudit.report(data,oam,currentMap,bank,mode,frameL(),frameR());
+  const blob=new Blob([JSON.stringify(report,null,2)],{type:"application/json"});
+  const u=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=u;a.download="SPA_mesa"+(currentMap+1)+"_OAM_"+mode+".json";
+  document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),1800);
+  setStatus("Relatório ROM: "+report.frames.length+" fotogramas, "+report.frames[0].groups.length+" grupos por fotograma.");
+ }catch(e){setStatus(e.message,true)}
 };
 async function boot(){
  try{
@@ -402,7 +430,10 @@ async function boot(){
  for(const row of data.rows){
   for(let frame=0;frame<7;frame++){
    const entry=oam.get(row.selector+":"+frame);
-   if(!entry||entry.pieces.length!==2||entry.side!==row.channel)throw Error("Peças OAM em falta");
+   if(!entry||entry.pieces.length!==2||entry.side!==row.channel||
+       !entry.screenRect||entry.screenRect.x!==row.displayRect.x||entry.screenRect.y!==row.displayRect.y||
+       entry.screenRect.width!==row.displayRect.width||entry.screenRect.height!==row.displayRect.height)
+     throw Error("Peças OAM ou coordenadas ecrã em falta");
    for(let i=0;i<2;i++){
     const p=entry.pieces[i],priority=(p.attributes_base>>4)&3;
     if(p.tile!==row.frameBases[frame]+i*16||p.romX!==row.rawX+i*32||p.romY!==row.rawY||
