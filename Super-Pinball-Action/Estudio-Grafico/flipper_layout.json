@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "game": "Super Pinball Action (Tecmo, 1991) - US release",
   "romSha256": "8c139defd9b807c15872aee7e51a1fc57c8c1e4c20c764fa213d575140ca67c7",
   "table": {
@@ -64,7 +64,7 @@
       "romAddress": "0x12DA",
       "rawX": 448,
       "rawY": 88,
-      "channel": "left",
+      "channel": "right",
       "frameBases": [
         768,
         800,
@@ -73,14 +73,20 @@
         896,
         928,
         960
-      ]
+      ],
+      "displayRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 2,
       "romAddress": "0x12EC",
       "rawX": 448,
       "rawY": 136,
-      "channel": "right",
+      "channel": "left",
       "frameBases": [
         512,
         544,
@@ -89,14 +95,20 @@
         640,
         672,
         704
-      ]
+      ],
+      "displayRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 3,
       "romAddress": "0x12FE",
       "rawX": 144,
       "rawY": 56,
-      "channel": "left",
+      "channel": "right",
       "frameBases": [
         2304,
         2336,
@@ -105,14 +117,20 @@
         2432,
         2464,
         2496
-      ]
+      ],
+      "displayRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 4,
       "romAddress": "0x1310",
       "rawX": 144,
       "rawY": 168,
-      "channel": "right",
+      "channel": "left",
       "frameBases": [
         2048,
         2080,
@@ -121,14 +139,20 @@
         2176,
         2208,
         2240
-      ]
+      ],
+      "displayRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 5,
       "romAddress": "0x1322",
       "rawX": 160,
       "rawY": 70,
-      "channel": "left",
+      "channel": "right",
       "frameBases": [
         768,
         800,
@@ -137,14 +161,20 @@
         896,
         928,
         960
-      ]
+      ],
+      "displayRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 6,
       "romAddress": "0x1334",
       "rawX": 160,
       "rawY": 154,
-      "channel": "right",
+      "channel": "left",
       "frameBases": [
         512,
         544,
@@ -153,14 +183,20 @@
         640,
         672,
         704
-      ]
+      ],
+      "displayRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 7,
       "romAddress": "0x1346",
       "rawX": 212,
       "rawY": 55,
-      "channel": "left",
+      "channel": "right",
       "frameBases": [
         2304,
         2336,
@@ -169,14 +205,20 @@
         2432,
         2464,
         2496
-      ]
+      ],
+      "displayRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
     },
     {
       "selector": 8,
       "romAddress": "0x1358",
       "rawX": 212,
       "rawY": 206,
-      "channel": "right",
+      "channel": "left",
       "frameBases": [
         2048,
         2080,
@@ -185,12 +227,33 @@
         2176,
         2208,
         2240
-      ]
+      ],
+      "displayRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
     }
   ],
   "renderingLimitations": [
-    "Sprite placement and frame indices are original ROM data.",
-    "Table images are static composite candidates. Runtime palette and layering are not validated.",
-    "Browser keys and frame timing are a diagnostic test; no physics, score or coin state."
-  ]
+    "ROM coordinates, tiles and frame IDs retained, screen bounding rectangles audited.",
+    "Visual left/right labels corrected for clockwise display rotation; previous viewer associated all controls to the opposite physical side.",
+    "Complete sprite/tile priority, dynamic palette and on-hardware timing still require runtime comparison."
+  ],
+  "audit": {
+    "status": "ROM table coordinates and screen rotation audited; final sprite/tile mixer pending",
+    "romRoutine": "0x124c..0x12d6",
+    "romTable": "0x12da..0x136a",
+    "hardwareRenderer": "MAME tecmo_spr_device::gaiden_draw_sprites",
+    "screenWindow": [
+      0,
+      511,
+      16,
+      239
+    ],
+    "coordinateProjection": "x_display=208-rawY, y_display=rawX; source pair is 64x32, displayed as 32x64 after 90-degree rotation",
+    "fix": "Physical left/right channel labels were inverted in all 8 rows",
+    "priorityPending": true
+  }
 }
