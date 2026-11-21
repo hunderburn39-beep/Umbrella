@@ -22,6 +22,7 @@ jobs:
         run: |
           unzip -q Fortuna-777-Pages.zip -d "$RUNNER_TEMP/fortuna"
           cd "$RUNNER_TEMP/fortuna/fortuna-777"
+          sed -i '/^[[:space:]]*playSpin(last);[[:space:]]*$/d' src/components/slot3d/useSlotGame.ts
           npm install --no-audit --no-fund
           npm run test
           npm run build
