@@ -1,6 +1,6 @@
 {
-  "version": "1.3",
-  "base": "1.2",
+  "version": "1.4",
+  "base": "1.3",
   "orientation": "landscape",
   "input": [
     "deviceorientation",
@@ -23,7 +23,8 @@
   "roadVectorsVerified": 49152,
   "curvedDirectionsVerified": 423,
   "straightSegmentsVerified": 208,
-  "curvatureProjection": "approximate browser scaling",
+  "curvatureProjection": "continuous accumulated lookahead, browser scaling approximate",
   "heightProfiles": 21,
-  "heightVectors": 7700
+  "heightVectors": 7700,
+  "viewport": "adaptive logical width, fixed 270px height, absolute canvas, centered chase camera"
 }
