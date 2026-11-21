@@ -74,7 +74,15 @@ def audit(path):
         require((sp, pc) == (stack, 0x1000), name + " reset vectors")
         require(zlib.crc32(b) == crc, name + " bus CRC")
         require(hashlib.sha256(b).hexdigest() == sha, name + " bus SHA256")
-        result["cpus"][name] = {"stack": hex(sp), "reset_pc": hex(pc), "crc32": f"{crc:08x}", "sha256": sha}
+        irq = {level: struct.unpack_from(">I", b, (24 + level)*4)[0] for level in range(1, 8)}
+        expected = (
+            [0x1564, 0x12ba, 0x12ba, 0x12c4, 0x12c4, 0x1564, 0x400]
+            if name == "main" else
+            [0x101e, 0x101e, 0x1058, 0x1058, 0x101e, 0x101e, 0x400]
+        )
+        require(list(irq.values()) == expected, name + " interrupt vectors")
+        result["cpus"][name] = {"stack": hex(sp), "reset_pc": hex(pc), "crc32": f"{crc:08x}", "sha256": sha,
+                                "interrupt_vectors": {str(k): hex(v) for k, v in irq.items()}}
     result["z80_reset"] = "0x0000"
     result["status"] = "ROM integrity and bus reconstruction PASS; execution not tested"
     return result
