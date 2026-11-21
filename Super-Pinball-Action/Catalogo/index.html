@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#10131a">
+<title>Super Pinball Action · Catálogo de Assets</title>
+<style>
+:root{color-scheme:dark;--bg:#0c1119;--panel:#171d29;--line:#303849;--text:#f2f5fa;--sub:#aab5c7;--gold:#e4bc6d;--aqua:#86dee2}
+*{box-sizing:border-box}html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
+body{background:radial-gradient(ellipse at top,#192638 0%,#0c1119 62%) fixed}
+main{max-width:1350px;margin:0 auto;padding:24px clamp(12px,3vw,36px) 52px}
+header{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;justify-content:space-between;margin-bottom:22px}
+h1{margin:6px 0 8px;font-size:clamp(24px,3.5vw,36px);letter-spacing:-.04em}
+.eyebrow{font-size:12px;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;font-weight:750}
+.sub{margin:0;color:var(--sub);max-width:700px;line-height:1.5;font-size:14px}
+a{color:var(--aqua);text-decoration:underline;text-underline-offset:3px}
+a:hover{text-decoration:none}
+nav{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:13px;margin-top:14px}
+.panel{border:1px solid var(--line);background:rgba(23,29,41,.89);border-radius:15px;padding:16px;margin-bottom:18px}
+.filters{display:grid;grid-template-columns:minmax(180px,2fr) repeat(2,minmax(120px,1fr)) minmax(110px,1fr);gap:12px}
+.control{display:flex;flex-direction:column;gap:7px;font-size:12px;color:var(--sub);font-weight:650}
+input,select,button{font:inherit;color:var(--text);outline-offset:3px}
+input,select{min-height:42px;border-radius:8px;background:#0e1520;border:1px solid #3a4559;padding:9px;width:100%}
+button{border:1px solid #465167;background:#222d3b;border-radius:9px;padding:9px 12px;cursor:pointer}
+button:hover{border-color:var(--gold);background:#30394a}
+button:disabled{opacity:.5;cursor:default}
+button.primary{background:#604a25;border-color:var(--gold);color:#fff3d6}
+.statistics{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:18px 0 12px;font-size:13px;color:var(--sub)}
+.count strong{color:var(--text);font-variant-numeric:tabular-nums}
+.selection{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+.tile{min-width:0;text-align:left;padding:8px;background:#19212d;border-color:#303b4e}
+.tile .thumb{aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;padding:8px;border-radius:6px;background-color:#2a3140;background-image:linear-gradient(45deg,#202734 25%,transparent 25%),linear-gradient(-45deg,#202734 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#202734 75%),linear-gradient(-45deg,transparent 75%,#202734 75%);background-size:20px 20px;background-position:0 0,0 10px,10px -10px,-10px 0;overflow:hidden}
+.thumb img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;image-rendering:pixelated;transform:scale(var(--zoom,1));pointer-events:none}
+.tile .name{display:block;font-size:12px;margin:9px 3px 2px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden;font-weight:700}
+.tile .path{display:block;margin:0 3px 4px;font-size:11px;color:var(--sub);text-overflow:ellipsis;overflow:hidden;white-space:nowrap}
+.tile.selected{outline:2px solid var(--gold)}
+.pager{display:flex;gap:8px;justify-content:center;align-items:center;margin-top:22px}
+.pager span{font-size:13px;color:var(--sub);min-width:90px;text-align:center}
+.empty{padding:45px 20px;text-align:center;color:var(--sub);border:1px dashed var(--line);border-radius:12px}
+dialog{border:1px solid #677187;border-radius:16px;background:#141c29;color:var(--text);width:min(95vw,720px);max-height:90vh;padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.82)}
+.detailHead{display:flex;gap:12px;align-items:center;justify-content:space-between}
+.detailHead h2{font-size:17px;overflow-wrap:anywhere;margin:0}
+.detailImage{min-height:180px;max-height:47vh;display:grid;place-items:center;background:#222b38;border-radius:10px;margin:14px 0;overflow:hidden}
+.detailImage img{max-height:43vh;max-width:100%;image-rendering:pixelated}
+.detailPath{font-size:12px;overflow-wrap:anywhere;color:var(--sub)}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin:13px 0}
+.variants{display:flex;gap:10px;flex-wrap:wrap}
+.variant{max-width:120px;text-align:center;font-size:12px;background:#222b38;padding:7px;border-radius:8px}
+.variant img{width:96px;height:88px;object-fit:contain;image-rendering:pixelated}
+.footer{font-size:12px;color:var(--sub);line-height:1.55;margin-top:25px}
+@media(max-width:740px){.filters{grid-template-columns:1fr 1fr}.filters .control:first-child{grid-column:span 2}.grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}.panel{padding:12px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div>
+<div class="eyebrow">ROM original · Tecmo 1991 · Assets de produção</div>
+<h1>Super Pinball Action</h1>
+<p class="sub">Catálogo pesquisável dos PNG da ROM já organizados no UMBRELLA. Compara as paletas, encontra cada elemento e prepara uma lista de sprites para redesenhar em HD, sem alterar os originais.</p>
+<nav>
+<a href="../Assets/">Pastas Assets</a>
+<a href="../Sprites/PNG/">61.378 sprites individuais</a>
+<a href="https://github.com/hunderburn39-beep/Umbrella/tree/main/Super-Pinball-Action" target="_blank" rel="noopener noreferrer">Repositório UMBRELLA</a>
+</nav>
+</div>
+</header>
+<section class="panel" aria-label="Filtros">
+<div class="filters">
+<label class="control">Pesquisar sprite, ID ou ficheiro
+<input id="search" placeholder="Ex.: flipper, map_0, 00512, palette..." autocomplete="off"></label>
+<label class="control">Categoria
+<select id="category">
+<option value="all">Todas as categorias</option>
+<option value="02_Mesas">Mesas</option>
+<option value="03_Animacoes">Animações</option>
+<option value="04_Flippers">Flippers</option>
+<option value="04_Bolas">Bolas</option>
+<option value="01_Folhas_e_paletas">Folhas e paletas</option>
+</select></label>
+<label class="control">Banco de cor
+<select id="bank">
+<option value="all">Todos</option><option value="0">Banco 0</option><option value="1">Banco 1</option><option value="2">Banco 2</option><option value="3">Banco 3</option><option value="unlabelled">Sem banco indicado</option>
+</select></label>
+<label class="control">Pré-visualização
+<select id="zoom"><option value="1">100%</option><option value="1.5">150%</option><option value="2">200%</option></select></label>
+</div>
+</section>
+<section aria-live="polite" class="statistics"><div id="count" class="count">A carregar manifesto...</div>
+<div class="selection"><span id="selectedCount">0 selecionados para HD</span><button id="export" disabled>Exportar lista HD (.csv)</button><button id="clear" disabled>Limpar seleção</button></div>
+</section>
+<div id="grid" class="grid"></div>
+<div id="empty" class="empty" hidden>Nenhum PNG encontrado para estes filtros.</div>
+<div class="pager"><button id="prev">Anterior</button><span id="page"></span><button id="next">Seguinte</button></div>
+<p class="footer">São ficheiros extraídos da ROM: algumas imagens usam bancos de paleta de diagnóstico. O catálogo não representa os estados completos de jogo nem atribui, sem verificação, um nome a cada objeto. A lista HD exportada é apenas uma seleção de caminhos para trabalho gráfico posterior. Os PNG de origem permanecem intactos.</p>
+</main>
+<dialog id="detail">
+<div class="detailHead"><h2 id="detailName"></h2><button id="close" aria-label="Fechar">Fechar ✕</button></div>
+<div class="detailImage"><img id="detailImg" alt="Sprite selecionado"></div>
+<p id="detailPath" class="detailPath"></p>
+<div class="actions"><button id="mark" class="primary">Selecionar para HD</button><button id="copy">Copiar caminho</button><a id="original" target="_blank" rel="noopener noreferrer">Ver PNG original no GitHub</a></div>
+<div id="variants" class="variants"></div>
+</dialog>
+<script>
+"use strict";
+const $=s=>document.querySelector(s);
+const urls={github:"https://github.com/hunderburn39-beep/Umbrella/blob/main/Super-Pinball-Action/Assets/"};
+let files=[],lookup=new Set(),visible=[],page=0,chosen=new Set(),current="",zoom=1;
+const pageSize=48;
+const categories={"01_Folhas_e_paletas":"Folhas e paletas","02_Mesas":"Mesas","03_Animacoes":"Animações","04_Flippers":"Flippers","04_Bolas":"Bolas"};
+function urlOf(path){return "../Assets/"+path.split("/").map(encodeURIComponent).join("/")}
+function bankOf(path){let match=path.match(/(?:^|\/)bank([0-3])(?:\/|$)|_palette([0-3])\.png$|\/palette_(?:us|jp)_([0-3])\.png$/i);return match?Number(match[1]??match[2]??match[3]):null}
+function el(tag,cls,text){const e=document.createElement(tag);if(cls)e.className=cls;if(text!==undefined)e.textContent=text;return e}
+function render(){
+const q=$("#search").value.trim().toLowerCase(),cat=$("#category").value,b=$("#bank").value;
+visible=files.filter(path=>(cat==="all"||path.startsWith(cat+"/"))&&(!q||path.toLowerCase().includes(q))&&(b==="all"||b==="unlabelled"?b==="all"||bankOf(path)===null:bankOf(path)===Number(b)));
+const pages=Math.max(1,Math.ceil(visible.length/pageSize));page=Math.max(0,Math.min(page,pages-1));
+const target=$("#grid");target.replaceChildren();
+const chunk=visible.slice(page*pageSize,(page+1)*pageSize);const fragment=document.createDocumentFragment();
+for(const path of chunk){
+ const button=el("button","tile"+(chosen.has(path)?" selected":""),undefined);
+ button.type="button";button.title=path;button.setAttribute("aria-label","Inspecionar "+path);
+ const thumb=el("div","thumb"),img=el("img");img.loading="lazy";img.decoding="async";img.src=urlOf(path);img.alt=path.split("/").at(-1);img.style.setProperty("--zoom",zoom);
+ thumb.append(img);button.append(thumb);
+ button.append(el("span","name",path.split("/").at(-1)));button.append(el("span","path",categories[path.split("/")[0]]+" · "+path.split("/").slice(1,-1).join("/")));
+ button.onclick=()=>openDetail(path);fragment.append(button);
+}
+target.append(fragment);
+$("#count").textContent=visible.length.toLocaleString("pt-PT")+" PNG encontrados · "+files.length.toLocaleString("pt-PT")+" no catálogo";
+$("#page").textContent=page+1+" / "+pages;$("#prev").disabled=page===0;$("#next").disabled=page>=pages-1;
+$("#empty").hidden=visible.length>0;$("#selectedCount").textContent=chosen.size+" selecionados para HD";
+$("#export").disabled=$("#clear").disabled=chosen.size===0;
+}
+function variantsFor(path){
+ const variants=new Set([path]);for(let bank=0;bank<4;bank++){
+  let test=path.replace(/\/bank[0-3]\//,"/bank"+bank+"/").replace(/_palette[0-3]\.png$/,"_palette"+bank+".png").replace(/(\/palette_(?:us|jp)_)[0-3]\.png$/,"$1"+bank+".png");
+  if(lookup.has(test))variants.add(test);
+ }return Array.from(variants);
+}
+function openDetail(path){
+ current=path;$("#detailName").textContent=path.split("/").at(-1);$("#detailImg").src=urlOf(path);$("#detailPath").textContent=path;$("#original").href=urls.github+path.split("/").map(encodeURIComponent).join("/");
+ $("#mark").textContent=chosen.has(path)?"Retirar da lista HD":"Selecionar para HD";
+ const variants=$("#variants");variants.replaceChildren();
+ for(const item of variantsFor(path)){const a=el("button","variant");const img=el("img");img.src=urlOf(item);img.loading="lazy";img.alt="Variante de "+item;const n=el("div","",bankOf(item)===null?"Original":"Banco "+bankOf(item));a.append(img,n);a.onclick=()=>{current=item;openDetail(item)};variants.append(a)}
+ $("#detail").showModal();
+}
+$("#close").onclick=()=>$("#detail").close();
+$("#mark").onclick=()=>{if(chosen.has(current))chosen.delete(current);else chosen.add(current);$("#mark").textContent=chosen.has(current)?"Retirar da lista HD":"Selecionar para HD";render()};
+$("#copy").onclick=async()=>{try{await navigator.clipboard.writeText("Super-Pinball-Action/Assets/"+current);$("#copy").textContent="Copiado ✓";setTimeout(()=>$("#copy").textContent="Copiar caminho",1500)}catch{window.prompt("Copia este caminho:", "Super-Pinball-Action/Assets/"+current)}};
+$("#clear").onclick=()=>{chosen.clear();render()};
+$("#export").onclick=()=>{
+ const rows=["categoria,caminho,ficheiro,estado_hd"].concat(Array.from(chosen).sort().map(x=>[categories[x.split("/")[0]],"Super-Pinball-Action/Assets/"+x,x.split("/").at(-1),"por redesenhar"].map(v=>'"'+v.replaceAll('"','""')+'"').join(",")));
+ const blob=new Blob(["\ufeff"+rows.join("\r\n")],{type:"text/csv;charset=utf-8"}),u=URL.createObjectURL(blob),a=document.createElement("a");a.href=u;a.download="super_pinball_assets_hd.csv";a.click();setTimeout(()=>URL.revokeObjectURL(u),1000);
+};
+$("#prev").onclick=()=>{page--;render();window.scrollTo(0,0)};
+$("#next").onclick=()=>{page++;render();window.scrollTo(0,0)};
+for(const sel of ["#category","#bank"])$(sel).onchange=()=>{page=0;render()};
+$("#search").oninput=()=>{page=0;render()};
+$("#zoom").onchange=e=>{zoom=Number(e.target.value);render()};
+fetch("manifest.json",{cache:"no-cache"}).then(r=>{if(!r.ok)throw Error("HTTP "+r.status);return r.json()}).then(d=>{
+ if(!Array.isArray(d.files)||d.files.length!==1302||new Set(d.files).size!==d.files.length)throw Error("Manifesto incompleto");
+ files=d.files;lookup=new Set(files);render();
+}).catch(error=>{$("#count").textContent="Não foi possível carregar o catálogo: "+error.message;$("#empty").hidden=false;$("#empty").textContent="O catálogo precisa de ser aberto através de um servidor web ou GitHub Pages, no mesmo diretório que manifest.json."});
+</script>
+</body>
+</html>
