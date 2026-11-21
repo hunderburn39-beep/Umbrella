@@ -84,3 +84,20 @@ node Super-Pinball-Action/Estudio-Grafico/validar_v07.mjs
 ```
 
 O V0.7 verifica 48 combinações (4 mesas × 4 paletas × 3 modos), 336 fotogramas e 1092 grupos de sprites representados, além da sintaxe do JavaScript. Estes testes são **de dados e de lógica**, não substituem o teste de imagem no navegador. Para abrir o estúdio do GitHub Pages são precisos os ficheiros de ajuda `mixer_auditoria.js` e `frame_auditoria.js` ao lado de `index.html`.
+
+
+## V0.8 — vista ampla no telemóvel e mapa de movimento (21-11-2026)
+
+A página tem agora um botão **Vista ampla ⛶** sobre a mesa. No telemóvel, esta opção esconde temporariamente os painéis técnicos, ocupa o espaço útil da janela e mantém os botões esquerdo/direito grandes na parte inferior, respeitando a área de segurança do ecrã. **Não remove a barra do navegador/Safari:** é uma vista imersiva por CSS, não uma solicitação da API de ecrã inteiro. Toca em **Voltar ao estúdio** para recuperar todos os parâmetros. No teclado, `F` alterna esta vista e `Escape` fecha-a.
+
+A caixa **Mostrar píxeis movidos (fotograma 0 → atual)** coloca a simulação em fotograma fixo e realça a amarelo os píxeis cuja cor RGBA muda relativamente ao par de posições de repouso `(E=0,D=0)`. O contador mostra total e repartição espacial por metade esquerda/direita. O cálculo é independente de imagens HD, não altera os PNG, e usa uma camada gráfica gerada a partir de duas renderizações iguais exceto pelos fotogramas dos flippers. O botão `Comandos ativos` desliga essa análise para evitar trabalhar continuamente sobre o Canvas durante as animações; a análise é feita apenas no modo manual.
+
+Este destaque é uma ferramenta de **localização de alterações visuais**, não prova de que a trajetória física ou animação correspondam à ROM em execução. Se o movimento de um flipper não altera nenhum píxel, isso pode indicar um asset errado, uma zona encoberta ou um problema de renderização que precisa de inspeção; não implica, por si só, que o flipper não mexa no jogo original.
+
+Testes específicos:
+
+```sh
+node Super-Pinball-Action/Estudio-Grafico/validar_v08.mjs
+```
+
+O teste V0.8 cobre diferenças RGBA sintéticas, limites geométricos, 112 peças OAM e presença dos controlos/estrutura JavaScript. A imagem em iPhone/Safari **ainda não foi testada diretamente nesta fase**; não há reivindicação de pixel-perfect nem de máquina jogável completa.
