@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V2.1 — Slot de Cascatas</title>
+<title>Reactor Rush V2.2 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -98,9 +98,9 @@ body{display:flex;align-items:center;justify-content:center}
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V2.1 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V2.1</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V2.2 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V2.2</strong></footer>
 </div>
-<div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p><b>Reactor Rush</b> é uma slot original inspirada na mecânica de cascatas. Tem 7×7 posições, sem linhas fixas.</p><ul><li><b>5+ criaturas iguais</b> ligadas horizontal ou verticalmente dão prémio.</li><li>Os símbolos premiados desaparecem com um efeito luminoso. Os restantes descem individualmente e novos símbolos caem de cima, criando cascatas sucessivas.</li><li>Cada símbolo Wild só pode ser contado <b>uma vez por cascata</b>, mesmo que ligue duas cores. Um quadrado de <b>2×2 criaturas iguais</b> transforma-se visualmente numa criatura gigante e duplica o pagamento desse grupo. Cascatas consecutivas aumentam o multiplicador até <b>×5</b>.</li><li>Os <b>Wild</b> luminosos substituem qualquer criatura. Os símbolos com aro dourado dão energia adicional quando desaparecem numa vitória.</li><li>As vitórias carregam 5 níveis de energia. Ao completar o medidor, ocorre um efeito especial: Implosão, Mutação, Demolição ou Diagonais. As transformações são reveladas por fases e o contador mostra quantas ativações faltam para o Gigante.</li><li>A cada <b>5 ativações quânticas</b> ocorre um evento gigante com Wilds e um prémio de <b>10× a aposta</b>. O jackpot virtual acumula créditos ao longo das rodadas e tem uma hipótese adicional de 1 em 80 em cada evento gigante (substitui esse prémio). O Gigante é revelado em três linhas antes do prémio.</li><li>Os ganhos aparecem por cima da grelha e os prémios acumulados ficam no painel. O modo Turbo reduz as esperas. AUTO executa até 10 rodadas. Usa o botão <b>+1.000 CR</b> para adicionar créditos virtuais gratuitamente.</li></ul><p class="separate"><b>Modo livre:</b> todos os valores são créditos fictícios, sem depósitos nem levantamentos. A mecânica, os gráficos e a tabela de prémios são originais e não representam o RTP ou a matemática do Reactoonz.</p><p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b></p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><label><input type="checkbox" id="voiceToggle" checked> Locutor masculino maduro em português</label> <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">OUVIR VOZ</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="45" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="85" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
+<div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p><b>Reactor Rush</b> é uma slot original inspirada na mecânica de cascatas. Tem 7×7 posições, sem linhas fixas.</p><ul><li><b>5+ criaturas iguais</b> ligadas horizontal ou verticalmente dão prémio.</li><li>Os símbolos premiados desaparecem com um efeito luminoso. Os restantes descem individualmente e novos símbolos caem de cima, criando cascatas sucessivas.</li><li>Cada símbolo Wild só pode ser contado <b>uma vez por cascata</b>, mesmo que ligue duas cores. Um quadrado de <b>2×2 criaturas iguais</b> transforma-se visualmente numa criatura gigante e duplica o pagamento desse grupo. Cascatas consecutivas aumentam o multiplicador até <b>×5</b>.</li><li>Os <b>Wild</b> luminosos substituem qualquer criatura. Os símbolos com aro dourado dão energia adicional quando desaparecem numa vitória.</li><li>As vitórias carregam 5 níveis de energia. Ao completar o medidor, ocorre um efeito especial: Implosão, Mutação, Demolição ou Diagonais. As transformações são reveladas por fases e o contador mostra quantas ativações faltam para o Gigante.</li><li>A cada <b>5 ativações quânticas</b> ocorre um evento gigante com Wilds e um prémio de <b>10× a aposta</b>. O jackpot virtual acumula créditos ao longo das rodadas e tem uma hipótese adicional de 1 em 80 em cada evento gigante (substitui esse prémio). O Gigante é revelado em três linhas antes do prémio.</li><li>Os ganhos aparecem por cima da grelha e os prémios acumulados ficam no painel. O modo Turbo reduz as esperas. AUTO executa até 10 rodadas. Usa o botão <b>+1.000 CR</b> para adicionar créditos virtuais gratuitamente.</li></ul><p class="separate"><b>Modo livre:</b> todos os valores são créditos fictícios, sem depósitos nem levantamentos. A mecânica, os gráficos e a tabela de prémios são originais e não representam o RTP ou a matemática do Reactoonz.</p><p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b></p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><label><input type="checkbox" id="voiceToggle" checked> Locutor masculino maduro em português</label> <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">OUVIR VOZ</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="45" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="85" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
 <script>
 (()=>{'use strict';
 const N=7, TYPES=8, BETS=[.05,.10,.20,.40,.60,1,2,5,10], COLORS=['#ef6484','#65e898','#ffb25a','#66d3ff','#be88ff','#ff8570','#a3e077','#ffe377'];
@@ -176,7 +176,39 @@ function prizePulse(amount){
 
 function banner(s){const token=String(s);bannerLayer.innerHTML=`<div class="banner">${token}</div>`;setTimeout(()=>{if(bannerLayer.firstElementChild?.textContent===token)bannerLayer.replaceChildren()},state.turbo?350:820)}
 // V2.0 — original electronic soundtrack and separate audio mixer.
-let musicBus=null,effectBus=null,mixBus=null,musicSource=null,musicBuffer=null,voiceDucked=false;
+let musicBus=null,effectBus=null,mixBus=null,voiceDucked=false;
+const trackAudio=new Audio();
+trackAudio.loop=true;trackAudio.preload='metadata';trackAudio.playsInline=true;
+let trackNode=null,trackURL=null,trackSelected=false,trackReady=false;
+const hostedTrack='./Quantum%20Arcade.mp3';
+function trackStatus(s){$('trackStatus').textContent=s}
+function trackDB(){return new Promise((resolve,reject)=>{
+ const req=indexedDB.open('reactor-rush-audio',1);
+ req.onupgradeneeded=()=>req.result.createObjectStore('tracks');
+ req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);
+})}
+async function trackStore(mode,file){
+ const db=await trackDB();
+ try{return await new Promise((resolve,reject)=>{
+  const tx=db.transaction('tracks',mode),store=tx.objectStore('tracks');
+  const req=mode==='readwrite'?store.put(file,'quantum-arcade'):store.get('quantum-arcade');
+  tx.oncomplete=()=>resolve(req.result);tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);
+ })}finally{db.close()}
+}
+function installTrack(file){
+ trackAudio.pause();
+ if(trackURL)URL.revokeObjectURL(trackURL);
+ trackURL=URL.createObjectURL(file);trackReady=false;
+ trackAudio.src=trackURL;trackAudio.load();trackStatus('Quantum Arcade · a carregar');
+}
+trackAudio.addEventListener('loadedmetadata',()=>{trackReady=true;trackStatus('Quantum Arcade · pronta');if(audioAllowed()&&state.music!==false)musicStart()});
+trackAudio.addEventListener('playing',()=>trackStatus('Quantum Arcade · em reprodução'));
+trackAudio.addEventListener('error',()=>{trackReady=false;trackStatus('Seleciona o MP3 original nos Ficheiros')});
+async function restoreTrack(){
+ try{const file=await trackStore('readonly');if(trackSelected)return;if(file instanceof Blob){installTrack(file);return}}catch(e){}
+ if(!trackSelected){trackAudio.src=hostedTrack;trackAudio.load();}
+}
+
 function audioAllowed(){return state.sound&&!document.hidden&&!matchMedia('(orientation: portrait)').matches}
 function level(v,fallback){const n=Number(v);return Number.isFinite(n)?Math.max(0,Math.min(100,n))/100:fallback}
 function mixLevels(){
@@ -198,35 +230,15 @@ function audioEngine(){
   mixLevels();return true;
  }catch(e){return false;}
 }
-function buildMusic(){
- // Eight-bar original synthwave loop, 120 BPM. No streamed or external audio.
- const rate=22050,seconds=16,buf=audioCtx.createBuffer(1,rate*seconds,rate),samples=buf.getChannelData(0);
- const roots=[45,45,41,41,48,48,43,43],tau=Math.PI*2,hz=n=>440*Math.pow(2,(n-69)/12);
- let seed=17431;
- for(let i=0;i<samples.length;i++){
-  const t=i/rate,bar=Math.floor(t/2),root=roots[bar],pos=t%2,beat=t%.5,eighth=t%.25,sixteenth=t%.125,idx=Math.floor(pos/.25);
-  const bass=hz(root-12),third=(bar<2||bar>=6)?3:4;
-  const notes=[0,7,12,7,third,7,14,12];
-  const arp=hz(root+12+notes[idx]),env=Math.min(1,eighth/.008)*Math.exp(-eighth*11);
-  const bEnv=Math.min(1,eighth/.009)*Math.exp(-eighth*4.5);
-  const padEnv=Math.min(1,pos/.12,(2-pos)/.18);
-  const pad=(Math.sin(tau*hz(root)*t)+Math.sin(tau*hz(root+third)*t)+Math.sin(tau*hz(root+7)*t))/3;
-  seed=(Math.imul(seed,1664525)+1013904223)>>>0;
-  const noise=seed/2147483648-1;
-  const kick=Math.sin(tau*(44*beat+3.8*(1-Math.exp(-beat*28))))*Math.exp(-beat*19);
-  const hat=(noise*.6+Math.sin(tau*6983*t)*.4)*Math.exp(-sixteenth*85);
-  const snare=(Math.floor(pos/.5)%2===1?noise*Math.exp(-beat*25):0);
-  const edge=Math.min(1,t/.015,(seconds-t)/.015);
-  samples[i]=edge*(.095*(Math.sin(tau*bass*t)+.28*Math.sin(tau*bass*2*t))*bEnv+.055*(Math.sin(tau*arp*t)+.26*Math.sin(tau*arp*2*t))*env+.052*pad*padEnv+.14*kick+.014*hat+.039*snare);
- }
- return buf;
-}
 function musicStart(){
- if(!audioAllowed()||state.music===false)return;
- if(!audioEngine()||musicSource)return;
- try{musicBuffer=musicBuffer||buildMusic();musicSource=audioCtx.createBufferSource();musicSource.buffer=musicBuffer;musicSource.loop=true;musicSource.connect(musicBus);musicSource.start();}catch(e){musicSource=null}
+ if(!audioAllowed()||state.music===false||!trackAudio.getAttribute('src'))return;
+ if(!audioEngine())return;
+ try{
+  if(!trackNode){trackNode=audioCtx.createMediaElementSource(trackAudio);trackNode.connect(musicBus)}
+  if(trackAudio.paused)trackAudio.play().catch(()=>{if(trackReady)trackStatus('Toca no jogo para iniciar a música')});
+ }catch(e){trackStatus('Não foi possível iniciar a música')}
 }
-function musicStop(){if(musicSource){try{musicSource.stop();musicSource.disconnect()}catch(e){}musicSource=null}mixLevels()}
+function musicStop(){trackAudio.pause();mixLevels()}
 function duckMusic(on){voiceDucked=!!on;mixLevels()}
 function fxTone(freq,ms,type,vol,delay=0,endFreq=freq){
  if(!audioAllowed()||!audioCtx||!effectBus)return;
@@ -405,6 +417,14 @@ for(const [id,pct,key,initial] of [['musicVolume','musicPct','musicVolume',45],[
  const el=$(id);el.value=Math.round(level(state[key],initial/100)*100);$(pct).textContent=el.value+'%';
  el.addEventListener('input',()=>{state[key]=Number(el.value);$(pct).textContent=el.value+'%';mixLevels();save()});
 }
+$('trackFile').addEventListener('change',async()=>{
+ const file=$('trackFile').files[0];if(!file)return;
+ trackSelected=true;installTrack(file);state.sound=true;state.music=true;
+ $('musicToggle').checked=true;update();save();musicStart();
+ try{await trackStore('readwrite',file);if(trackAudio.paused&&trackReady)trackStatus('Quantum Arcade · guardada neste dispositivo')}catch(e){trackStatus('Quantum Arcade · carregada para esta sessão')}
+});
+restoreTrack();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&audioAllowed())musicStart()});
 document.addEventListener('pointerdown',()=>{if(audioAllowed())musicStart()},{passive:true});
 createBoard();paint();update();
 })();
