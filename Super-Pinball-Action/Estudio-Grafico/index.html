@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111820">
+<title>Super Pinball Action — Estúdio de Flippers</title>
+<style>
+:root{color-scheme:dark;--bg:#0c111a;--panel:#1a2230;--line:#374356;--text:#f6f5f2;--muted:#bac6d6;--gold:#f4cc79;--cyan:#8ee2ee}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font:15px/1.45 system-ui,-apple-system,Arial,sans-serif}
+body{background:radial-gradient(ellipse at 50% 0,#263246 0,#0c111a 70%) fixed}
+main{max-width:1120px;margin:auto;padding:22px 16px 58px}
+header{margin:0 0 22px}h1{font-size:clamp(26px,4.5vw,42px);letter-spacing:-.05em;margin:4px 0}
+.eyebrow{color:var(--gold);font-size:12px;letter-spacing:.19em;font-weight:760;text-transform:uppercase}
+.note{color:var(--muted);font-size:13px;max-width:800px;margin:6px 0}
+a{color:var(--cyan);text-decoration:underline;text-underline-offset:3px}
+a:hover{text-decoration:none}
+.container{display:grid;grid-template-columns:minmax(275px,410px) minmax(260px,1fr);gap:20px;align-items:start}
+.section{border:1px solid var(--line);background:#182130eb;border-radius:14px;padding:16px}
+.section h2{font-size:15px;margin:0 0 14px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.control{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:12px}
+.control label{font-weight:680}
+select,input,button{font:inherit;color:var(--text)}
+select,input[type="range"]{width:100%}
+select{border:1px solid #526078;border-radius:8px;background:#0f1724;min-height:42px;padding:8px}
+button{border:1px solid #526078;background:#273447;border-radius:10px;padding:10px 13px;cursor:pointer;touch-action:manipulation}
+button:active{background:#465972}
+button:hover{border-color:var(--gold)}
+button:disabled{opacity:.5}
+button.main{border-color:#d9b668;background:#584824;color:#fff1cf;font-weight:710}
+.stageBox{text-align:center;border:1px solid var(--line);border-radius:14px;padding:12px;background:#111924}
+.stage{width:auto;height:min(69vh,670px);max-width:100%;aspect-ratio:224 / 512;image-rendering:pixelated;display:block;margin:auto;background:#000;touch-action:none}
+.stage.help{outline:2px solid #59718d}
+.status{font-size:12px;color:var(--muted);margin:9px auto 0;font-variant-numeric:tabular-nums;max-width:380px;min-height:32px}
+.buttons{display:flex;gap:12px;justify-content:center;margin:14px auto}
+.flipper{width:46%;max-width:190px;min-height:68px;font-size:17px;font-weight:780}
+.flipper.left{border-color:#6fd5de}.flipper.right{border-color:#e4bd70}
+.flipper.down{background:#425b5e;box-shadow:inset 0 0 0 2px #82d6da}
+.flipper.right.down{background:#6f5839;box-shadow:inset 0 0 0 2px #e1b96c}
+.modeRow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.modeRow button{flex:1 1 115px}
+.switchRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;color:var(--muted);font-size:13px;margin:6px 0 15px}
+.switchRow label{display:flex;gap:6px;align-items:center}
+.sliderGroup{padding:12px;background:#131c29;border:1px solid #364154;border-radius:10px;margin-bottom:12px}
+.sliderGroup label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}
+.sliderGroup output{color:var(--gold)}
+.sliderGroup input{margin:12px 0 0}
+.detail{font:12px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace;background:#111a26;border:1px solid #33425a;border-radius:9px;padding:10px;overflow-wrap:anywhere;white-space:pre-line;color:#c9d2df;margin:12px 0}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tiny{color:var(--muted);font-size:12px;margin:12px 0 0}
+.error{color:#ff9999}
+kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border:1px solid #536279;padding:2px 6px}
+@media(max-width:730px){.container{grid-template-columns:1fr}.stage{height:min(62vh,620px)}.section{padding:13px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="eyebrow">Estúdio gráfico · Fase de alinhamento</div>
+<h1>Super Pinball Action</h1>
+<p class="note">Quatro mesas originais com flippers montados a partir dos sprites e coordenadas da ROM. Testa os sete fotogramas de cada comando antes de criar os elementos HD.</p>
+<p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Esta é uma bancada gráfica, não a física completa do jogo.</p>
+</header>
+<div class="container">
+<section>
+<div class="stageBox">
+<canvas class="stage" id="stage" width="224" height="512" role="img" aria-label="Mesa original com flippers animados">Canvas do Super Pinball Action</canvas>
+<div id="status" class="status">A carregar elementos originais...</div>
+</div>
+<div class="buttons">
+<button id="left" class="flipper left" aria-label="Flipper esquerdo">◀ ESQUERDO</button>
+<button id="right" class="flipper right" aria-label="Flipper direito">DIREITO ▶</button>
+</div>
+</section>
+<section class="section">
+<h2>1 · Mesa e cores originais</h2>
+<div class="controls">
+<div class="control"><label for="map">Mesa</label><select id="map"><option value="0">Mesa 1 · mapa 0</option><option value="1">Mesa 2 · mapa 1</option><option value="2">Mesa 3 · mapa 2</option><option value="3">Mesa 4 · mapa 3</option></select></div>
+<div class="control"><label for="bank">Paleta da ROM</label><select id="bank"><option value="0">Banco 0</option><option value="1">Banco 1</option><option value="2">Banco 2</option><option value="3">Banco 3</option></select></div>
+<div class="control"><label for="layer">Composição da mesa</label><select id="layer"><option value="mixed">Mistura ROM (estática)</option><option value="combined">BG + FG (camadas)</option><option value="background">Só fundo</option><option value="foreground">Só primeiro plano</option></select></div>
+<div class="control"><label for="speed">Chamadas de atualização*</label><select id="speed"><option value="1">1 por fotograma</option><option value="2">2 por fotograma</option><option value="4">4 por fotograma</option><option value="8">8 por fotograma</option></select></div>
+</div>
+<h2>2 · Animar ou rever fotogramas</h2>
+<div class="modeRow">
+<button id="live" class="main">Comandos ativos</button><button id="freeze">Parar no fotograma</button><button id="reset">Reiniciar</button>
+</div>
+<div class="sliderGroup">
+<label for="manualL">Esquerdo — fotograma <output id="frameL">0</output></label>
+<input id="manualL" type="range" min="0" max="6" step="1" value="0" disabled>
+</div>
+<div class="sliderGroup">
+<label for="manualR">Direito — fotograma <output id="frameR">0</output></label>
+<input id="manualR" type="range" min="0" max="6" step="1" value="0" disabled>
+</div>
+<div class="switchRow">
+<label><input type="checkbox" id="anchors"> Mostrar caixas e posições</label>
+<label><input type="checkbox" id="smooth"> Suavizar visualização*</label>
+</div>
+<div class="detail" id="detail">ROM US: a aguardar parâmetros.</div>
+<h2>3 · Exportar referências PNG</h2>
+<div class="actions">
+<button id="export" class="main" disabled>Capturar mesa PNG</button>
+<button id="sheet" disabled>Folha dos 7 fotogramas PNG</button>
+</div>
+<p class="tiny">*A frequência real do motor e a prioridade de sobreposição ainda não foram validadas. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
+<p class="tiny"><a href="../Assets/02_Mesas/">Mesas no GitHub</a> · <a href="../Assets/04_Flippers/">Flippers originais</a> · <a href="../Assets-HD/">Área dos futuros assets HD</a></p>
+</section>
+</div>
+</main>
+<script id="spa-data" type="application/json">null</script>
+<script>
+"use strict";
+(function(){
+const by=id=>document.getElementById(id);
+const ctx=by("stage").getContext("2d",{alpha:false});
+let embedded=null;
+try{embedded=JSON.parse(by("spa-data").textContent)}catch(_){}
+const imageCache=new Map();
+let data=null,revision=0,currentMap=0,bank=0,layer="mixed",showAnchors=false;
+let mode="live",left=false,right=false,accL=0,accR=0,manualL=0,manualR=0;
+let tickMs=0,lastDraw="",assetsReady=false;
+const fallback="Não consegui carregar as imagens. Abre esta página através do GitHub Pages ou do HTML autónomo.";
+function imgPath(path){return embedded&&embedded.images&&embedded.images[path]?embedded.images[path]:"../Assets/"+path}
+function getImage(path){
+ if(!imageCache.has(path)){
+  const promise=new Promise(function(resolve,reject){
+    const img=new Image();img.decoding="async";
+    img.onload=()=>resolve(img);
+    img.onerror=()=>reject(new Error("PNG indisponível: "+path));
+    img.src=imgPath(path);
+  });
+  imageCache.set(path,promise);
+ }
+ return imageCache.get(path);
+}
+function pngPath(tile,bank){
+  const id=String(tile).padStart(5,"0"),hex=tile.toString(16).toUpperCase().padStart(4,"0");
+  return "04_Flippers/bank"+bank+"/tile_"+id+"_0x"+hex+".png";
+}
+function tablePath(map,bank,layer){
+ return "02_Mesas/map_"+map+"/"+layer+"_palette"+bank+".png";
+}
+function flipperRows(map){return data.maps[map].selectors.map(i=>data.rows[i-1])}
+function paintScene(destination,map,bank,layer,fl,fr,anchors,ox=0){
+ destination.save();
+ destination.translate(ox,0);
+ const bg=imageCache.get(tablePath(map,bank,layer));
+ if(!bg||!bg.loaded)throw Error("Mesa não carregada");
+ destination.clearRect(0,0,224,512);
+ destination.drawImage(bg.loaded,0,0);
+ destination.save();
+ destination.translate(224,0);
+ destination.rotate(Math.PI/2);
+ for(const row of flipperRows(map)){
+   const f=row.channel==="left"?fl:fr;
+   const base=row.frameBases[f];
+   for(let half=0;half<2;half++){
+     const promise=imageCache.get(pngPath(base+16*half,bank));
+     if(!promise||!promise.loaded)throw Error("Flipper não carregado");
+     destination.drawImage(promise.loaded,row.rawX+32*half,row.rawY-data.table.rawVisibleTop);
+   }
+   if(anchors){
+     destination.save();
+     destination.lineWidth=1;
+     destination.strokeStyle=row.channel==="left"?"#65f5f7":"#ffce77";
+     destination.strokeRect(row.rawX+.5,row.rawY-data.table.rawVisibleTop+.5,64,32);
+     destination.fillStyle=destination.strokeStyle;
+     destination.font="11px monospace";
+     destination.fillText(String(row.selector),row.rawX+2,row.rawY-data.table.rawVisibleTop+12);
+     destination.restore();
+   }
+ }
+ destination.restore();destination.restore();
+}
+function setStatus(message,error=false){const e=by("status");e.textContent=message;e.classList.toggle("error",error)}
+function frameL(){return mode==="manual"?manualL:Math.min(6,accL>>>16)}
+function frameR(){return mode==="manual"?manualR:Math.min(6,accR>>>16)}
+function updateInfo(){
+ const a=frameL(),b=frameR();
+ by("frameL").textContent=a;by("frameR").textContent=b;
+ by("manualL").value=a;by("manualR").value=b;
+ if(!data)return;
+ const rows=flipperRows(currentMap);
+ by("detail").textContent="Mesa "+(currentMap+1)+"  |  Paleta "+bank+"  |  "+rows.length+" grupos\n"+
+ rows.map(row=>{
+   const base=row.frameBases[row.channel==="left"?a:b];
+   return "#"+row.selector+" "+(row.channel==="left"?"E":"D")+" @("+row.rawX+","+row.rawY+") ROM "+row.romAddress+
+       " · tiles 0x"+base.toString(16).toUpperCase()+" / 0x"+(base+16).toString(16).toUpperCase();
+ }).join("\n")+
+ "\nAcumuladores: "+accL+" / "+accR;
+}
+function render(){
+ if(!data||!assetsReady)return;
+ const key=[currentMap,bank,layer,frameL(),frameR(),showAnchors].join(":");
+ if(key===lastDraw)return;
+ try{paintScene(ctx,currentMap,bank,layer,frameL(),frameR(),showAnchors);
+   lastDraw=key;updateInfo();setStatus("ROM: "+flipperRows(currentMap).length+" grupos · 7 fotogramas · 224 × 512");
+ }catch(e){setStatus(e.message,true)}
+}
+async function prepare(){
+ if(!data)return;
+ assetsReady=false;lastDraw="";const id=++revision;
+ by("export").disabled=by("sheet").disabled=true;setStatus("A carregar mesa e sprites...");
+ const req=[tablePath(currentMap,bank,layer)];
+ for(const row of flipperRows(currentMap)){
+  for(const base of row.frameBases){req.push(pngPath(base,bank),pngPath(base+16,bank))}
+ }
+ const unique=Array.from(new Set(req));
+ try{
+   const results=await Promise.all(unique.map(p=>getImage(p).then(img=>[p,img])));
+   if(id!==revision)return;
+   for(const [path,img] of results){imageCache.get(path).loaded=img}
+   assetsReady=true;by("export").disabled=by("sheet").disabled=false;
+   render();
+ }catch(e){if(id===revision)setStatus(e.message||fallback,true)}
+}
+function setMode(v){
+ mode=v;by("manualL").disabled=by("manualR").disabled=v!=="manual";
+ by("live").classList.toggle("main",v==="live");
+ by("freeze").classList.toggle("main",v==="manual");
+ if(v==="manual"){manualL=Math.min(6,accL>>>16);manualR=Math.min(6,accR>>>16)}
+ updateInfo();lastDraw="";render();
+}
+function reset(){accL=accR=manualL=manualR=0;left=right=false;
+ for(const b of ["left","right"])by(b).classList.remove("down");
+ lastDraw="";render();}
+function setPress(which,value){
+ if(which==="left")left=value;else right=value;
+ by(which).classList.toggle("down",value);
+ if(mode!=="live"&&value)setMode("live");
+}
+function setupPress(which){
+ const el=by(which);
+ el.addEventListener("pointerdown",e=>{e.preventDefault();el.setPointerCapture(e.pointerId);setPress(which,true)});
+ for(const name of ["pointerup","pointercancel","lostpointercapture"])el.addEventListener(name,()=>setPress(which,false));
+}
+setupPress("left");setupPress("right");
+const focused=()=>/^(INPUT|SELECT|TEXTAREA)$/.test(document.activeElement?.tagName||"");
+document.addEventListener("keydown",e=>{
+ if(focused())return;
+ let side=e.code==="ArrowLeft"||e.code==="KeyA"?"left":e.code==="ArrowRight"||e.code==="KeyD"?"right":null;
+ if(side){e.preventDefault();setPress(side,true)}
+});
+document.addEventListener("keyup",e=>{
+ let side=e.code==="ArrowLeft"||e.code==="KeyA"?"left":e.code==="ArrowRight"||e.code==="KeyD"?"right":null;
+ if(side){e.preventDefault();setPress(side,false)}
+});
+window.addEventListener("blur",()=>{setPress("left",false);setPress("right",false)});
+function advance(step,pressed,max){return Math.max(0,Math.min(max,step+(pressed?data.flipper.upStep:-data.flipper.downStep)))}
+function loop(ts){
+ if(data&&mode==="live"){
+  if(!tickMs)tickMs=ts;
+  let dt=Math.min(ts-tickMs,150),steps=0;
+  while(dt>=16.667&&steps<9){
+   const repeats=Number(by("speed").value);
+   for(let j=0;j<repeats;j++){accL=advance(accL,left,data.flipper.maxAccumulator);accR=advance(accR,right,data.flipper.maxAccumulator)}
+   dt-=16.667;steps++;
+  }
+  tickMs=ts-dt;
+  if(steps)render();
+ }else tickMs=ts;
+ requestAnimationFrame(loop);
+}
+for(const id of ["map","bank","layer"]){
+ by(id).addEventListener("change",()=>{
+  currentMap=Number(by("map").value);bank=Number(by("bank").value);layer=by("layer").value;
+  reset();prepare();
+ });
+}
+by("anchors").onchange=()=>{showAnchors=by("anchors").checked;lastDraw="";render()};
+by("smooth").onchange=()=>{by("stage").style.imageRendering=by("smooth").checked?"auto":"pixelated"};
+by("live").onclick=()=>setMode("live");
+by("freeze").onclick=()=>setMode("manual");
+by("reset").onclick=reset;
+for(const side of ["L","R"])by("manual"+side).oninput=e=>{
+ if(mode!=="manual")setMode("manual");
+ if(side==="L")manualL=+e.target.value;else manualR=+e.target.value;
+ lastDraw="";render();
+};
+function download(canvas,name){
+ canvas.toBlob(blob=>{
+  if(!blob){setStatus("Não foi possível exportar o PNG",true);return}
+  const u=URL.createObjectURL(blob),a=document.createElement("a");
+  a.href=u;a.download=name;document.body.append(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(u),1800);
+ },"image/png");
+}
+by("export").onclick=()=>{if(!assetsReady)return;download(by("stage"),"SPA_mesa"+(currentMap+1)+"_banco"+bank+"_E"+frameL()+"_D"+frameR()+".png")};
+by("sheet").onclick=async()=>{
+ if(!assetsReady)return;
+ by("sheet").disabled=true;setStatus("A gerar folha PNG dos sete fotogramas...");
+ try{
+  const c=document.createElement("canvas");c.width=224*7;c.height=512;
+  const g=c.getContext("2d");
+  for(let i=0;i<7;i++)paintScene(g,currentMap,bank,layer,i,i,false,i*224);
+  download(c,"SPA_mesa"+(currentMap+1)+"_banco"+bank+"_7_fotogramas.png");
+  setStatus("Folha de referência gerada: 7 fotogramas (não é HD).");
+ }catch(e){setStatus(e.message,true)}
+ by("sheet").disabled=false;
+};
+async function boot(){
+ try{
+  data=embedded&&embedded.layout?embedded.layout:await fetch("flipper_layout.json").then(r=>{if(!r.ok)throw Error("JSON "+r.status);return r.json()});
+  if(data.schema!==1||data.rows.length!==8||data.maps.length!==4)throw Error("Layout ROM inválido");
+  for(const row of data.rows){if(row.frameBases.length!==7||row.frameBases.some(x=>x%32))throw Error("IDs ROM inválidos")}
+  updateInfo();await prepare();requestAnimationFrame(loop);
+ }catch(e){setStatus((e&&e.message)||fallback,true)}
+}
+boot();
+})();
+</script>
+</body>
+</html>
