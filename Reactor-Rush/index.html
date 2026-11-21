@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V3.7 — Slot de Cascatas</title>
+<title>Reactor Rush V3.8 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -313,7 +313,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 }
 
 
-/* V3.7 — living Gargantoon, not a stretched Wild texture. */
+/* V3.8 — living Gargantoon, not a stretched Wild texture. */
 .app .grid .fusion.rr-gargantoon{background:radial-gradient(ellipse,#6a2a9a 0%,#20124c 72%,#0d102b 100%)!important;border:1px solid #d2a5ff;border-radius:12%;box-shadow:inset 0 0 10px #a955ff,0 0 13px #bb5fff99;display:grid;place-items:center;overflow:hidden}
 .app .grid .fusion.rr-gargantoon>svg.rrg-alien{display:block;opacity:1!important;width:100%;height:100%;filter:none;overflow:visible}
 .rrg-body{transform-box:fill-box;transform-origin:50% 90%;animation:rrgBreath 1.45s ease-in-out infinite}
@@ -330,6 +330,13 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 @keyframes rrgSplit{0%{transform:scale(1);opacity:1}30%{transform:scale(1.08,.82)}65%{transform:scale(.72,1.05)}100%{transform:scale(.15);opacity:0}}
 @media(prefers-reduced-motion:reduce){.rrg-body,.rrg-eye,.rrg-pupil,.app .grid .fusion.rr-gargantoon{animation:none!important}}
 
+
+/* V3.8: animated 3x3 Gargantoon enters from above and descends. */
+.app .grid .rrg-descender{position:absolute;z-index:19;pointer-events:none;aspect-ratio:1;background:radial-gradient(ellipse,#a447ec20 15%,#5a34ff11 65%,transparent 78%);border-radius:18%;overflow:visible;transition:top var(--garg-step,310ms) cubic-bezier(.22,.83,.25,1)}
+.app .grid .rrg-descender svg.rrg-alien{display:block;width:100%;height:100%;opacity:1!important;overflow:visible;filter:none;animation:rrgWalk 480ms ease-in-out infinite}
+.app .grid .rrg-descender::after{content:'';position:absolute;inset:16% 7%;border-radius:45%;border:1px solid #e9b5ff55;box-shadow:0 0 14px #c253ff88;pointer-events:none}
+@keyframes rrgWalk{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2%) rotate(1deg)}}
+@media(prefers-reduced-motion:reduce){.app .grid .rrg-descender svg.rrg-alien{animation:none}}
 </style>
 <link rel="stylesheet" href="./approved-skins.css?v=30">
 <link rel="stylesheet" href="./celebration-art.css?v=30">
@@ -346,7 +353,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.7 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.7</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.8 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.8</strong></footer>
 </div>
 <div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais, com ligações ortogonais e Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias tem 18% de probabilidade de receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
 <p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b> · GARGANTOONS: <b id="gargantoonCount">0</b></p><p class="separate"><button id="testGargantoon" type="button" style="background:#593c91;padding:10px;border-radius:8px;font-weight:900">TESTAR GARGANTOON (SEM CRÉDITOS)</button><br>Mostra as três fases; não altera o saldo, prémios ou estatísticas.</p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p class="separate"><b>Novo grafismo horizontal V3.3</b><br><label for="skin33">Selecionar imagem Reactor-Rush-V3.3-horizontal.webp</label><input id="skin33" type="file" accept="image/webp,image/png,image/jpeg" style="display:block;width:100%;margin:8px 0"><span id="skin33Status" role="status">Grafismo anterior ativo</span> <button id="skin33Reset" type="button" style="background:#124d75;padding:6px;border-radius:6px">Repor</button></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="25" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="100" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
@@ -362,7 +369,7 @@ try{const loaded=JSON.parse(localStorage.getItem('reactor-rush-v1'));if(loaded&&
 if(state.audioMixVersion!==36){state.musicVolume=25;state.sfxVolume=100;state.audioMixVersion=36;}
 state.balance=Math.max(0,Number(state.balance)||0);delete state.jackpot;state.charged=0;state.features=Math.max(0,Math.floor(Number(state.features)||0));state.lastFeature=typeof state.lastFeature==='string'?state.lastFeature.slice(0,40):'';state.betIndex=Math.max(0,Math.min(BETS.length-1,Number(state.betIndex)||0));
 let board=[], busy=false, autoLeft=0, cascadeCount=0, won=0, audioCtx=null;
-const ONE_EYED=[0,6], FEATURE_NAMES=['IMPLOSÃO','ALTERAÇÃO','DEMOLIÇÃO','INCISÃO'], CHARGE=25;let featureQueue=[],floatingType=0,giantPhase=0,giantSerial=0,activeFeature='';
+const ONE_EYED=[0,6], FEATURE_NAMES=['IMPLOSÃO','ALTERAÇÃO','DEMOLIÇÃO','INCISÃO'], CHARGE=25;let featureQueue=[],floatingType=0,giantPhase=0,giantSerial=0,gargLandingCol=2,activeFeature='';
 const money=n=>(Math.round(n*100)/100).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function rand(n){return Math.floor(Math.random()*n)}
@@ -674,15 +681,35 @@ function quantumPlan(name){const changes=new Map(),remove=new Set();const ids=al
  return {title:name,changes,remove};
 }
 function giantPlan(phase){const changes=new Map();const remove=new Set(allIds().filter(id=>at(id).g));const squares=n=>{let a=[];for(let r=0;r<=N-n;r++)for(let c=0;c<=N-n;c++){let ids=[];for(let y=r;y<r+n;y++)for(let x=c;x<c+n;x++)ids.push(y*N+x);a.push(ids)}return a};
- if(phase===1){const pool=squares(3),g=++giantSerial;pool[rand(pool.length)].forEach(id=>changes.set(id,groupWild(g)))}
- if(phase===2){const pool=squares(2),a=pool[rand(pool.length)],others=pool.filter(b=>b.every(i=>!a.includes(i)));for(const b of [a,others[rand(others.length)]]){const g=++giantSerial;b.forEach(id=>changes.set(id,groupWild(g)))}}
+ if(phase===1){const row=N-3,col=Math.max(0,Math.min(N-3,gargLandingCol)),g=++giantSerial;
+ for(let y=row;y<row+3;y++)for(let x=col;x<col+3;x++)changes.set(y*N+x,groupWild(g));}
+ if(phase===2){const pool=squares(2).filter(ids=>Math.floor(ids[0]/N)===N-2);
+ const anchor=pool.find(ids=>ids[0]===(N-2)*N+Math.min(N-2,gargLandingCol))||pool[0];
+ const others=pool.filter(ids=>ids.every(i=>!anchor.includes(i)));
+ for(const block of [anchor,others[rand(others.length)]]){const g=++giantSerial;for(const id of block)changes.set(id,groupWild(g))}}
  if(phase===3){sample(allIds(),9).forEach(id=>changes.set(id,wildCell()))}
  for(const id of changes.keys())remove.delete(id);
  return {title:'GIGANTE · '+phase+'/3',changes,remove};
 }
+/* V3.8: descender and Wild trail. */
+async function gargantoonDescent(){
+ const col=rand(N-2);gargLandingCol=col;
+ const walker=document.createElement('div');walker.className='rrg-descender';walker.innerHTML=gargantoonSVG(-1,col,3);
+ walker.style.width=(300/N)+'%';walker.style.height=(300/N)+'%';walker.style.left=(col*100/N)+'%';walker.style.top=(-300/N)+'%';
+ walker.style.setProperty('--garg-step',state.turbo?'155ms':'300ms');gridEl.appendChild(walker);
+ try{banner('GARGANTOON!');message('👾 <strong>GARGANTOON</strong> A DESCER...');await sleep(70);
+ for(let top=-2;top<=N-3;top++){walker.style.top=(top*100/N)+'%';const row=top+2;
+ await sleep(state.turbo?170:330);
+ if(row>=0&&row<N){const options=(row<N-3?[col,col+1,col+2]:[col-1,col+3].filter(c=>c>=0&&c<N));
+ const candidates=options.filter(c=>!board[row][c].w);
+ if(candidates.length){const chosen=sample(candidates,row<N-3&&Math.random()<.3?2:1);
+ for(const c of chosen)board[row][c]=wildCell();paint();for(const c of chosen)tiles[row*N+c].classList.add('quantum-reveal');bubble(0,.75+row*.08,.05);}}}
+ await sleep(state.turbo?160:420);
+ }finally{walker.remove();}
+}
 async function animateFall(removals){if(!removals.size)return;const aliens=[...gridEl.querySelectorAll('.rr-gargantoon')];let splitting=false;for(const alien of aliens){const x=Number(alien.style.getPropertyValue('--gx')),y=Number(alien.style.getPropertyValue('--gy')),n=Number(alien.style.getPropertyValue('--gn'));if([...removals].some(id=>Math.floor(id/N)>=y&&Math.floor(id/N)<y+n&&id%N>=x&&id%N<x+n)){alien.classList.add('rrg-split');splitting=true}}if(splitting){squeak(0,320,.08);await sleep(480);}for(const i of removals)tiles[i].classList.add('clearing');pieceClearSound(removals.size);await sleep(state.turbo?45:145);const motions=fall(removals);paint(motions);pieceDropSound(motions,state.turbo?.14:.365);await sleep(state.turbo?190:475);paint();}
 async function revealPlan(plan){banner(plan.title.startsWith('GIGANTE · 1/')?'GARGANTOON!':plan.title);message('⚡ <strong>'+plan.title+'</strong>');arena.classList.add('quantum-burst');const entries=[...plan.changes];for(let k=0;k<entries.length;k+=4){for(const [id,t] of entries.slice(k,k+4))put(id,t);paint();for(const [id] of entries.slice(k,k+4))tiles[id].classList.add('quantum-reveal');featureRevealSound(k);await waitMs(150)}paint();await animateFall(plan.remove);if(plan.title.startsWith('GIGANTE ·')){gridEl.querySelectorAll('.rr-gargantoon').forEach(el=>el.classList.add('rrg-enter'));await sleep(plan.title.endsWith('1/3')?2200:1450);}arena.classList.remove('quantum-burst');}
-async function runFeature(name){activeFeature=name;state.lastFeature=name;state.features++;update();const key=name==='GIGANTE'?'GARGANTOON!':name;featureSound(key);if(name==='GIGANTE'){state.gargantoonCount=(Number(state.gargantoonCount)||0)+1;giantPhase=1;update();await revealPlan(giantPlan(1))}else await revealPlan(quantumPlan(name));activeFeature='';update();}
+async function runFeature(name){activeFeature=name;state.lastFeature=name;state.features++;update();const key=name==='GIGANTE'?'GARGANTOON!':name;featureSound(key);if(name==='GIGANTE'){state.gargantoonCount=(Number(state.gargantoonCount)||0)+1;giantPhase=1;update();await gargantoonDescent();await revealPlan(giantPlan(1))}else await revealPlan(quantumPlan(name));activeFeature='';update();}
 async function settle(){let cycles=0,initial=true;while(cycles++<200){
  const groups=findGroups();
  if(!groups.length){
@@ -739,6 +766,7 @@ $('testGargantoon').addEventListener('click',async()=>{
  busy=true;autoLeft=0;$('help').hidden=true;state.charged=125;featureQueue=[];activeFeature='GIGANTE';
  try{
   createBoard();paint();
+  await gargantoonDescent();
   for(let phase=1;phase<=3;phase++){
    giantPhase=phase;update();
    if(phase>1)await animateFall(new Set(allIds().filter(id=>at(id).g)));
