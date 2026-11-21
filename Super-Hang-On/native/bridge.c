@@ -67,6 +67,18 @@ API void browser_frame(void) {
     completed_frames++;
 }
 API uint32_t browser_completed_frames(void) { return completed_frames; }
+/* Same observation hash used by upstream's 1200-frame native test. */
+extern uint64_t sho_state_hash(void);
+extern unsigned long rc_stats_interp, rc_stats_dispatch;
+extern unsigned long sho_debug_latch_writes, sho_debug_opm_writes, sho_debug_pcm_writes;
+API uint32_t browser_hash_lo(void) { return loaded ? (uint32_t)sho_state_hash() : 0; }
+API uint32_t browser_hash_hi(void) { return loaded ? (uint32_t)(sho_state_hash() >> 32) : 0; }
+API uint32_t browser_translated_dispatches(void) { return (uint32_t)rc_stats_dispatch; }
+API uint32_t browser_interpreted_instructions(void) { return (uint32_t)rc_stats_interp; }
+API uint32_t browser_sound_commands(void) { return (uint32_t)sho_debug_latch_writes; }
+API uint32_t browser_fm_writes(void) { return (uint32_t)sho_debug_opm_writes; }
+API uint32_t browser_pcm_writes(void) { return (uint32_t)sho_debug_pcm_writes; }
+
 API const uint32_t *browser_pixels(void) { return loaded ? sho_framebuffer() : NULL; }
 API int browser_width(void) { return loaded ? sho_width() : 0; }
 API int browser_height(void) { return SHO_H; }
