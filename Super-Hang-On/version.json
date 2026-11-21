@@ -1,6 +1,6 @@
 {
-  "version": "0.9",
-  "base": "0.8",
+  "version": "1.0",
+  "base": "0.9",
   "orientation": "landscape",
   "input": [
     "deviceorientation",
@@ -9,5 +9,11 @@
   ],
   "romFaithfulness": "partial",
   "roadPixelsVerified": 131072,
-  "originalCourseSequences": "pending"
+  "originalCourseSequences": "24 verified block IDs, 631 verified records; provisional curve interpretation",
+  "stages": [
+    6,
+    10,
+    14,
+    18
+  ]
 }

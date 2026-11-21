@@ -1,0 +1,31 @@
+{
+  "mainCpuSha256": "e4f6aab7c9ab4ed3402a0adefd2b01cb3de5c32ee22c0bdc88b7b6ecf8bef2d1",
+  "subCpuSha256": "770332456d5c438c8e4741b9a386e1ba8c4c2c35b59391f04609b75f9e1109a5",
+  "mainResetVector": "0x1000",
+  "subResetVector": "0x1000",
+  "pointerTable": "0x8AEC",
+  "pointerTableCodeReference": "0x68F2",
+  "sequenceTable": "0x8B4C",
+  "sequenceCopyCodeReference": "0x874A",
+  "sequenceStrideWords": 9,
+  "blockCounts": [
+    3,
+    5,
+    7,
+    9
+  ],
+  "stageCounts": [
+    6,
+    10,
+    14,
+    18
+  ],
+  "records": 631,
+  "expandedCRC32": "2525c975",
+  "verified": "raw records and sequence ordering",
+  "unverified": [
+    "type-to-direction mapping and scale",
+    "distance and timing conversion",
+    "height and background layouts"
+  ]
+}
