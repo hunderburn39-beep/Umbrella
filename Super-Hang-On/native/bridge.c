@@ -13,6 +13,7 @@
 #else
 #define API
 #endif
+extern int sho_recomp;
 static char error_text[256];
 static sho_input input;
 static int16_t audio_buffer[2 * 802];
@@ -29,6 +30,7 @@ API int browser_load(const char *rom_path) {
     error_text[0] = 0;
     int result = sho_load_roms(rom_path, error_text, sizeof error_text);
     if (result) return result;
+    sho_recomp = 1;
     sho_reset();
     memset(&input, 0, sizeof input);
     audio_phase = 0;
