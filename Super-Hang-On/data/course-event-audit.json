@@ -1,0 +1,25 @@
+{
+  "version": "1.1",
+  "mainSha256": "e4f6aab7c9ab4ed3402a0adefd2b01cb3de5c32ee22c0bdc88b7b6ecf8bef2d1",
+  "height": {
+    "pointerIndex": 7,
+    "recordWords": 4,
+    "terminator": "7FFF",
+    "records": 103,
+    "crc32": "7022c134",
+    "interpretation": "profile IDs, shape mapping pending"
+  },
+  "objects": {
+    "pointerIndex": 8,
+    "recordWords": 2,
+    "terminator": "FFFF",
+    "records": 1283,
+    "crc32": "1356ed03",
+    "unsortedRecord": {
+      "block": 13,
+      "index": 61,
+      "position": 1867
+    },
+    "interpretation": "position and packed pattern code; graphic and side mapping provisional"
+  }
+}
