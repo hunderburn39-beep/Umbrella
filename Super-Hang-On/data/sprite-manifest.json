@@ -1,0 +1,238 @@
+{
+  "version": "0.8",
+  "provenance": "Recovered from V0.7 inline PNGs, matching V0.6 gallery for both scales",
+  "paletteAssociation": "unverified",
+  "files": [
+    {
+      "path": "assets/sprites/scene-atlas.png",
+      "gitBlob": "bf55773b035cb687ea4de812a142bf1258fcf134",
+      "role": "scene atlas",
+      "scale": null,
+      "frame": null
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-00.png",
+      "gitBlob": "57acaa2000478c9d68cfd3bf4eabb4a0c6a6cbc6",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 0
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-01.png",
+      "gitBlob": "a4e79b0ec5f4088f17595cc7a584c6db461ba095",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 1
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-02.png",
+      "gitBlob": "eb087967302c0354113f9fc003d789d198277c0c",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 2
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-03.png",
+      "gitBlob": "21d4f1398e61e98585f293e5ed9607931e7bea67",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 3
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-04.png",
+      "gitBlob": "814acc6792b24eddbe59d6f8a52b32e91c9bf4a6",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 4
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-05.png",
+      "gitBlob": "3795240b3b44d1b496642cc6aa0b6dd9bb205cc0",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 5
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-06.png",
+      "gitBlob": "783e03ee8a3fd3846920425d2b44991ccbac12ee",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 6
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-07.png",
+      "gitBlob": "e0115fde9f93011331d915fbd028447b32151de7",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 7
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-08.png",
+      "gitBlob": "1fa86ff0752d32a48ee75cad6bc4df5f96c998dc",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 8
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-09.png",
+      "gitBlob": "0d5a40139871ee9523b45f698c3f01ec7e6b97b5",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 9
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-10.png",
+      "gitBlob": "34522e7eb4e81b7102f493671a4f05b251be06cd",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 10
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-11.png",
+      "gitBlob": "e469e2d758f10c82bc3827aea9a3571e2971e1be",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 11
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-12.png",
+      "gitBlob": "399fd5adb820c2c93991a62979b58f165ecdb9cd",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 12
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-13.png",
+      "gitBlob": "bc623e33b11651b327a5025886a01300fad604c8",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 13
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-14.png",
+      "gitBlob": "311a71a709b508e3700e7be9d170747a798cdcca",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 14
+    },
+    {
+      "path": "assets/sprites/scale-1/bike-15.png",
+      "gitBlob": "04ff13c71515b0f88fd3d53c0cf9327672dd43e2",
+      "role": "bike frame",
+      "scale": 1,
+      "frame": 15
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-00.png",
+      "gitBlob": "de5b9546d7fe281824305900bdf50e49e297ea4f",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 0
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-01.png",
+      "gitBlob": "069de9349049bce54b1939c21f5d932465277027",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 1
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-02.png",
+      "gitBlob": "5bf50173f339a335ee0794b6d9e57853431cb98d",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 2
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-03.png",
+      "gitBlob": "56e388e674e7d9a48f42415d6ebf30b333c6081f",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 3
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-04.png",
+      "gitBlob": "7ef07a455d859095abae27be433eac6659368895",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 4
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-05.png",
+      "gitBlob": "192b1ed189303b8143ac89a60988498f5502272c",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 5
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-06.png",
+      "gitBlob": "303fa029ab89e0c11aab455a308309a1d34ba1be",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 6
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-07.png",
+      "gitBlob": "bfd21e86e88cd195493ba9c68c69186de67952c6",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 7
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-08.png",
+      "gitBlob": "25eb4b997575a8496da285f328505c5a885a8eb9",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 8
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-09.png",
+      "gitBlob": "62af8a248e2651b5af98390c1bac5b6aa792529e",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 9
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-10.png",
+      "gitBlob": "49052d1e58e1a4bb1316d4a63cbce458ae7e678b",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 10
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-11.png",
+      "gitBlob": "c676270c8023c2fee007ef286fa15439b03ce546",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 11
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-12.png",
+      "gitBlob": "4b0f987f5a962d47835fe2469a69c542f66199eb",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 12
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-13.png",
+      "gitBlob": "4b97bc59b5c2efc2e74c9a4ae99027e156936503",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 13
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-14.png",
+      "gitBlob": "abaa731846f165d1edb7b6d916e09d5bbcf80098",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 14
+    },
+    {
+      "path": "assets/sprites/scale-2/bike-15.png",
+      "gitBlob": "f722f3bb460a0e74a0e54a45c171581d4e48fb8e",
+      "role": "bike frame",
+      "scale": 2,
+      "frame": 15
+    }
+  ]
+}

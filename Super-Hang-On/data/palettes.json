@@ -1,0 +1,5098 @@
+[
+  [
+    {
+      "palette": 0,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 0,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 0,
+      "index": 2,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 0,
+      "index": 3,
+      "word": "0ebb",
+      "rgb": "#b4b4e6"
+    },
+    {
+      "palette": 0,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 0,
+      "index": 5,
+      "word": "0a00",
+      "rgb": "#0000a4"
+    },
+    {
+      "palette": 0,
+      "index": 6,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 0,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 0,
+      "index": 8,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 0,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 0,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 0,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 0,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 0,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 0,
+      "index": 14,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 0,
+      "index": 15,
+      "word": "00fa",
+      "rgb": "#a4f600"
+    }
+  ],
+  [
+    {
+      "palette": 1,
+      "index": 0,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 1,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 1,
+      "index": 2,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 1,
+      "index": 3,
+      "word": "0ebb",
+      "rgb": "#b4b4e6"
+    },
+    {
+      "palette": 1,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 1,
+      "index": 5,
+      "word": "0a00",
+      "rgb": "#0000a4"
+    },
+    {
+      "palette": 1,
+      "index": 6,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 1,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 1,
+      "index": 8,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 1,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 1,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 1,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 1,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 1,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 1,
+      "index": 14,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 1,
+      "index": 15,
+      "word": "00fa",
+      "rgb": "#a4f600"
+    }
+  ],
+  [
+    {
+      "palette": 2,
+      "index": 0,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 2,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 2,
+      "index": 2,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 2,
+      "index": 3,
+      "word": "0ebb",
+      "rgb": "#b4b4e6"
+    },
+    {
+      "palette": 2,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 2,
+      "index": 5,
+      "word": "0a00",
+      "rgb": "#0000a4"
+    },
+    {
+      "palette": 2,
+      "index": 6,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 2,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 2,
+      "index": 8,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 2,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 2,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 2,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 2,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 2,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 2,
+      "index": 14,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 2,
+      "index": 15,
+      "word": "00fa",
+      "rgb": "#a4f600"
+    }
+  ],
+  [
+    {
+      "palette": 3,
+      "index": 0,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 3,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 3,
+      "index": 2,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 3,
+      "index": 3,
+      "word": "0ebb",
+      "rgb": "#b4b4e6"
+    },
+    {
+      "palette": 3,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 3,
+      "index": 5,
+      "word": "0a00",
+      "rgb": "#0000a4"
+    },
+    {
+      "palette": 3,
+      "index": 6,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 3,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 3,
+      "index": 8,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 3,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 3,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 3,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 3,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 3,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 3,
+      "index": 14,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 3,
+      "index": 15,
+      "word": "00fa",
+      "rgb": "#a4f600"
+    }
+  ],
+  [
+    {
+      "palette": 4,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 4,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 4,
+      "index": 2,
+      "word": "0910",
+      "rgb": "#001094"
+    },
+    {
+      "palette": 4,
+      "index": 3,
+      "word": "0ec0",
+      "rgb": "#00c5e6"
+    },
+    {
+      "palette": 4,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 4,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 4,
+      "index": 6,
+      "word": "0e80",
+      "rgb": "#0083e6"
+    },
+    {
+      "palette": 4,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 4,
+      "index": 8,
+      "word": "0ee8",
+      "rgb": "#83e6e6"
+    },
+    {
+      "palette": 4,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 4,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 4,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 4,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 4,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 4,
+      "index": 14,
+      "word": "0ea0",
+      "rgb": "#00a4e6"
+    },
+    {
+      "palette": 4,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 5,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 5,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 5,
+      "index": 2,
+      "word": "0910",
+      "rgb": "#001094"
+    },
+    {
+      "palette": 5,
+      "index": 3,
+      "word": "0ec0",
+      "rgb": "#00c5e6"
+    },
+    {
+      "palette": 5,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 5,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 5,
+      "index": 6,
+      "word": "0e80",
+      "rgb": "#0083e6"
+    },
+    {
+      "palette": 5,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 5,
+      "index": 8,
+      "word": "0ee8",
+      "rgb": "#83e6e6"
+    },
+    {
+      "palette": 5,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 5,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 5,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 5,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 5,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 5,
+      "index": 14,
+      "word": "0ea0",
+      "rgb": "#00a4e6"
+    },
+    {
+      "palette": 5,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 6,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 6,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 6,
+      "index": 2,
+      "word": "0910",
+      "rgb": "#001094"
+    },
+    {
+      "palette": 6,
+      "index": 3,
+      "word": "0ec0",
+      "rgb": "#00c5e6"
+    },
+    {
+      "palette": 6,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 6,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 6,
+      "index": 6,
+      "word": "0e80",
+      "rgb": "#0083e6"
+    },
+    {
+      "palette": 6,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 6,
+      "index": 8,
+      "word": "0ee8",
+      "rgb": "#83e6e6"
+    },
+    {
+      "palette": 6,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 6,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 6,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 6,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 6,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 6,
+      "index": 14,
+      "word": "0ea0",
+      "rgb": "#00a4e6"
+    },
+    {
+      "palette": 6,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 7,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 7,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 7,
+      "index": 2,
+      "word": "0910",
+      "rgb": "#001094"
+    },
+    {
+      "palette": 7,
+      "index": 3,
+      "word": "0ec0",
+      "rgb": "#00c5e6"
+    },
+    {
+      "palette": 7,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 7,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 7,
+      "index": 6,
+      "word": "0e80",
+      "rgb": "#0083e6"
+    },
+    {
+      "palette": 7,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 7,
+      "index": 8,
+      "word": "0ee8",
+      "rgb": "#83e6e6"
+    },
+    {
+      "palette": 7,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 7,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 7,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 7,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 7,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 7,
+      "index": 14,
+      "word": "0ea0",
+      "rgb": "#00a4e6"
+    },
+    {
+      "palette": 7,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 8,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 8,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 8,
+      "index": 2,
+      "word": "0370",
+      "rgb": "#007331"
+    },
+    {
+      "palette": 8,
+      "index": 3,
+      "word": "008e",
+      "rgb": "#e68300"
+    },
+    {
+      "palette": 8,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 8,
+      "index": 5,
+      "word": "0350",
+      "rgb": "#005231"
+    },
+    {
+      "palette": 8,
+      "index": 6,
+      "word": "00b0",
+      "rgb": "#00b400"
+    },
+    {
+      "palette": 8,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 8,
+      "index": 8,
+      "word": "00ae",
+      "rgb": "#e6a400"
+    },
+    {
+      "palette": 8,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 8,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 8,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 8,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 8,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 8,
+      "index": 14,
+      "word": "00e0",
+      "rgb": "#00e600"
+    },
+    {
+      "palette": 8,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 9,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 9,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 9,
+      "index": 2,
+      "word": "0370",
+      "rgb": "#007331"
+    },
+    {
+      "palette": 9,
+      "index": 3,
+      "word": "008e",
+      "rgb": "#e68300"
+    },
+    {
+      "palette": 9,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 9,
+      "index": 5,
+      "word": "0350",
+      "rgb": "#005231"
+    },
+    {
+      "palette": 9,
+      "index": 6,
+      "word": "00b0",
+      "rgb": "#00b400"
+    },
+    {
+      "palette": 9,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 9,
+      "index": 8,
+      "word": "00ae",
+      "rgb": "#e6a400"
+    },
+    {
+      "palette": 9,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 9,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 9,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 9,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 9,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 9,
+      "index": 14,
+      "word": "00e0",
+      "rgb": "#00e600"
+    },
+    {
+      "palette": 9,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 10,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 10,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 10,
+      "index": 2,
+      "word": "0370",
+      "rgb": "#007331"
+    },
+    {
+      "palette": 10,
+      "index": 3,
+      "word": "008e",
+      "rgb": "#e68300"
+    },
+    {
+      "palette": 10,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 10,
+      "index": 5,
+      "word": "0350",
+      "rgb": "#005231"
+    },
+    {
+      "palette": 10,
+      "index": 6,
+      "word": "00b0",
+      "rgb": "#00b400"
+    },
+    {
+      "palette": 10,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 10,
+      "index": 8,
+      "word": "00ae",
+      "rgb": "#e6a400"
+    },
+    {
+      "palette": 10,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 10,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 10,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 10,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 10,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 10,
+      "index": 14,
+      "word": "00e0",
+      "rgb": "#00e600"
+    },
+    {
+      "palette": 10,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 11,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 11,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 11,
+      "index": 2,
+      "word": "0370",
+      "rgb": "#007331"
+    },
+    {
+      "palette": 11,
+      "index": 3,
+      "word": "008e",
+      "rgb": "#e68300"
+    },
+    {
+      "palette": 11,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 11,
+      "index": 5,
+      "word": "0350",
+      "rgb": "#005231"
+    },
+    {
+      "palette": 11,
+      "index": 6,
+      "word": "00b0",
+      "rgb": "#00b400"
+    },
+    {
+      "palette": 11,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 11,
+      "index": 8,
+      "word": "00ae",
+      "rgb": "#e6a400"
+    },
+    {
+      "palette": 11,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 11,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 11,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 11,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 11,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 11,
+      "index": 14,
+      "word": "00e0",
+      "rgb": "#00e600"
+    },
+    {
+      "palette": 11,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 12,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 12,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 12,
+      "index": 2,
+      "word": "0009",
+      "rgb": "#940000"
+    },
+    {
+      "palette": 12,
+      "index": 3,
+      "word": "00ee",
+      "rgb": "#e6e600"
+    },
+    {
+      "palette": 12,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 12,
+      "index": 5,
+      "word": "0005",
+      "rgb": "#520000"
+    },
+    {
+      "palette": 12,
+      "index": 6,
+      "word": "009b",
+      "rgb": "#b49400"
+    },
+    {
+      "palette": 12,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 12,
+      "index": 8,
+      "word": "07ee",
+      "rgb": "#e6e673"
+    },
+    {
+      "palette": 12,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 12,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 12,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 12,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 12,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 12,
+      "index": 14,
+      "word": "00be",
+      "rgb": "#e6b400"
+    },
+    {
+      "palette": 12,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 13,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 13,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 13,
+      "index": 2,
+      "word": "0009",
+      "rgb": "#940000"
+    },
+    {
+      "palette": 13,
+      "index": 3,
+      "word": "00ee",
+      "rgb": "#e6e600"
+    },
+    {
+      "palette": 13,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 13,
+      "index": 5,
+      "word": "0005",
+      "rgb": "#520000"
+    },
+    {
+      "palette": 13,
+      "index": 6,
+      "word": "009b",
+      "rgb": "#b49400"
+    },
+    {
+      "palette": 13,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 13,
+      "index": 8,
+      "word": "07ee",
+      "rgb": "#e6e673"
+    },
+    {
+      "palette": 13,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 13,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 13,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 13,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 13,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 13,
+      "index": 14,
+      "word": "00be",
+      "rgb": "#e6b400"
+    },
+    {
+      "palette": 13,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 14,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 14,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 14,
+      "index": 2,
+      "word": "0009",
+      "rgb": "#940000"
+    },
+    {
+      "palette": 14,
+      "index": 3,
+      "word": "00ee",
+      "rgb": "#e6e600"
+    },
+    {
+      "palette": 14,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 14,
+      "index": 5,
+      "word": "0005",
+      "rgb": "#520000"
+    },
+    {
+      "palette": 14,
+      "index": 6,
+      "word": "009b",
+      "rgb": "#b49400"
+    },
+    {
+      "palette": 14,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 14,
+      "index": 8,
+      "word": "07ee",
+      "rgb": "#e6e673"
+    },
+    {
+      "palette": 14,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 14,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 14,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 14,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 14,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 14,
+      "index": 14,
+      "word": "00be",
+      "rgb": "#e6b400"
+    },
+    {
+      "palette": 14,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 15,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 15,
+      "index": 1,
+      "word": "09a9",
+      "rgb": "#94a494"
+    },
+    {
+      "palette": 15,
+      "index": 2,
+      "word": "0009",
+      "rgb": "#940000"
+    },
+    {
+      "palette": 15,
+      "index": 3,
+      "word": "00ee",
+      "rgb": "#e6e600"
+    },
+    {
+      "palette": 15,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 15,
+      "index": 5,
+      "word": "0005",
+      "rgb": "#520000"
+    },
+    {
+      "palette": 15,
+      "index": 6,
+      "word": "009b",
+      "rgb": "#b49400"
+    },
+    {
+      "palette": 15,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 15,
+      "index": 8,
+      "word": "07ee",
+      "rgb": "#e6e673"
+    },
+    {
+      "palette": 15,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 15,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 15,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 15,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 15,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 15,
+      "index": 14,
+      "word": "00be",
+      "rgb": "#e6b400"
+    },
+    {
+      "palette": 15,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 16,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 16,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 16,
+      "index": 2,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 16,
+      "index": 3,
+      "word": "00dd",
+      "rgb": "#d5d500"
+    },
+    {
+      "palette": 16,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 16,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 16,
+      "index": 6,
+      "word": "0855",
+      "rgb": "#525283"
+    },
+    {
+      "palette": 16,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 16,
+      "index": 8,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 16,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 16,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 16,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 16,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 16,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 16,
+      "index": 14,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 16,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 17,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 17,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 17,
+      "index": 2,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 17,
+      "index": 3,
+      "word": "00dd",
+      "rgb": "#d5d500"
+    },
+    {
+      "palette": 17,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 17,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 17,
+      "index": 6,
+      "word": "0855",
+      "rgb": "#525283"
+    },
+    {
+      "palette": 17,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 17,
+      "index": 8,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 17,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 17,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 17,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 17,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 17,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 17,
+      "index": 14,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 17,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 18,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 18,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 18,
+      "index": 2,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 18,
+      "index": 3,
+      "word": "00dd",
+      "rgb": "#d5d500"
+    },
+    {
+      "palette": 18,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 18,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 18,
+      "index": 6,
+      "word": "0855",
+      "rgb": "#525283"
+    },
+    {
+      "palette": 18,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 18,
+      "index": 8,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 18,
+      "index": 9,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 18,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 18,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 18,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 18,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 18,
+      "index": 14,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 18,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 19,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 19,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 19,
+      "index": 2,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 19,
+      "index": 3,
+      "word": "00dd",
+      "rgb": "#d5d500"
+    },
+    {
+      "palette": 19,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 19,
+      "index": 5,
+      "word": "0500",
+      "rgb": "#000052"
+    },
+    {
+      "palette": 19,
+      "index": 6,
+      "word": "0855",
+      "rgb": "#525283"
+    },
+    {
+      "palette": 19,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 19,
+      "index": 8,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 19,
+      "index": 9,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 19,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 19,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 19,
+      "index": 12,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 19,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 19,
+      "index": 14,
+      "word": "0966",
+      "rgb": "#626294"
+    },
+    {
+      "palette": 19,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 20,
+      "index": 0,
+      "word": "07b6",
+      "rgb": "#62b473"
+    },
+    {
+      "palette": 20,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 20,
+      "index": 2,
+      "word": "0dff",
+      "rgb": "#f6f6d5"
+    },
+    {
+      "palette": 20,
+      "index": 3,
+      "word": "00fd",
+      "rgb": "#d5f600"
+    },
+    {
+      "palette": 20,
+      "index": 4,
+      "word": "00ff",
+      "rgb": "#f6f600"
+    },
+    {
+      "palette": 20,
+      "index": 5,
+      "word": "08fa",
+      "rgb": "#a4f683"
+    },
+    {
+      "palette": 20,
+      "index": 6,
+      "word": "02d2",
+      "rgb": "#20d520"
+    },
+    {
+      "palette": 20,
+      "index": 7,
+      "word": "06c5",
+      "rgb": "#52c562"
+    },
+    {
+      "palette": 20,
+      "index": 8,
+      "word": "07b8",
+      "rgb": "#83b473"
+    },
+    {
+      "palette": 20,
+      "index": 9,
+      "word": "00a0",
+      "rgb": "#00a400"
+    },
+    {
+      "palette": 20,
+      "index": 10,
+      "word": "0090",
+      "rgb": "#009400"
+    },
+    {
+      "palette": 20,
+      "index": 11,
+      "word": "0080",
+      "rgb": "#008300"
+    },
+    {
+      "palette": 20,
+      "index": 12,
+      "word": "07df",
+      "rgb": "#f6d573"
+    },
+    {
+      "palette": 20,
+      "index": 13,
+      "word": "08fc",
+      "rgb": "#c5f683"
+    },
+    {
+      "palette": 20,
+      "index": 14,
+      "word": "08f9",
+      "rgb": "#94f683"
+    },
+    {
+      "palette": 20,
+      "index": 15,
+      "word": "0efe",
+      "rgb": "#e6f6e6"
+    }
+  ],
+  [
+    {
+      "palette": 21,
+      "index": 0,
+      "word": "0ddc",
+      "rgb": "#c5d5d5"
+    },
+    {
+      "palette": 21,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 21,
+      "index": 2,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 21,
+      "index": 3,
+      "word": "0efe",
+      "rgb": "#e6f6e6"
+    },
+    {
+      "palette": 21,
+      "index": 4,
+      "word": "0eee",
+      "rgb": "#e6e6e6"
+    },
+    {
+      "palette": 21,
+      "index": 5,
+      "word": "0eed",
+      "rgb": "#d5e6e6"
+    },
+    {
+      "palette": 21,
+      "index": 6,
+      "word": "0edc",
+      "rgb": "#c5d5e6"
+    },
+    {
+      "palette": 21,
+      "index": 7,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 21,
+      "index": 8,
+      "word": "0ded",
+      "rgb": "#d5e6d5"
+    },
+    {
+      "palette": 21,
+      "index": 9,
+      "word": "0ccb",
+      "rgb": "#b4c5c5"
+    },
+    {
+      "palette": 21,
+      "index": 10,
+      "word": "0cba",
+      "rgb": "#a4b4c5"
+    },
+    {
+      "palette": 21,
+      "index": 11,
+      "word": "0a99",
+      "rgb": "#9494a4"
+    },
+    {
+      "palette": 21,
+      "index": 12,
+      "word": "0a98",
+      "rgb": "#8394a4"
+    },
+    {
+      "palette": 21,
+      "index": 13,
+      "word": "0871",
+      "rgb": "#107383"
+    },
+    {
+      "palette": 21,
+      "index": 14,
+      "word": "0861",
+      "rgb": "#106283"
+    },
+    {
+      "palette": 21,
+      "index": 15,
+      "word": "0bfe",
+      "rgb": "#e6f6b4"
+    }
+  ],
+  [
+    {
+      "palette": 22,
+      "index": 0,
+      "word": "0d00",
+      "rgb": "#0000d5"
+    },
+    {
+      "palette": 22,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 22,
+      "index": 2,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 22,
+      "index": 3,
+      "word": "0ffd",
+      "rgb": "#d5f6f6"
+    },
+    {
+      "palette": 22,
+      "index": 4,
+      "word": "0ffc",
+      "rgb": "#c5f6f6"
+    },
+    {
+      "palette": 22,
+      "index": 5,
+      "word": "0ffb",
+      "rgb": "#b4f6f6"
+    },
+    {
+      "palette": 22,
+      "index": 6,
+      "word": "0ff0",
+      "rgb": "#00f6f6"
+    },
+    {
+      "palette": 22,
+      "index": 7,
+      "word": "0fe0",
+      "rgb": "#00e6f6"
+    },
+    {
+      "palette": 22,
+      "index": 8,
+      "word": "0fd0",
+      "rgb": "#00d5f6"
+    },
+    {
+      "palette": 22,
+      "index": 9,
+      "word": "0fc0",
+      "rgb": "#00c5f6"
+    },
+    {
+      "palette": 22,
+      "index": 10,
+      "word": "0fb0",
+      "rgb": "#00b4f6"
+    },
+    {
+      "palette": 22,
+      "index": 11,
+      "word": "0fa0",
+      "rgb": "#00a4f6"
+    },
+    {
+      "palette": 22,
+      "index": 12,
+      "word": "0f00",
+      "rgb": "#0000f6"
+    },
+    {
+      "palette": 22,
+      "index": 13,
+      "word": "0c00",
+      "rgb": "#0000c5"
+    },
+    {
+      "palette": 22,
+      "index": 14,
+      "word": "0b00",
+      "rgb": "#0000b4"
+    },
+    {
+      "palette": 22,
+      "index": 15,
+      "word": "0bfe",
+      "rgb": "#e6f6b4"
+    }
+  ],
+  [
+    {
+      "palette": 23,
+      "index": 0,
+      "word": "0ade",
+      "rgb": "#e6d5a4"
+    },
+    {
+      "palette": 23,
+      "index": 1,
+      "word": "0698",
+      "rgb": "#839462"
+    },
+    {
+      "palette": 23,
+      "index": 2,
+      "word": "07ac",
+      "rgb": "#c5a473"
+    },
+    {
+      "palette": 23,
+      "index": 3,
+      "word": "0bff",
+      "rgb": "#f6f6b4"
+    },
+    {
+      "palette": 23,
+      "index": 4,
+      "word": "0bef",
+      "rgb": "#f6e6b4"
+    },
+    {
+      "palette": 23,
+      "index": 5,
+      "word": "0aef",
+      "rgb": "#f6e6a4"
+    },
+    {
+      "palette": 23,
+      "index": 6,
+      "word": "09cd",
+      "rgb": "#d5c594"
+    },
+    {
+      "palette": 23,
+      "index": 7,
+      "word": "0acd",
+      "rgb": "#d5c5a4"
+    },
+    {
+      "palette": 23,
+      "index": 8,
+      "word": "0ace",
+      "rgb": "#e6c5a4"
+    },
+    {
+      "palette": 23,
+      "index": 9,
+      "word": "09bd",
+      "rgb": "#d5b494"
+    },
+    {
+      "palette": 23,
+      "index": 10,
+      "word": "09ce",
+      "rgb": "#e6c594"
+    },
+    {
+      "palette": 23,
+      "index": 11,
+      "word": "09cf",
+      "rgb": "#f6c594"
+    },
+    {
+      "palette": 23,
+      "index": 12,
+      "word": "069b",
+      "rgb": "#b49462"
+    },
+    {
+      "palette": 23,
+      "index": 13,
+      "word": "068a",
+      "rgb": "#a48362"
+    },
+    {
+      "palette": 23,
+      "index": 14,
+      "word": "0689",
+      "rgb": "#948362"
+    },
+    {
+      "palette": 23,
+      "index": 15,
+      "word": "0efe",
+      "rgb": "#e6f6e6"
+    }
+  ],
+  [
+    {
+      "palette": 24,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 24,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 24,
+      "index": 2,
+      "word": "0bcf",
+      "rgb": "#f6c5b4"
+    },
+    {
+      "palette": 24,
+      "index": 3,
+      "word": "0abe",
+      "rgb": "#e6b4a4"
+    },
+    {
+      "palette": 24,
+      "index": 4,
+      "word": "099c",
+      "rgb": "#c59494"
+    },
+    {
+      "palette": 24,
+      "index": 5,
+      "word": "078b",
+      "rgb": "#b48373"
+    },
+    {
+      "palette": 24,
+      "index": 6,
+      "word": "066a",
+      "rgb": "#a46262"
+    },
+    {
+      "palette": 24,
+      "index": 7,
+      "word": "088f",
+      "rgb": "#f68383"
+    },
+    {
+      "palette": 24,
+      "index": 8,
+      "word": "07ee",
+      "rgb": "#e6e673"
+    },
+    {
+      "palette": 24,
+      "index": 9,
+      "word": "08d1",
+      "rgb": "#10d583"
+    },
+    {
+      "palette": 24,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 24,
+      "index": 11,
+      "word": "0d93",
+      "rgb": "#3194d5"
+    },
+    {
+      "palette": 24,
+      "index": 12,
+      "word": "03af",
+      "rgb": "#f6a431"
+    },
+    {
+      "palette": 24,
+      "index": 13,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 24,
+      "index": 14,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 24,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 25,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 25,
+      "index": 1,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 25,
+      "index": 2,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 25,
+      "index": 3,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 25,
+      "index": 4,
+      "word": "00ff",
+      "rgb": "#f6f600"
+    },
+    {
+      "palette": 25,
+      "index": 5,
+      "word": "00ad",
+      "rgb": "#d5a400"
+    },
+    {
+      "palette": 25,
+      "index": 6,
+      "word": "006e",
+      "rgb": "#e66200"
+    },
+    {
+      "palette": 25,
+      "index": 7,
+      "word": "0069",
+      "rgb": "#946200"
+    },
+    {
+      "palette": 25,
+      "index": 8,
+      "word": "09b0",
+      "rgb": "#00b494"
+    },
+    {
+      "palette": 25,
+      "index": 9,
+      "word": "0580",
+      "rgb": "#008352"
+    },
+    {
+      "palette": 25,
+      "index": 10,
+      "word": "0d6d",
+      "rgb": "#d562d5"
+    },
+    {
+      "palette": 25,
+      "index": 11,
+      "word": "0a0a",
+      "rgb": "#a400a4"
+    },
+    {
+      "palette": 25,
+      "index": 12,
+      "word": "0ace",
+      "rgb": "#e6c5a4"
+    },
+    {
+      "palette": 25,
+      "index": 13,
+      "word": "099e",
+      "rgb": "#e69494"
+    },
+    {
+      "palette": 25,
+      "index": 14,
+      "word": "077b",
+      "rgb": "#b47373"
+    },
+    {
+      "palette": 25,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 26,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 26,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 26,
+      "index": 2,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 26,
+      "index": 3,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 26,
+      "index": 4,
+      "word": "0bdf",
+      "rgb": "#f6d5b4"
+    },
+    {
+      "palette": 26,
+      "index": 5,
+      "word": "089d",
+      "rgb": "#d59483"
+    },
+    {
+      "palette": 26,
+      "index": 6,
+      "word": "000b",
+      "rgb": "#b40000"
+    },
+    {
+      "palette": 26,
+      "index": 7,
+      "word": "0404",
+      "rgb": "#410041"
+    },
+    {
+      "palette": 26,
+      "index": 8,
+      "word": "0558",
+      "rgb": "#835252"
+    },
+    {
+      "palette": 26,
+      "index": 9,
+      "word": "006f",
+      "rgb": "#f66200"
+    },
+    {
+      "palette": 26,
+      "index": 10,
+      "word": "0f98",
+      "rgb": "#8394f6"
+    },
+    {
+      "palette": 26,
+      "index": 11,
+      "word": "0a58",
+      "rgb": "#8352a4"
+    },
+    {
+      "palette": 26,
+      "index": 12,
+      "word": "007d",
+      "rgb": "#d57300"
+    },
+    {
+      "palette": 26,
+      "index": 13,
+      "word": "009f",
+      "rgb": "#f69400"
+    },
+    {
+      "palette": 26,
+      "index": 14,
+      "word": "08ff",
+      "rgb": "#f6f683"
+    },
+    {
+      "palette": 26,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 27,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 27,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 27,
+      "index": 2,
+      "word": "067b",
+      "rgb": "#b47362"
+    },
+    {
+      "palette": 27,
+      "index": 3,
+      "word": "062a",
+      "rgb": "#a42062"
+    },
+    {
+      "palette": 27,
+      "index": 4,
+      "word": "0538",
+      "rgb": "#833152"
+    },
+    {
+      "palette": 27,
+      "index": 5,
+      "word": "078f",
+      "rgb": "#f68373"
+    },
+    {
+      "palette": 27,
+      "index": 6,
+      "word": "056d",
+      "rgb": "#d56252"
+    },
+    {
+      "palette": 27,
+      "index": 7,
+      "word": "05ec",
+      "rgb": "#c5e652"
+    },
+    {
+      "palette": 27,
+      "index": 8,
+      "word": "00bc",
+      "rgb": "#c5b400"
+    },
+    {
+      "palette": 27,
+      "index": 9,
+      "word": "0f89",
+      "rgb": "#9483f6"
+    },
+    {
+      "palette": 27,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 27,
+      "index": 11,
+      "word": "0c73",
+      "rgb": "#3173c5"
+    },
+    {
+      "palette": 27,
+      "index": 12,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 27,
+      "index": 13,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 27,
+      "index": 14,
+      "word": "0b4d",
+      "rgb": "#d541b4"
+    },
+    {
+      "palette": 27,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 28,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 28,
+      "index": 1,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 28,
+      "index": 2,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 28,
+      "index": 3,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 28,
+      "index": 4,
+      "word": "00ff",
+      "rgb": "#f6f600"
+    },
+    {
+      "palette": 28,
+      "index": 5,
+      "word": "00be",
+      "rgb": "#e6b400"
+    },
+    {
+      "palette": 28,
+      "index": 6,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 28,
+      "index": 7,
+      "word": "077b",
+      "rgb": "#b47373"
+    },
+    {
+      "palette": 28,
+      "index": 8,
+      "word": "08c0",
+      "rgb": "#00c583"
+    },
+    {
+      "palette": 28,
+      "index": 9,
+      "word": "0780",
+      "rgb": "#008373"
+    },
+    {
+      "palette": 28,
+      "index": 10,
+      "word": "0d70",
+      "rgb": "#0073d5"
+    },
+    {
+      "palette": 28,
+      "index": 11,
+      "word": "0870",
+      "rgb": "#007383"
+    },
+    {
+      "palette": 28,
+      "index": 12,
+      "word": "0bdf",
+      "rgb": "#f6d5b4"
+    },
+    {
+      "palette": 28,
+      "index": 13,
+      "word": "099f",
+      "rgb": "#f69494"
+    },
+    {
+      "palette": 28,
+      "index": 14,
+      "word": "077c",
+      "rgb": "#c57373"
+    },
+    {
+      "palette": 28,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 29,
+      "index": 0,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 29,
+      "index": 1,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 29,
+      "index": 2,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 29,
+      "index": 3,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 29,
+      "index": 4,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 29,
+      "index": 5,
+      "word": "078b",
+      "rgb": "#b48373"
+    },
+    {
+      "palette": 29,
+      "index": 6,
+      "word": "007f",
+      "rgb": "#f67300"
+    },
+    {
+      "palette": 29,
+      "index": 7,
+      "word": "007a",
+      "rgb": "#a47300"
+    },
+    {
+      "palette": 29,
+      "index": 8,
+      "word": "0b6f",
+      "rgb": "#f662b4"
+    },
+    {
+      "palette": 29,
+      "index": 9,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 29,
+      "index": 10,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 29,
+      "index": 11,
+      "word": "0b60",
+      "rgb": "#0062b4"
+    },
+    {
+      "palette": 29,
+      "index": 12,
+      "word": "00ff",
+      "rgb": "#f6f600"
+    },
+    {
+      "palette": 29,
+      "index": 13,
+      "word": "08f0",
+      "rgb": "#00f683"
+    },
+    {
+      "palette": 29,
+      "index": 14,
+      "word": "0090",
+      "rgb": "#009400"
+    },
+    {
+      "palette": 29,
+      "index": 15,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    }
+  ],
+  [
+    {
+      "palette": 30,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 30,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 30,
+      "index": 2,
+      "word": "09cf",
+      "rgb": "#f6c594"
+    },
+    {
+      "palette": 30,
+      "index": 3,
+      "word": "07be",
+      "rgb": "#e6b473"
+    },
+    {
+      "palette": 30,
+      "index": 4,
+      "word": "029c",
+      "rgb": "#c59420"
+    },
+    {
+      "palette": 30,
+      "index": 5,
+      "word": "077a",
+      "rgb": "#a47373"
+    },
+    {
+      "palette": 30,
+      "index": 6,
+      "word": "0c00",
+      "rgb": "#0000c5"
+    },
+    {
+      "palette": 30,
+      "index": 7,
+      "word": "000e",
+      "rgb": "#e60000"
+    },
+    {
+      "palette": 30,
+      "index": 8,
+      "word": "00de",
+      "rgb": "#e6d500"
+    },
+    {
+      "palette": 30,
+      "index": 9,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 30,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 30,
+      "index": 11,
+      "word": "0a00",
+      "rgb": "#0000a4"
+    },
+    {
+      "palette": 30,
+      "index": 12,
+      "word": "06d6",
+      "rgb": "#62d562"
+    },
+    {
+      "palette": 30,
+      "index": 13,
+      "word": "02b4",
+      "rgb": "#41b420"
+    },
+    {
+      "palette": 30,
+      "index": 14,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 30,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 31,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 31,
+      "index": 1,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 31,
+      "index": 2,
+      "word": "067b",
+      "rgb": "#b47362"
+    },
+    {
+      "palette": 31,
+      "index": 3,
+      "word": "060a",
+      "rgb": "#a40062"
+    },
+    {
+      "palette": 31,
+      "index": 4,
+      "word": "0518",
+      "rgb": "#831052"
+    },
+    {
+      "palette": 31,
+      "index": 5,
+      "word": "067b",
+      "rgb": "#b47362"
+    },
+    {
+      "palette": 31,
+      "index": 6,
+      "word": "066a",
+      "rgb": "#a46262"
+    },
+    {
+      "palette": 31,
+      "index": 7,
+      "word": "05ad",
+      "rgb": "#d5a452"
+    },
+    {
+      "palette": 31,
+      "index": 8,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 31,
+      "index": 9,
+      "word": "0c90",
+      "rgb": "#0094c5"
+    },
+    {
+      "palette": 31,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 31,
+      "index": 11,
+      "word": "0b9c",
+      "rgb": "#c594b4"
+    },
+    {
+      "palette": 31,
+      "index": 12,
+      "word": "08cc",
+      "rgb": "#c5c583"
+    },
+    {
+      "palette": 31,
+      "index": 13,
+      "word": "0ada",
+      "rgb": "#a4d5a4"
+    },
+    {
+      "palette": 31,
+      "index": 14,
+      "word": "08bc",
+      "rgb": "#c5b483"
+    },
+    {
+      "palette": 31,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 32,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 32,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 32,
+      "index": 2,
+      "word": "0bff",
+      "rgb": "#f6f6b4"
+    },
+    {
+      "palette": 32,
+      "index": 3,
+      "word": "00ef",
+      "rgb": "#f6e600"
+    },
+    {
+      "palette": 32,
+      "index": 4,
+      "word": "00cf",
+      "rgb": "#f6c500"
+    },
+    {
+      "palette": 32,
+      "index": 5,
+      "word": "00af",
+      "rgb": "#f6a400"
+    },
+    {
+      "palette": 32,
+      "index": 6,
+      "word": "007f",
+      "rgb": "#f67300"
+    },
+    {
+      "palette": 32,
+      "index": 7,
+      "word": "007d",
+      "rgb": "#d57300"
+    },
+    {
+      "palette": 32,
+      "index": 8,
+      "word": "0ffd",
+      "rgb": "#d5f6f6"
+    },
+    {
+      "palette": 32,
+      "index": 9,
+      "word": "0fee",
+      "rgb": "#e6e6f6"
+    },
+    {
+      "palette": 32,
+      "index": 10,
+      "word": "0fdd",
+      "rgb": "#d5d5f6"
+    },
+    {
+      "palette": 32,
+      "index": 11,
+      "word": "0ecc",
+      "rgb": "#c5c5e6"
+    },
+    {
+      "palette": 32,
+      "index": 12,
+      "word": "0fbb",
+      "rgb": "#b4b4f6"
+    },
+    {
+      "palette": 32,
+      "index": 13,
+      "word": "0f9b",
+      "rgb": "#b494f6"
+    },
+    {
+      "palette": 32,
+      "index": 14,
+      "word": "0e79",
+      "rgb": "#9473e6"
+    },
+    {
+      "palette": 32,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 33,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 33,
+      "index": 1,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 33,
+      "index": 2,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 33,
+      "index": 3,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 33,
+      "index": 4,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 33,
+      "index": 5,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 33,
+      "index": 6,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 33,
+      "index": 7,
+      "word": "0077",
+      "rgb": "#737300"
+    },
+    {
+      "palette": 33,
+      "index": 8,
+      "word": "08c0",
+      "rgb": "#00c583"
+    },
+    {
+      "palette": 33,
+      "index": 9,
+      "word": "078d",
+      "rgb": "#d58373"
+    },
+    {
+      "palette": 33,
+      "index": 10,
+      "word": "006a",
+      "rgb": "#a46200"
+    },
+    {
+      "palette": 33,
+      "index": 11,
+      "word": "0057",
+      "rgb": "#735200"
+    },
+    {
+      "palette": 33,
+      "index": 12,
+      "word": "0bdf",
+      "rgb": "#f6d5b4"
+    },
+    {
+      "palette": 33,
+      "index": 13,
+      "word": "0aaf",
+      "rgb": "#f6a4a4"
+    },
+    {
+      "palette": 33,
+      "index": 14,
+      "word": "077c",
+      "rgb": "#c57373"
+    },
+    {
+      "palette": 33,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 34,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 34,
+      "index": 1,
+      "word": "0fee",
+      "rgb": "#e6e6f6"
+    },
+    {
+      "palette": 34,
+      "index": 2,
+      "word": "0bce",
+      "rgb": "#e6c5b4"
+    },
+    {
+      "palette": 34,
+      "index": 3,
+      "word": "0abe",
+      "rgb": "#e6b4a4"
+    },
+    {
+      "palette": 34,
+      "index": 4,
+      "word": "099c",
+      "rgb": "#c59494"
+    },
+    {
+      "palette": 34,
+      "index": 5,
+      "word": "089c",
+      "rgb": "#c59483"
+    },
+    {
+      "palette": 34,
+      "index": 6,
+      "word": "088b",
+      "rgb": "#b48383"
+    },
+    {
+      "palette": 34,
+      "index": 7,
+      "word": "0bb6",
+      "rgb": "#62b4b4"
+    },
+    {
+      "palette": 34,
+      "index": 8,
+      "word": "019e",
+      "rgb": "#e69410"
+    },
+    {
+      "palette": 34,
+      "index": 9,
+      "word": "0c8a",
+      "rgb": "#a483c5"
+    },
+    {
+      "palette": 34,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 34,
+      "index": 11,
+      "word": "0f9a",
+      "rgb": "#a494f6"
+    },
+    {
+      "palette": 34,
+      "index": 12,
+      "word": "04ce",
+      "rgb": "#e6c541"
+    },
+    {
+      "palette": 34,
+      "index": 13,
+      "word": "06bd",
+      "rgb": "#d5b462"
+    },
+    {
+      "palette": 34,
+      "index": 14,
+      "word": "0bbc",
+      "rgb": "#c5b4b4"
+    },
+    {
+      "palette": 34,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 35,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 35,
+      "index": 1,
+      "word": "0fee",
+      "rgb": "#e6e6f6"
+    },
+    {
+      "palette": 35,
+      "index": 2,
+      "word": "0bcf",
+      "rgb": "#f6c5b4"
+    },
+    {
+      "palette": 35,
+      "index": 3,
+      "word": "0abe",
+      "rgb": "#e6b4a4"
+    },
+    {
+      "palette": 35,
+      "index": 4,
+      "word": "099c",
+      "rgb": "#c59494"
+    },
+    {
+      "palette": 35,
+      "index": 5,
+      "word": "01bf",
+      "rgb": "#f6b410"
+    },
+    {
+      "palette": 35,
+      "index": 6,
+      "word": "009e",
+      "rgb": "#e69400"
+    },
+    {
+      "palette": 35,
+      "index": 7,
+      "word": "0a50",
+      "rgb": "#0052a4"
+    },
+    {
+      "palette": 35,
+      "index": 8,
+      "word": "07b0",
+      "rgb": "#00b473"
+    },
+    {
+      "palette": 35,
+      "index": 9,
+      "word": "0580",
+      "rgb": "#008352"
+    },
+    {
+      "palette": 35,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 35,
+      "index": 11,
+      "word": "0dcc",
+      "rgb": "#c5c5d5"
+    },
+    {
+      "palette": 35,
+      "index": 12,
+      "word": "078a",
+      "rgb": "#a48373"
+    },
+    {
+      "palette": 35,
+      "index": 13,
+      "word": "0678",
+      "rgb": "#837362"
+    },
+    {
+      "palette": 35,
+      "index": 14,
+      "word": "0baa",
+      "rgb": "#a4a4b4"
+    },
+    {
+      "palette": 35,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 36,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 36,
+      "index": 1,
+      "word": "7fff",
+      "rgb": "#ffffff"
+    },
+    {
+      "palette": 36,
+      "index": 2,
+      "word": "0eed",
+      "rgb": "#d5e6e6"
+    },
+    {
+      "palette": 36,
+      "index": 3,
+      "word": "0edb",
+      "rgb": "#b4d5e6"
+    },
+    {
+      "palette": 36,
+      "index": 4,
+      "word": "0db0",
+      "rgb": "#00b4d5"
+    },
+    {
+      "palette": 36,
+      "index": 5,
+      "word": "0c90",
+      "rgb": "#0094c5"
+    },
+    {
+      "palette": 36,
+      "index": 6,
+      "word": "0c71",
+      "rgb": "#1073c5"
+    },
+    {
+      "palette": 36,
+      "index": 7,
+      "word": "0b36",
+      "rgb": "#6231b4"
+    },
+    {
+      "palette": 36,
+      "index": 8,
+      "word": "0a77",
+      "rgb": "#7373a4"
+    },
+    {
+      "palette": 36,
+      "index": 9,
+      "word": "0b75",
+      "rgb": "#5273b4"
+    },
+    {
+      "palette": 36,
+      "index": 10,
+      "word": "0d81",
+      "rgb": "#1083d5"
+    },
+    {
+      "palette": 36,
+      "index": 11,
+      "word": "0da0",
+      "rgb": "#00a4d5"
+    },
+    {
+      "palette": 36,
+      "index": 12,
+      "word": "0ec0",
+      "rgb": "#00c5e6"
+    },
+    {
+      "palette": 36,
+      "index": 13,
+      "word": "0fec",
+      "rgb": "#c5e6f6"
+    },
+    {
+      "palette": 36,
+      "index": 14,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 36,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 37,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 37,
+      "index": 1,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 37,
+      "index": 2,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 37,
+      "index": 3,
+      "word": "0ebb",
+      "rgb": "#b4b4e6"
+    },
+    {
+      "palette": 37,
+      "index": 4,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 37,
+      "index": 5,
+      "word": "0a00",
+      "rgb": "#0000a4"
+    },
+    {
+      "palette": 37,
+      "index": 6,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 37,
+      "index": 7,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 37,
+      "index": 8,
+      "word": "0ffe",
+      "rgb": "#e6f6f6"
+    },
+    {
+      "palette": 37,
+      "index": 9,
+      "word": "0aba",
+      "rgb": "#a4b4a4"
+    },
+    {
+      "palette": 37,
+      "index": 10,
+      "word": "0444",
+      "rgb": "#414141"
+    },
+    {
+      "palette": 37,
+      "index": 11,
+      "word": "0222",
+      "rgb": "#202020"
+    },
+    {
+      "palette": 37,
+      "index": 12,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 37,
+      "index": 13,
+      "word": "0008",
+      "rgb": "#830000"
+    },
+    {
+      "palette": 37,
+      "index": 14,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 37,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 38,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 38,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 38,
+      "index": 2,
+      "word": "0bcf",
+      "rgb": "#f6c5b4"
+    },
+    {
+      "palette": 38,
+      "index": 3,
+      "word": "0abe",
+      "rgb": "#e6b4a4"
+    },
+    {
+      "palette": 38,
+      "index": 4,
+      "word": "099c",
+      "rgb": "#c59494"
+    },
+    {
+      "palette": 38,
+      "index": 5,
+      "word": "00ff",
+      "rgb": "#f6f600"
+    },
+    {
+      "palette": 38,
+      "index": 6,
+      "word": "00bd",
+      "rgb": "#d5b400"
+    },
+    {
+      "palette": 38,
+      "index": 7,
+      "word": "000c",
+      "rgb": "#c50000"
+    },
+    {
+      "palette": 38,
+      "index": 8,
+      "word": "0f00",
+      "rgb": "#0000f6"
+    },
+    {
+      "palette": 38,
+      "index": 9,
+      "word": "0b00",
+      "rgb": "#0000b4"
+    },
+    {
+      "palette": 38,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 38,
+      "index": 11,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 38,
+      "index": 12,
+      "word": "078a",
+      "rgb": "#a48373"
+    },
+    {
+      "palette": 38,
+      "index": 13,
+      "word": "0668",
+      "rgb": "#836262"
+    },
+    {
+      "palette": 38,
+      "index": 14,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 38,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 39,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 39,
+      "index": 1,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 39,
+      "index": 2,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 39,
+      "index": 3,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 39,
+      "index": 4,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 39,
+      "index": 5,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 39,
+      "index": 6,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 39,
+      "index": 7,
+      "word": "000a",
+      "rgb": "#a40000"
+    },
+    {
+      "palette": 39,
+      "index": 8,
+      "word": "0fbb",
+      "rgb": "#b4b4f6"
+    },
+    {
+      "palette": 39,
+      "index": 9,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 39,
+      "index": 10,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 39,
+      "index": 11,
+      "word": "0d70",
+      "rgb": "#0073d5"
+    },
+    {
+      "palette": 39,
+      "index": 12,
+      "word": "0b60",
+      "rgb": "#0062b4"
+    },
+    {
+      "palette": 39,
+      "index": 13,
+      "word": "00ff",
+      "rgb": "#f6f600"
+    },
+    {
+      "palette": 39,
+      "index": 14,
+      "word": "0d99",
+      "rgb": "#9494d5"
+    },
+    {
+      "palette": 39,
+      "index": 15,
+      "word": "00dd",
+      "rgb": "#d5d500"
+    }
+  ],
+  [
+    {
+      "palette": 40,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 40,
+      "index": 1,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 40,
+      "index": 2,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 40,
+      "index": 3,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 40,
+      "index": 4,
+      "word": "0bbb",
+      "rgb": "#b4b4b4"
+    },
+    {
+      "palette": 40,
+      "index": 5,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 40,
+      "index": 6,
+      "word": "003f",
+      "rgb": "#f63100"
+    },
+    {
+      "palette": 40,
+      "index": 7,
+      "word": "000a",
+      "rgb": "#a40000"
+    },
+    {
+      "palette": 40,
+      "index": 8,
+      "word": "0acf",
+      "rgb": "#f6c5a4"
+    },
+    {
+      "palette": 40,
+      "index": 9,
+      "word": "0f80",
+      "rgb": "#0083f6"
+    },
+    {
+      "palette": 40,
+      "index": 10,
+      "word": "0a0f",
+      "rgb": "#f600a4"
+    },
+    {
+      "palette": 40,
+      "index": 11,
+      "word": "0b00",
+      "rgb": "#0000b4"
+    },
+    {
+      "palette": 40,
+      "index": 12,
+      "word": "08ff",
+      "rgb": "#f6f683"
+    },
+    {
+      "palette": 40,
+      "index": 13,
+      "word": "099e",
+      "rgb": "#e69494"
+    },
+    {
+      "palette": 40,
+      "index": 14,
+      "word": "088c",
+      "rgb": "#c58383"
+    },
+    {
+      "palette": 40,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 41,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 41,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 41,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 41,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 41,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 41,
+      "index": 5,
+      "word": "0a70",
+      "rgb": "#0073a4"
+    },
+    {
+      "palette": 41,
+      "index": 6,
+      "word": "6a90",
+      "rgb": "#009cac"
+    },
+    {
+      "palette": 41,
+      "index": 7,
+      "word": "6a50",
+      "rgb": "#005aac"
+    },
+    {
+      "palette": 41,
+      "index": 8,
+      "word": "0108",
+      "rgb": "#830010"
+    },
+    {
+      "palette": 41,
+      "index": 9,
+      "word": "005b",
+      "rgb": "#b45200"
+    },
+    {
+      "palette": 41,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 41,
+      "index": 11,
+      "word": "0109",
+      "rgb": "#940010"
+    },
+    {
+      "palette": 41,
+      "index": 12,
+      "word": "0108",
+      "rgb": "#830010"
+    },
+    {
+      "palette": 41,
+      "index": 13,
+      "word": "005b",
+      "rgb": "#b45200"
+    },
+    {
+      "palette": 41,
+      "index": 14,
+      "word": "0109",
+      "rgb": "#940010"
+    },
+    {
+      "palette": 41,
+      "index": 15,
+      "word": "00f2",
+      "rgb": "#20f600"
+    }
+  ],
+  [
+    {
+      "palette": 42,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 42,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 42,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 42,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 42,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 42,
+      "index": 5,
+      "word": "0a70",
+      "rgb": "#0073a4"
+    },
+    {
+      "palette": 42,
+      "index": 6,
+      "word": "6a90",
+      "rgb": "#009cac"
+    },
+    {
+      "palette": 42,
+      "index": 7,
+      "word": "6a50",
+      "rgb": "#005aac"
+    },
+    {
+      "palette": 42,
+      "index": 8,
+      "word": "0108",
+      "rgb": "#830010"
+    },
+    {
+      "palette": 42,
+      "index": 9,
+      "word": "005b",
+      "rgb": "#b45200"
+    },
+    {
+      "palette": 42,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 42,
+      "index": 11,
+      "word": "0109",
+      "rgb": "#940010"
+    },
+    {
+      "palette": 42,
+      "index": 12,
+      "word": "018e",
+      "rgb": "#e68310"
+    },
+    {
+      "palette": 42,
+      "index": 13,
+      "word": "00cf",
+      "rgb": "#f6c500"
+    },
+    {
+      "palette": 42,
+      "index": 14,
+      "word": "018f",
+      "rgb": "#f68310"
+    },
+    {
+      "palette": 42,
+      "index": 15,
+      "word": "00f2",
+      "rgb": "#20f600"
+    }
+  ],
+  [
+    {
+      "palette": 43,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 43,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 43,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 43,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 43,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 43,
+      "index": 5,
+      "word": "0a70",
+      "rgb": "#0073a4"
+    },
+    {
+      "palette": 43,
+      "index": 6,
+      "word": "6a90",
+      "rgb": "#009cac"
+    },
+    {
+      "palette": 43,
+      "index": 7,
+      "word": "6a50",
+      "rgb": "#005aac"
+    },
+    {
+      "palette": 43,
+      "index": 8,
+      "word": "018e",
+      "rgb": "#e68310"
+    },
+    {
+      "palette": 43,
+      "index": 9,
+      "word": "00cf",
+      "rgb": "#f6c500"
+    },
+    {
+      "palette": 43,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 43,
+      "index": 11,
+      "word": "018f",
+      "rgb": "#f68310"
+    },
+    {
+      "palette": 43,
+      "index": 12,
+      "word": "0108",
+      "rgb": "#830010"
+    },
+    {
+      "palette": 43,
+      "index": 13,
+      "word": "005b",
+      "rgb": "#b45200"
+    },
+    {
+      "palette": 43,
+      "index": 14,
+      "word": "0109",
+      "rgb": "#940010"
+    },
+    {
+      "palette": 43,
+      "index": 15,
+      "word": "00f2",
+      "rgb": "#20f600"
+    }
+  ],
+  [
+    {
+      "palette": 44,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 44,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 44,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 44,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 44,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 44,
+      "index": 5,
+      "word": "0fc0",
+      "rgb": "#00c5f6"
+    },
+    {
+      "palette": 44,
+      "index": 6,
+      "word": "6fe0",
+      "rgb": "#00eeff"
+    },
+    {
+      "palette": 44,
+      "index": 7,
+      "word": "6fa0",
+      "rgb": "#00acff"
+    },
+    {
+      "palette": 44,
+      "index": 8,
+      "word": "0108",
+      "rgb": "#830010"
+    },
+    {
+      "palette": 44,
+      "index": 9,
+      "word": "005b",
+      "rgb": "#b45200"
+    },
+    {
+      "palette": 44,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 44,
+      "index": 11,
+      "word": "0109",
+      "rgb": "#940010"
+    },
+    {
+      "palette": 44,
+      "index": 12,
+      "word": "0108",
+      "rgb": "#830010"
+    },
+    {
+      "palette": 44,
+      "index": 13,
+      "word": "005b",
+      "rgb": "#b45200"
+    },
+    {
+      "palette": 44,
+      "index": 14,
+      "word": "0109",
+      "rgb": "#940010"
+    },
+    {
+      "palette": 44,
+      "index": 15,
+      "word": "00f2",
+      "rgb": "#20f600"
+    }
+  ],
+  [
+    {
+      "palette": 45,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 45,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 45,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 45,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 45,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 45,
+      "index": 5,
+      "word": "0786",
+      "rgb": "#628373"
+    },
+    {
+      "palette": 45,
+      "index": 6,
+      "word": "0675",
+      "rgb": "#527362"
+    },
+    {
+      "palette": 45,
+      "index": 7,
+      "word": "00f0",
+      "rgb": "#00f600"
+    },
+    {
+      "palette": 45,
+      "index": 8,
+      "word": "00c0",
+      "rgb": "#00c500"
+    },
+    {
+      "palette": 45,
+      "index": 9,
+      "word": "0090",
+      "rgb": "#009400"
+    },
+    {
+      "palette": 45,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 45,
+      "index": 11,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 45,
+      "index": 12,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 45,
+      "index": 13,
+      "word": "00cf",
+      "rgb": "#f6c500"
+    },
+    {
+      "palette": 45,
+      "index": 14,
+      "word": "0b00",
+      "rgb": "#0000b4"
+    },
+    {
+      "palette": 45,
+      "index": 15,
+      "word": "002f",
+      "rgb": "#f62000"
+    }
+  ],
+  [
+    {
+      "palette": 46,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 46,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 46,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 46,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 46,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 46,
+      "index": 5,
+      "word": "0786",
+      "rgb": "#628373"
+    },
+    {
+      "palette": 46,
+      "index": 6,
+      "word": "0675",
+      "rgb": "#527362"
+    },
+    {
+      "palette": 46,
+      "index": 7,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 46,
+      "index": 8,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 46,
+      "index": 9,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 46,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 46,
+      "index": 11,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 46,
+      "index": 12,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 46,
+      "index": 13,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 46,
+      "index": 14,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 46,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 47,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 47,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 47,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 47,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 47,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 47,
+      "index": 5,
+      "word": "0786",
+      "rgb": "#628373"
+    },
+    {
+      "palette": 47,
+      "index": 6,
+      "word": "0675",
+      "rgb": "#527362"
+    },
+    {
+      "palette": 47,
+      "index": 7,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 47,
+      "index": 8,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 47,
+      "index": 9,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 47,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 47,
+      "index": 11,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 47,
+      "index": 12,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 47,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 47,
+      "index": 14,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 47,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 48,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 48,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 48,
+      "index": 2,
+      "word": "0cdb",
+      "rgb": "#b4d5c5"
+    },
+    {
+      "palette": 48,
+      "index": 3,
+      "word": "0ab9",
+      "rgb": "#94b4a4"
+    },
+    {
+      "palette": 48,
+      "index": 4,
+      "word": "0897",
+      "rgb": "#739483"
+    },
+    {
+      "palette": 48,
+      "index": 5,
+      "word": "0786",
+      "rgb": "#628373"
+    },
+    {
+      "palette": 48,
+      "index": 6,
+      "word": "0675",
+      "rgb": "#527362"
+    },
+    {
+      "palette": 48,
+      "index": 7,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 48,
+      "index": 8,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 48,
+      "index": 9,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 48,
+      "index": 10,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 48,
+      "index": 11,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 48,
+      "index": 12,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 48,
+      "index": 13,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 48,
+      "index": 14,
+      "word": "000f",
+      "rgb": "#f60000"
+    },
+    {
+      "palette": 48,
+      "index": 15,
+      "word": "0000",
+      "rgb": "#000000"
+    }
+  ],
+  [
+    {
+      "palette": 49,
+      "index": 0,
+      "word": "0111",
+      "rgb": "#101010"
+    },
+    {
+      "palette": 49,
+      "index": 1,
+      "word": "0ddd",
+      "rgb": "#d5d5d5"
+    },
+    {
+      "palette": 49,
+      "index": 2,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 49,
+      "index": 3,
+      "word": "0aaa",
+      "rgb": "#a4a4a4"
+    },
+    {
+      "palette": 49,
+      "index": 4,
+      "word": "0eed",
+      "rgb": "#d5e6e6"
+    },
+    {
+      "palette": 49,
+      "index": 5,
+      "word": "0eed",
+      "rgb": "#d5e6e6"
+    },
+    {
+      "palette": 49,
+      "index": 6,
+      "word": "0ccb",
+      "rgb": "#b4c5c5"
+    },
+    {
+      "palette": 49,
+      "index": 7,
+      "word": "0ccb",
+      "rgb": "#b4c5c5"
+    },
+    {
+      "palette": 49,
+      "index": 8,
+      "word": "0ccc",
+      "rgb": "#c5c5c5"
+    },
+    {
+      "palette": 49,
+      "index": 9,
+      "word": "0870",
+      "rgb": "#007383"
+    },
+    {
+      "palette": 49,
+      "index": 10,
+      "word": "0fb9",
+      "rgb": "#94b4f6"
+    },
+    {
+      "palette": 49,
+      "index": 11,
+      "word": "0fb9",
+      "rgb": "#94b4f6"
+    },
+    {
+      "palette": 49,
+      "index": 12,
+      "word": "0999",
+      "rgb": "#949494"
+    },
+    {
+      "palette": 49,
+      "index": 13,
+      "word": "0999",
+      "rgb": "#949494"
+    },
+    {
+      "palette": 49,
+      "index": 14,
+      "word": "0888",
+      "rgb": "#838383"
+    },
+    {
+      "palette": 49,
+      "index": 15,
+      "word": "0888",
+      "rgb": "#838383"
+    }
+  ],
+  [
+    {
+      "palette": 50,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 50,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 50,
+      "index": 2,
+      "word": "0ffd",
+      "rgb": "#d5f6f6"
+    },
+    {
+      "palette": 50,
+      "index": 3,
+      "word": "0fec",
+      "rgb": "#c5e6f6"
+    },
+    {
+      "palette": 50,
+      "index": 4,
+      "word": "0fdb",
+      "rgb": "#b4d5f6"
+    },
+    {
+      "palette": 50,
+      "index": 5,
+      "word": "0eca",
+      "rgb": "#a4c5e6"
+    },
+    {
+      "palette": 50,
+      "index": 6,
+      "word": "0eb9",
+      "rgb": "#94b4e6"
+    },
+    {
+      "palette": 50,
+      "index": 7,
+      "word": "0da8",
+      "rgb": "#83a4d5"
+    },
+    {
+      "palette": 50,
+      "index": 8,
+      "word": "0c97",
+      "rgb": "#7394c5"
+    },
+    {
+      "palette": 50,
+      "index": 9,
+      "word": "0b86",
+      "rgb": "#6283b4"
+    },
+    {
+      "palette": 50,
+      "index": 10,
+      "word": "0a75",
+      "rgb": "#5273a4"
+    },
+    {
+      "palette": 50,
+      "index": 11,
+      "word": "0864",
+      "rgb": "#416283"
+    },
+    {
+      "palette": 50,
+      "index": 12,
+      "word": "0453",
+      "rgb": "#315241"
+    },
+    {
+      "palette": 50,
+      "index": 13,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 50,
+      "index": 14,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 50,
+      "index": 15,
+      "word": "0888",
+      "rgb": "#838383"
+    }
+  ],
+  [
+    {
+      "palette": 51,
+      "index": 0,
+      "word": "0000",
+      "rgb": "#000000"
+    },
+    {
+      "palette": 51,
+      "index": 1,
+      "word": "0fff",
+      "rgb": "#f6f6f6"
+    },
+    {
+      "palette": 51,
+      "index": 2,
+      "word": "0ffd",
+      "rgb": "#d5f6f6"
+    },
+    {
+      "palette": 51,
+      "index": 3,
+      "word": "0fec",
+      "rgb": "#c5e6f6"
+    },
+    {
+      "palette": 51,
+      "index": 4,
+      "word": "0fdb",
+      "rgb": "#b4d5f6"
+    },
+    {
+      "palette": 51,
+      "index": 5,
+      "word": "0eca",
+      "rgb": "#a4c5e6"
+    },
+    {
+      "palette": 51,
+      "index": 6,
+      "word": "0eb9",
+      "rgb": "#94b4e6"
+    },
+    {
+      "palette": 51,
+      "index": 7,
+      "word": "0da8",
+      "rgb": "#83a4d5"
+    },
+    {
+      "palette": 51,
+      "index": 8,
+      "word": "0c97",
+      "rgb": "#7394c5"
+    },
+    {
+      "palette": 51,
+      "index": 9,
+      "word": "0b86",
+      "rgb": "#6283b4"
+    },
+    {
+      "palette": 51,
+      "index": 10,
+      "word": "0a75",
+      "rgb": "#5273a4"
+    },
+    {
+      "palette": 51,
+      "index": 11,
+      "word": "0864",
+      "rgb": "#416283"
+    },
+    {
+      "palette": 51,
+      "index": 12,
+      "word": "0453",
+      "rgb": "#315241"
+    },
+    {
+      "palette": 51,
+      "index": 13,
+      "word": "0fec",
+      "rgb": "#c5e6f6"
+    },
+    {
+      "palette": 51,
+      "index": 14,
+      "word": "0ffd",
+      "rgb": "#d5f6f6"
+    },
+    {
+      "palette": 51,
+      "index": 15,
+      "word": "0888",
+      "rgb": "#838383"
+    }
+  ]
+]
