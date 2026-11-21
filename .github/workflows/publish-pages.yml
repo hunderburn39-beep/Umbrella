@@ -11,6 +11,7 @@ on:
       - 'Super-Hang-On/**'
       - 'Fortuna-777/**'
       - 'Fortuna-777-V6/**'
+      - 'Fortuna-777-V7/**'
       - 'index.html'
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
@@ -39,12 +40,10 @@ jobs:
         run: |
           mkdir -p public
           if [ -f index.html ]; then cp index.html public/index.html; fi
-          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777 Fortuna-777-V6; do
+          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777 Fortuna-777-V6 Fortuna-777-V7; do
             if [ -d "$game" ]; then cp -R "$game" public/; fi
           done
-          test -s public/Fortuna-777-V6/index.html
-          test -s public/Fortuna-777-V6/Fortuna777.wasm
-          test -s public/Fortuna-777-V6/archive/archive_files.json
+          test -s public/Fortuna-777-V7/index.html
           touch public/.nojekyll
       - name: Ativar GitHub Pages, se permitido
         uses: actions/configure-pages@v5
