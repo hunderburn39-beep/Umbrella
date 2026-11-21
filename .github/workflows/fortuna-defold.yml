@@ -21,6 +21,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '25'
+      - name: Test Lua rules
+        working-directory: Fortuna-777-Defold
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y lua5.1
+          luac5.1 -p main/game.gui_script
+          lua5.1 tools/test_rules.lua
       - name: Download Defold
         env:
           GH_TOKEN: ${{ github.token }}
@@ -33,8 +40,23 @@ jobs:
       - name: Build WebAssembly
         working-directory: Fortuna-777-Defold
         run: |
-          java -jar "$RUNNER_TEMP/bob.jar" --platform wasm-web --architectures wasm-web --archive --bundle-output "$RUNNER_TEMP/fortuna-out" resolve distclean build bundle
+          java -jar "$RUNNER_TEMP/bob.jar" --platform wasm-web --architectures wasm-web --variant debug --archive --bundle-output "$RUNNER_TEMP/fortuna-out" resolve distclean build bundle
           test -s "$RUNNER_TEMP/fortuna-out/Fortuna777/index.html"
+      - name: Test compiled game on a touch browser
+        run: |
+          npm install --prefix "$RUNNER_TEMP/fortuna-test" playwright
+          "$RUNNER_TEMP/fortuna-test/node_modules/.bin/playwright" install --with-deps chromium
+          python3 -m http.server 8765 --bind 127.0.0.1 --directory "$RUNNER_TEMP/fortuna-out/Fortuna777" &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" || true' EXIT
+          NODE_PATH="$RUNNER_TEMP/fortuna-test/node_modules" node Fortuna-777-Defold/tools/smoke.cjs
+      - name: Save browser evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortuna-browser-test
+          path: ${{ runner.temp }}/fortuna-*.png
+          if-no-files-found: ignore
       - name: Publish built game without replacing V5
         run: |
           mkdir -p Fortuna-777-V6
