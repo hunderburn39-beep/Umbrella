@@ -12,6 +12,7 @@ on:
       - 'Fortuna-777/**'
       - 'Fortuna-777-V6/**'
       - 'Fortuna-777-V7/**'
+      - 'Fortuna-777-V8/**'
       - 'index.html'
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
@@ -40,11 +41,19 @@ jobs:
         run: |
           mkdir -p public
           if [ -f index.html ]; then cp index.html public/index.html; fi
-          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777 Fortuna-777-V6 Fortuna-777-V7; do
+          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777 Fortuna-777-V6 Fortuna-777-V7 Fortuna-777-V8; do
             if [ -d "$game" ]; then cp -R "$game" public/; fi
           done
           test -s public/Fortuna-777-V7/index.html
           touch public/.nojekyll
+      - name: Bundle Babylon.js locally for Fortuna V8
+        run: |
+          test -s public/Fortuna-777-V8/index.html
+          node --check public/Fortuna-777-V8/scene.js
+          mkdir -p public/Fortuna-777-V8/vendor
+          npm install --prefix "$RUNNER_TEMP/babylon-v8" --no-audit --no-fund babylonjs@7.0.0
+          cp "$RUNNER_TEMP/babylon-v8/node_modules/babylonjs/babylon.js" public/Fortuna-777-V8/vendor/
+          test -s public/Fortuna-777-V8/vendor/babylon.js
       - name: Ativar GitHub Pages, se permitido
         uses: actions/configure-pages@v5
         with:
