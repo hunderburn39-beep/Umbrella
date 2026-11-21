@@ -60,7 +60,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <div class="eyebrow">Estúdio gráfico · Fase de alinhamento</div>
 <h1>Super Pinball Action</h1>
 <p class="note">Quatro mesas originais com flippers montados a partir dos sprites e coordenadas da ROM. Testa os sete fotogramas de cada comando antes de criar os elementos HD.</p>
-<p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Esta é uma bancada gráfica, não a física completa do jogo.</p>
+<p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Os grupos esquerdo/direito foram corrigidos após conferir a rotação da ROM. Esta é uma bancada gráfica, não a física completa do jogo.</p>
 </header>
 <div class="container">
 <section>
@@ -171,7 +171,20 @@ function paintScene(destination,map,bank,layer,fl,fr,anchors,ox=0){
      destination.restore();
    }
  }
- destination.restore();destination.restore();
+ destination.restore();
+ if(anchors){
+  for(const row of flipperRows(map)){
+   const r=row.displayRect;
+   destination.save();destination.lineWidth=1;
+   destination.strokeStyle=row.channel==="left"?"#65f5f7":"#ffce77";
+   destination.strokeRect(r.x+.5,r.y+.5,r.width-1,r.height-1);
+   destination.fillStyle="#101724cc";destination.fillRect(r.x,Math.max(0,r.y-16),75,15);
+   destination.fillStyle=destination.strokeStyle;destination.font="bold 11px sans-serif";
+   destination.fillText((row.channel==="left"?"E":"D")+" #"+row.selector,r.x+3,Math.max(12,r.y-5));
+   destination.restore();
+  }
+ }
+ destination.restore();
 }
 function setStatus(message,error=false){const e=by("status");e.textContent=message;e.classList.toggle("error",error)}
 function frameL(){return mode==="manual"?manualL:Math.min(6,accL>>>16)}
@@ -185,7 +198,7 @@ function updateInfo(){
  by("detail").textContent="Mesa "+(currentMap+1)+"  |  Paleta "+bank+"  |  "+rows.length+" grupos\n"+
  rows.map(row=>{
    const base=row.frameBases[row.channel==="left"?a:b];
-   return "#"+row.selector+" "+(row.channel==="left"?"E":"D")+" @("+row.rawX+","+row.rawY+") ROM "+row.romAddress+
+   return "#"+row.selector+" "+(row.channel==="left"?"E":"D")+" ecrã ("+row.displayRect.x+","+row.displayRect.y+") ROM ("+row.rawX+","+row.rawY+") "+row.romAddress+
        " · tiles 0x"+base.toString(16).toUpperCase()+" / 0x"+(base+16).toString(16).toUpperCase();
  }).join("\n")+
  "\nAcumuladores: "+accL+" / "+accR;
@@ -302,7 +315,7 @@ by("sheet").onclick=async()=>{
 async function boot(){
  try{
   data=embedded&&embedded.layout?embedded.layout:await fetch("flipper_layout.json").then(r=>{if(!r.ok)throw Error("JSON "+r.status);return r.json()});
-  if(data.schema!==1||data.rows.length!==8||data.maps.length!==4)throw Error("Layout ROM inválido");
+  if(data.schema!==2||data.rows.length!==8||data.maps.length!==4)throw Error("Layout ROM inválido");
   for(const row of data.rows){if(row.frameBases.length!==7||row.frameBases.some(x=>x%32))throw Error("IDs ROM inválidos")}
   updateInfo();await prepare();requestAnimationFrame(loop);
  }catch(e){setStatus((e&&e.message)||fallback,true)}
