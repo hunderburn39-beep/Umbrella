@@ -1,0 +1,111 @@
+<!doctype html><html lang="pt-PT"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Super Pinball Action — Comparador Original / HD</title>
+<style>
+:root{color-scheme:dark;--bg:#0e1622;--panel:#1c293a;--border:#40566e}
+*{box-sizing:border-box}
+body{margin:0;font:15px/1.5 system-ui,sans-serif;background:var(--bg);color:#f4f8fc}
+main{max-width:1150px;margin:auto;padding:20px 13px}
+h1{margin:2px 0 5px;font-size:clamp(25px,4vw,38px);letter-spacing:-.04em}
+.lead{color:#b6c8d9;font-size:13px;margin:0 0 17px}
+.eyebrow{color:#ebd28d;text-transform:uppercase;letter-spacing:.15em;font-size:12px;font-weight:750}
+.controls{display:flex;gap:12px;flex-wrap:wrap;align-items:end;padding:14px;background:var(--panel);border:1px solid var(--border);border-radius:12px}
+label{display:flex;flex-direction:column;gap:6px;min-width:96px;color:#c4d2df;font-size:13px}
+label.range{flex:1 1 155px}
+select,button{font:inherit;color:#fff;background:#2b3d54;padding:8px;border:1px solid #668198;border-radius:8px;cursor:pointer}
+input[type=range]{width:100%;accent-color:#f1c979}
+.boards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.pane{border:1px solid var(--border);border-radius:12px;background:var(--panel);padding:10px;text-align:center}
+.pane h2{font-size:17px;margin:0 0 10px}
+.pane canvas{display:block;margin:auto;width:auto;max-width:100%;height:min(65vh,650px);aspect-ratio:224/512;background:#000}
+.pixel{image-rendering:pixelated}.smooth{image-rendering:auto}
+.detail{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.detail .pane canvas{width:min(100%,480px);height:auto;aspect-ratio:224/116}
+.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.actions button{min-height:54px;min-width:130px;touch-action:none}
+.actions button.active{background:#685428;border-color:#dfc779}
+.status{color:#c4d2e0;font-size:13px;margin-top:18px}
+a{color:#8edce9}
+@media(max-width:680px){.pane{padding:6px}.pane h2{font-size:13px}.boards,.detail{gap:7px}}
+</style></head><body><main>
+<div class="eyebrow">Tecmo 1991 · geometria ROM preservada</div>
+<h1>Super Pinball Action · Flippers HD</h1>
+<p class="lead">Compara os 224 PNG HD com os originais. São as mesmas posições e sete fotogramas nas quatro mesas. Os originais não foram modificados.</p>
+<div class="controls">
+<label>Mesa<select id="map"><option value="0">Mesa 1</option><option value="1">Mesa 2</option><option value="2">Mesa 3</option><option value="3">Mesa 4</option></select></label>
+<label>Banco<select id="bank"><option>0</option><option>1</option><option>2</option><option>3</option></select></label>
+<label class="range">Esquerdo <output id="fl">0</output><input id="left" type="range" min="0" max="6" value="0"></label>
+<label class="range">Direito <output id="fr">0</output><input id="right" type="range" min="0" max="6" value="0"></label>
+<button id="reset">Repor</button><button id="export">Guardar PNG HD</button>
+</div>
+<div class="boards">
+<section class="pane"><h2>ROM original</h2><canvas id="orig" class="pixel" width="224" height="512"></canvas></section>
+<section class="pane"><h2>Redesenho HD · 8×</h2><canvas id="hd" class="smooth" width="1792" height="4096"></canvas></section>
+</div>
+<div class="actions"><button id="holdL">◀ Esquerdo</button><button id="holdR">Direito ▶</button></div>
+<div class="detail">
+<section class="pane"><h2>Ampliação original</h2><canvas id="zo" class="pixel" width="896" height="464"></canvas></section>
+<section class="pane"><h2>Ampliação HD</h2><canvas id="zh" class="smooth" width="896" height="464"></canvas></section>
+</div>
+<p class="status" id="status">A carregar dados ROM e imagens...</p>
+<p class="lead">Esta bancada só compara os gráficos. A física, o som, as colisões e os objetivos das mesas ainda precisam de integração. Os novos PNG são uma primeira proposta para avaliação, não o resultado artístico final.</p>
+<p class="lead"><a href="../Assets/04_Flippers/">Flippers originais</a> · <a href="../Assets-HD/04_Flippers/">Flippers HD descomprimidos</a> · <a href="../Estudio-Grafico/">Estúdio original</a></p>
+<script>
+(()=>{'use strict';
+const $=x=>document.getElementById(x),imgs=new Map();
+let data=null,token=0,L=false,R=false,last=0;
+const imgURL=(path)=>'../'+path;
+function load(path){
+ if(imgs.has(path))return imgs.get(path);
+ const promise=new Promise((ok,fail)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>fail(Error(path));im.src=imgURL(path)});
+ imgs.set(path,promise);return promise;
+}
+const tileName=t=>'tile_'+String(t).padStart(5,'0')+'_0x'+t.toString(16).toUpperCase().padStart(4,'0')+'.png';
+function tileURL(hd,bank,t){return(hd?'Assets-HD':'Assets')+'/04_Flippers/bank'+bank+'/'+tileName(t)}
+function background(map,bank){return'Assets/02_Mesas/map_'+map+'/mixed_palette'+bank+'.png'}
+function draw(canvas,hd,loaded){
+ const map=+$('map').value,bank=+$('bank').value,fl=+$('left').value,fr=+$('right').value;
+ const scale=hd?8:1,ctx=canvas.getContext('2d');ctx.save();
+ ctx.setTransform(scale,0,0,scale,0,0);ctx.clearRect(0,0,224,512);ctx.imageSmoothingEnabled=false;
+ ctx.drawImage(loaded.get(background(map,bank)),0,0,224,512);
+ ctx.translate(224,0);ctx.rotate(Math.PI/2);ctx.imageSmoothingEnabled=hd;
+ for(const selector of data.maps[map].selectors){const row=data.rows[selector-1],base=row.frameBases[row.channel==='left'?fl:fr];
+  for(let k=0;k<2;k++){let path=tileURL(hd,bank,base+16*k);ctx.drawImage(loaded.get(path),row.rawX+32*k,row.rawY-16,32,32)}
+ }ctx.restore();
+}
+function closeup(source,dst,hd){const map=+$('map').value,selectors=data.maps[map].selectors;
+ const rawX=Math.min(...selectors.map(i=>data.rows[i-1].rawX));
+ const top=Math.max(0,Math.min(396,rawX-26)),s=hd?8:1;
+ const ctx=dst.getContext('2d');ctx.clearRect(0,0,896,464);ctx.imageSmoothingEnabled=hd;
+ ctx.drawImage(source,0,top*s,224*s,116*s,0,0,896,464);
+}
+async function render(){
+ if(!data)return;
+ const id=++token,map=+$('map').value,bank=+$('bank').value;
+ const sources=[background(map,bank)];
+ for(const selector of data.maps[map].selectors){
+  const row=data.rows[selector-1],frame=row.channel==='left'?+$('left').value:+$('right').value,base=row.frameBases[frame];
+  for(let n=0;n<2;n++){sources.push(tileURL(false,bank,base+16*n),tileURL(true,bank,base+16*n))}
+ }
+ const loaded=new Map();
+ try{await Promise.all(Array.from(new Set(sources)).map(async p=>loaded.set(p,await load(p))));
+  if(id!==token)return;
+  draw($('orig'),false,loaded);draw($('hd'),true,loaded);
+  closeup($('orig'),$('zo'),false);closeup($('hd'),$('zh'),true);
+  $('fl').textContent=$('left').value;$('fr').textContent=$('right').value;
+  $('status').textContent='Mesa '+(map+1)+' · banco '+bank+' · HD e original alinhados · fotogramas '+$('left').value+'/'+$('right').value;
+ }catch(e){if(id===token)$('status').textContent='Falha a carregar PNG: '+e.message}
+}
+for(const x of ['map','bank','left','right'])$(x).addEventListener('input',render);
+$('reset').onclick=()=>{$('left').value=$('right').value=0;render()};
+$('export').onclick=()=>{$('hd').toBlob(blob=>{if(!blob)return;const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='SPA_mesa'+(+$('map').value+1)+'_HD.png';a.click();setTimeout(()=>URL.revokeObjectURL(u),1000)},'image/png')};
+function hold(id,side){const btn=$(id);btn.addEventListener('pointerdown',e=>{e.preventDefault();btn.setPointerCapture(e.pointerId);if(side==='L')L=true;else R=true;btn.classList.add('active')});
+ for(const type of ['pointerup','pointercancel','lostpointercapture'])btn.addEventListener(type,()=>{if(side==='L')L=false;else R=false;btn.classList.remove('active')})}
+hold('holdL','L');hold('holdR','R');window.addEventListener('blur',()=>{L=false;R=false});
+function tick(now){if(now-last>75){last=now;let changed=false;if(L){$('left').value=Math.min(6,+$('left').value+1);changed=true}if(R){$('right').value=Math.min(6,+$('right').value+1);changed=true}if(changed)render()}requestAnimationFrame(tick)}
+fetch('../Estudio-Grafico/flipper_layout.json').then(r=>{if(!r.ok)throw Error('Layout HTTP '+r.status);return r.json()}).then(j=>{
+ if(j.rows.length!==8||j.maps.length!==4)throw Error('Metadados ROM inválidos');
+ data=j;render();requestAnimationFrame(tick);
+}).catch(e=>$('status').textContent='Erro: '+e.message);
+})();
+</script></main></body></html>
