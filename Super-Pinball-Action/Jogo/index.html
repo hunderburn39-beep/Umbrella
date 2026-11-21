@@ -55,7 +55,7 @@ button:active,.pressed{filter:brightness(1.35)}
  const w=224,h=512;const cached=new Map();
  let layout=null,oam=null,ready=false,soundOn=true,started=false,gameOver=false,players=1,player=0,score=[0,0],balls=[3,3],level=0;
  let ball={x:204,y:475,vx:0,vy:0,r:4.2,alive:false,waiting:true},leftDown=false,rightDown=false,lf=0,rf=0,shakeCount=0,shakeTick=0,launchAt=0,frameNo=0;
- let last=0,acc=0,hitCooldown=0,flash=0,flashMessage="",titleTick=0;
+ let last=0,acc=0,hitCooldown=0,flash=0,flashMessage="",titleTick=0,okiLoaded=false;
  const selected={bank:0};
  function pathTile(n){let hex=n.toString(16).toUpperCase().padStart(4,"0");return "04_Flippers/bank"+selected.bank+"/tile_"+String(n).padStart(5,"0")+"_0x"+hex+".png"}
  function tablePath(n){return "02_Mesas/map_"+n+"/mixed_palette"+selected.bank+".png"}
@@ -70,7 +70,9 @@ button:active,.pressed{filter:brightness(1.35)}
    const r=layout.rows[selector-1];
    for(const t of r.frameBases){paths.push(pathTile(t),pathTile(t+16))}
   }
-  for(const p of new Set(paths)){if(!pictures.has(p))pictures.set(p,await getImg(p))}
+  const unique=[...new Set(paths)];
+  const result=await Promise.all(unique.map(async p=>[p,await getImg(p)]));
+  for(const [p,img] of result)pictures.set(p,img);
  }
  const spriteKeys=new Map();
  function hud(){
@@ -177,7 +179,7 @@ button:active,.pressed{filter:brightness(1.35)}
   if(speed>11){ball.vx*=11/speed;ball.vy*=11/speed}
   for(let i=0;i<3;i++){ball.x+=ball.vx/3;ball.y+=ball.vy/3;collide()}
   if(ball.y>517){drain();return}
-  if(frameNo%330===0&&ball.y<385)addPoints(15,"score");
+ 
  }
  function draw(){
   ctx.fillStyle="#020516";ctx.fillRect(0,0,w,h);
@@ -233,7 +235,18 @@ button:active,.pressed{filter:brightness(1.35)}
  window.addEventListener("blur",()=>{leftDown=rightDown=false;$("left").classList.remove("pressed");$("right").classList.remove("pressed");held.clear()});
  $("start").onclick=()=>startGame(1);$("start2").onclick=()=>startGame(2);
  $("sound").onclick=()=>{soundOn=!soundOn;chips.mute(!soundOn);hud();if(soundOn)chips.event("start")};
- $("romBtn").onclick=()=>$("romInput").click();
+ $("romBtn").onclick=()=>{
+  if(!okiLoaded){$("romInput").click();return}
+  const requested=window.prompt("Ouvir sample OKIM6295 original da ROM (número 0–127). Para trocar a ROM escreve ROM.", "0");
+  if(requested===null)return;
+  if(requested.trim().toUpperCase()==="ROM"){$("romInput").click();return}
+  const idx=Number(requested);
+  if(!Number.isInteger(idx)||idx<0||idx>127){message("Índice OKI inválido",110);return}
+  try{
+   const ok=chips.oki(idx);
+   message(ok?"OKIM6295 · SAMPLE "+idx:"Sample "+idx+" não existe na ROM",135);
+  }catch(e){message("Erro OKI: "+e.message,120)}
+ };
  async function readZipOki(file){
   const buf=await file.arrayBuffer(),dv=new DataView(buf),length=dv.byteLength;
   for(let e=length-22;e>=Math.max(0,length-65557);e--){
@@ -264,7 +277,8 @@ button:active,.pressed{filter:brightness(1.35)}
   try{
    const bytes=file.name.toLowerCase().endsWith(".zip")?await readZipOki(file):new Uint8Array(await file.arrayBuffer());
    const info=chips.importOki(bytes);
-   $("loading").textContent="OKI carregado: "+info.valid+" samples da ROM reconhecidos.";
+   okiLoaded=true;$("romBtn").textContent="TESTAR OKI";
+   $("loading").textContent="OKI carregado: "+info.valid+" samples da ROM reconhecidos. No jogo, usa TESTAR OKI para ouvir um sample original.";
    message("OKIM6295 · ROM CARREGADA",165);hud();
   }catch(err){message("ERRO ROM: "+err.message,250);$("loading").textContent=err.message}
   e.target.value="";
