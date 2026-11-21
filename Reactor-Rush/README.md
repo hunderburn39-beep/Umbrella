@@ -1,4 +1,4 @@
-# Reactor Rush — V1.5
+# Reactor Rush — V1.6
 
 🎰 **[Jogar online](https://reactor-rush-umbrella.vercel.app/)**
 
@@ -41,3 +41,10 @@ Código-fonte: `index.html`, autocontido e sem dependências. A versão pública
 - Apenas uma fala de cada vez, prioridades de locução e cancelamento ao silenciar ou ocultar a página.
 - Opção de locutor independente no painel de informações. O botão de som desativa também a voz.
 - A disponibilidade e o timbre dependem do dispositivo. A matemática e os prémios da V1.4 não foram alterados.
+
+
+## V1.6 — voz masculina robótica
+- Nove falas MP3 sintetizadas previamente com eSpeak em português de Portugal, timbre grave, modulação e eco metálico.
+- Áudio incorporado no próprio HTML, sem depender das vozes do sistema ou de serviços externos.
+- Reprodução Web Audio com prioridades, controlo de volume, cancelamento e pré-visualização em Informações → OUVIR VOZ.
+- Sem alteração aos prémios ou à matemática da V1.5. Reprodução em Safari físico ainda por verificar.
