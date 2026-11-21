@@ -6,6 +6,7 @@ here="$(cd "$(dirname "$0")" && pwd)"
 rom="$(realpath "${1:?Usage: build-local.sh /path/to/shangon.zip [output-directory]}")"
 out="$(realpath -m "${2:-$here/local-build}")"
 rev=4f5f25f1c680c53946323e0bf9a1cf8bfb4f72c2
+python3 "$here/verify-pcb.py" "$rom"
 for tool in git python3 emcc cc; do command -v "$tool" >/dev/null || { echo "Missing tool: $tool" >&2; exit 1; }; done
 test -f "$rom"
 mkdir -p "$out"
@@ -31,5 +32,7 @@ emcc -O2 -DNDEBUG -fno-strict-aliasing -ffp-contract=off -w -Isrc \
   -sFORCE_FILESYSTEM=1 -sEXPORTED_RUNTIME_METHODS=FS,ccall \
   -sENVIRONMENT=web --no-entry -o "$out/sho.js"
 cp "$here/player.html" "$out/index.html"
+test -s "$out/sho.js"
+test -s "$out/sho.wasm"
 echo "Local files created in $out. Serve over HTTPS for motion permissions."
 echo "Do not publish generated WASM containing SEGA-derived code."
