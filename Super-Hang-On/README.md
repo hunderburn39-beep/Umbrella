@@ -1,4 +1,4 @@
-# Super Hang-On V1.2
+# Super Hang-On V1.3
 
 Native HTML5 / Canvas reconstruction, landscape with tilt. V0.8 sprites and PCM engine retained.
 
@@ -17,3 +17,7 @@ Recover four course sequences and 631 records from the main 68000 ROM at 0x8AEC 
 ## V1.2
 
 Sub-CPU pointer table at 0x19E8 provides 24 blocks of 2048 signed x/y road vectors. All 423 curve directions and all 208 straight records agree with the main CPU. 422 of 423 curves match inverse radius within 5%. Browser bend now scales as 64/radius (clamped), rather than radius/100. Visual gain and six-unit smoothing remain approximations. Validate and optionally export the vectors from your local ROM: `python3 tools/verify-road-vectors.py /path/to/shangon.zip [vectors.json]`. Run `node tests/road-vectors.test.cjs`. Elevations and object graphic mapping pending.
+
+## V1.3
+
+Recovered 21 sub-CPU vertical profiles (7,700 signed x/y vectors), pointer table 0x1A48. Browser replaces sinusoidal hills with interpolated original x-component samples (stride 16). Event positions come from main-CPU tables. Timing, sign-to-screen mapping, visual gain and perspective remain approximate. Full raw vectors can be exported locally using `python3 tools/verify-height-profiles.py /path/to/shangon.zip [profiles.json]`. `node tests/height-model.test.cjs` checks finite projection values and profile IDs. No raw ROM binaries added.

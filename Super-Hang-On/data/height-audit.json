@@ -1,0 +1,20 @@
+{
+  "source": "sub-68000",
+  "pointerTable": "0x1A48",
+  "codeReference": "0x1602",
+  "updateReference": "0x1644",
+  "profiles": 21,
+  "vectors": 7700,
+  "rawBytes": 30800,
+  "crc32": "66db5b8b",
+  "sha256": "b32c3aeaaccd77c739ea88b388e2ddba8693cd235622179417f28e3f4ed38821",
+  "browser": {
+    "stride": 16,
+    "component": "x",
+    "interpolation": "linear",
+    "meanAbsoluteError": 32.05,
+    "maxAbsoluteError": 3163.8125,
+    "horizonGain": 45,
+    "units": "provisional"
+  }
+}
