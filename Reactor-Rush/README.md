@@ -4,7 +4,9 @@ Protótipo independente de slot de cascatas, feito em HTML, CSS e JavaScript. Fu
 
 ## Jogar
 
-Abra [o jogo](./index.html). Se o GitHub Pages estiver ativo para este repositório, use https://hunderburn39-beep.github.io/Umbrella/Reactor-Rush/ .
+**Jogar online:** https://reactor-rush-umbrella.vercel.app/
+
+[Código-fonte HTML](./index.html). A versão pública de teste está alojada no Vercel, porque o GitHub Pages ainda não está ativo neste repositório. Esta publicação foi feita a partir do mesmo HTML, sem ligação automática ao GitHub.
 
 ## Mecânicas
 
