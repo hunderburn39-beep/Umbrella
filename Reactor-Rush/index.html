@@ -111,7 +111,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 /* V2.5: new quantum panels mask retired artwork, preserve controls and 7x7 board. */
 .app .meters,.app .meter-count,.app .live-giant,.app .counter-virtual,.app .status .stat:nth-child(3){display:none}
 .app .quantum-panel,.app .rules-panel{position:absolute;display:flex;flex-direction:column;box-sizing:border-box;background:linear-gradient(145deg,#101b42,#080c25 55%,#170a31);border:2px solid #7461dc;border-radius:1.1cqw;box-shadow:inset 0 0 1.5cqw #234f9caa,0 0 1.1cqw #b336fe77;color:#e0f4ff;overflow:hidden}
-.app .quantum-panel{left:73.8%;top:5.1%;width:23.7%;height:74%;padding:.75cqw 1.1cqw;gap:.32cqw}
+.app .quantum-panel{left:73.2%;top:5.1%;width:24.5%;height:74%;padding:.75cqw 1.1cqw;gap:.32cqw}
 .app .rules-panel{left:3.8%;top:25%;width:22.2%;height:42%;padding:.6cqw 1cqw;gap:.35cqw}
 .quantum-panel h2,.rules-panel h2{margin:0;text-align:center;color:#6deaff;font-size:1.05cqw;line-height:1.15;text-shadow:0 0 7px #2dd9ff}
 .rules-panel p{margin:0;font-size:.86cqw;line-height:1.25;color:#dbdcff}.rules-panel b{color:#d49fff;font-size:1cqw}
@@ -392,7 +392,7 @@ async function settle(){let cycles=0,initial=true;while(cycles++<200){
  const groups=findGroups();
  if(!groups.length){
   if(initial){initial=false;if(Math.random()<.08){await runFeature('INSTABILIDADE');continue}}
-  if(giantPhase===1||giantPhase===2){giantPhase++;update();const plan=giantPlan(giantPhase);if(plan.remove.size){await animateFall(plan.remove);plan.remove.clear();const fresh=giantPlan(giantPhase);plan.changes=fresh.changes;plan.remove=fresh.remove;}await revealPlan(plan);continue}
+  if(giantPhase===1||giantPhase===2){giantPhase++;update();const previous=new Set(allIds().filter(id=>at(id).g));await animateFall(previous);await revealPlan(giantPlan(giantPhase));continue}
   if(giantPhase===3){giantPhase=0;update()}
   if(featureQueue.length){await runFeature(featureQueue.shift());continue}
   return won;
