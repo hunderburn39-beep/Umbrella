@@ -65,3 +65,22 @@ node Super-Pinball-Action/Estudio-Grafico/validar_v06.mjs
 ```
 
 A auditoria sintética V0.6 cobre o mapa de colisão RGBA, atributos das 112 peças e sintaxe do JavaScript. A observação visual num navegador real e a comparação com capturas da máquina permanecem pendentes. A reprodução exata do mixer exige o mapa FG com bits de mistura, as paletas de execução completas e o estado do atributo `0x40`, além dos sprites dinâmicos da bola e das cancelas. Referências: [Tecmo spr](https://github.com/mamedev/mame/blob/master/src/mame/shared/tecmo_spr.cpp), [Tecmo mix](https://github.com/mamedev/mame/blob/master/src/mame/tecmo/tecmo_mix.cpp), [spbactn](https://github.com/mamedev/mame/blob/master/src/mame/tecmo/spbactn.cpp).
+
+
+## V0.7 — comparação por lado e prova OAM exportável (21-11-2026)
+
+O estúdio permite exportar folhas com **sete fotogramas** de três formas: `Esquerdo + direito`, `Só esquerdo (direito parado)` e `Só direito (esquerdo parado)`. O lado não escolhido mantém a posição que tinha no momento de carregar no botão de exportação. Isto permite estudar cada flipper sem a interferência do outro comando; não altera coordenadas nem sprites originais.
+
+A opção **Relatório OAM em JSON** cria um ficheiro para a mesa e paleta selecionadas, com o hash da ROM, os seletores de flippers, as posições na ROM e no ecrã, os identificadores das duas peças 32×32, os fotogramas e os bits base de prioridade, mistura e espelhamento. O relatório conserva a informação de sete estados de cada grupo efetivamente presente na mesa. Isto **não é uma captura da sprite RAM em execução**; descreve a reconstrução estática verificada contra as tabelas da ROM.
+
+Além da verificação de `rawX/rawY`, o início do estúdio verifica agora que os retângulos de ecrã de cada entrada OAM batem certo com `flipper_layout.json` (após rotação). Se houver divergência, falha explicitamente em vez de desenhar peças deslocadas silenciosamente.
+
+Testes reproduzíveis:
+
+```sh
+node Super-Pinball-Action/Estudio-Grafico/validar_v05.mjs
+node Super-Pinball-Action/Estudio-Grafico/validar_v06.mjs
+node Super-Pinball-Action/Estudio-Grafico/validar_v07.mjs
+```
+
+O V0.7 verifica 48 combinações (4 mesas × 4 paletas × 3 modos), 336 fotogramas e 1092 grupos de sprites representados, além da sintaxe do JavaScript. Estes testes são **de dados e de lógica**, não substituem o teste de imagem no navegador. Para abrir o estúdio do GitHub Pages são precisos os ficheiros de ajuda `mixer_auditoria.js` e `frame_auditoria.js` ao lado de `index.html`.
