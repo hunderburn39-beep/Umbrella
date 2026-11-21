@@ -1,26 +1,32 @@
-# Reactor Rush — V1.1
+# Reactor Rush — V1.2
 
-Protótipo original de slot de cascatas HTML5 para telemóveis, com **créditos exclusivamente virtuais**.
+Slot de cascatas original em HTML/CSS/JavaScript, adaptada a telemóveis, jogada com **créditos virtuais**.
 
-**🎰 Jogar:** https://reactor-rush-umbrella.vercel.app/
+**Jogar online:** https://reactor-rush-umbrella.vercel.app/
 
-## Mecânicas
-- Grelha 7×7 com grupos de 5+ símbolos e cascatas.
-- Fusão 2×2 com criatura gigante e pagamento duplicado nesse grupo.
-- Multiplicador por cascata consecutiva até ×5.
-- Símbolos Wild ocasionais e símbolos com aro dourado que carregam mais energia.
-- Medidor de 5 cargas: Implosão, Mutação, Demolição e Diagonais.
-- A cada cinco ativações quânticas: evento gigante Wild com prémio de 10× a aposta. Jackpot progressivo virtual acumula 2% de cada aposta e pode substituir esse prémio (probabilidade de 1/80 por evento gigante).
-- Turbo, Auto ×10, som sintetizado, guarda de saldo e recordes, créditos gratuitos (+1.000 CR).
+## Novidades da V1.2
 
-## V1.1
-- Sprites SVG reutilizados para reduzir repetições e desenho do DOM.
-- Criaturas grandes 2×2 visíveis na grelha, prémios com mínimo de 0,01 CR.
-- Multiplicador de cascatas, saldo virtual recarregável, raridade do jackpot revista.
-- Acumulação precisa do jackpot mesmo com apostas pequenas, recordes nas regras.
-- Auto para quando a página fica oculta e tem proteção contra saldo insuficiente.
+- Os símbolos premiados desaparecem antes da queda e os restantes **descem das suas posições anteriores**, coluna a coluna.
+- Novos símbolos caem **a partir de cima da grelha**, com atraso ligeiramente diferente entre colunas.
+- Fusão 2×2 reaparece quando a queda termina, para evitar sobreposições visuais.
+- Movimento implementado com transformações GPU (CSS), com tempos ajustados ao Turbo e respeito pela opção de movimento reduzido.
+- Melhoria leve na renderização do tabuleiro: sprites SVG reutilizados, sem filtros repetidos em cada símbolo.
 
-## Publicação
-O jogo completo está em `index.html`. A versão pública foi publicada **manualmente** no Vercel, a partir do mesmo HTML deste diretório. Não existe sincronização automática entre GitHub e Vercel.
+## Mecânicas em desenvolvimento
 
-Sem dinheiro real, depósitos ou levantamentos. Não existe RTP certificado. Não utiliza código, arte, áudio nem matemática original da Play’n GO.
+- Grelha 7×7 e grupos de pelo menos cinco símbolos vizinhos.
+- Cascatas com multiplicador até ×5.
+- Fusão 2×2 de símbolos iguais com pagamento dobrado do grupo.
+- Wilds, símbolos energizados e quatro transformações quânticas.
+- Evento gigante a cada cinco transformações, jackpot progressivo virtual raro.
+- Turbo, dez rodadas automáticas, som sintetizado, créditos virtuais gratuitos e recordes locais.
+
+## Estrutura
+
+O jogo está num único ficheiro [index.html](./index.html), sem dependências. A versão pública é publicada **manualmente** no Vercel, a partir do HTML deste repositório. Não há sincronização automática com GitHub.
+
+## Validação
+
+Testes em navegador Chromium simulado com tamanhos de 375×812, 390×844 e 428×926: verificação visual, queda animada, prémios e controlo automático. Mais 35 rodadas Turbo de resistência sem erros JS. Ainda não foi testado fisicamente no Safari do iPhone.
+
+**Sem dinheiro real, depósitos ou levantamentos. Não tem RTP certificado nem reproduz código, arte, áudio ou matemática de outro jogo.**
