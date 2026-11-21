@@ -1,0 +1,50 @@
+name: Publicar Pinball Action no GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Pinball-Action/**'
+      - 'index.html'
+      - '.github/workflows/publish-pages.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ler ficheiros
+        uses: actions/checkout@v4
+      - name: Preparar pagina estatica
+        run: |
+          mkdir -p public/Pinball-Action
+          cp index.html public/index.html
+          cp -R Pinball-Action/. public/Pinball-Action/
+          touch public/.nojekyll
+      - name: Ativar GitHub Pages, se permitido
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Enviar ficheiros do jogo
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: public
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Publicar jogo
+        id: deployment
+        uses: actions/deploy-pages@v4
