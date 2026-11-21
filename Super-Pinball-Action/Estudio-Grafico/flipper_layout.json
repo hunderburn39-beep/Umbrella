@@ -1,0 +1,196 @@
+{
+  "schema": 1,
+  "game": "Super Pinball Action (Tecmo, 1991) - US release",
+  "romSha256": "8c139defd9b807c15872aee7e51a1fc57c8c1e4c20c764fa213d575140ca67c7",
+  "table": {
+    "width": 224,
+    "height": 512,
+    "rawWidth": 512,
+    "rawVisibleTop": 16,
+    "rawVisibleHeight": 224,
+    "rotation": "90deg clockwise"
+  },
+  "sprite": {
+    "eachHalfWidth": 32,
+    "height": 32,
+    "secondHalfOffset": 16,
+    "rawHalfXOffset": 32
+  },
+  "flipper": {
+    "upStep": 19115,
+    "downStep": 11469,
+    "maxAccumulator": 458751,
+    "framesPerGroup": 7,
+    "note": "Steps are ROM RAM initial values; browser 60 Hz stepping is a diagnostic approximation, not measured original timing."
+  },
+  "maps": [
+    {
+      "mapIndex": 0,
+      "selectors": [
+        1,
+        2,
+        5,
+        6
+      ]
+    },
+    {
+      "mapIndex": 1,
+      "selectors": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "mapIndex": 2,
+      "selectors": [
+        1,
+        2
+      ]
+    },
+    {
+      "mapIndex": 3,
+      "selectors": [
+        1,
+        2,
+        8
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "selector": 1,
+      "romAddress": "0x12DA",
+      "rawX": 448,
+      "rawY": 88,
+      "channel": "left",
+      "frameBases": [
+        768,
+        800,
+        832,
+        864,
+        896,
+        928,
+        960
+      ]
+    },
+    {
+      "selector": 2,
+      "romAddress": "0x12EC",
+      "rawX": 448,
+      "rawY": 136,
+      "channel": "right",
+      "frameBases": [
+        512,
+        544,
+        576,
+        608,
+        640,
+        672,
+        704
+      ]
+    },
+    {
+      "selector": 3,
+      "romAddress": "0x12FE",
+      "rawX": 144,
+      "rawY": 56,
+      "channel": "left",
+      "frameBases": [
+        2304,
+        2336,
+        2368,
+        2400,
+        2432,
+        2464,
+        2496
+      ]
+    },
+    {
+      "selector": 4,
+      "romAddress": "0x1310",
+      "rawX": 144,
+      "rawY": 168,
+      "channel": "right",
+      "frameBases": [
+        2048,
+        2080,
+        2112,
+        2144,
+        2176,
+        2208,
+        2240
+      ]
+    },
+    {
+      "selector": 5,
+      "romAddress": "0x1322",
+      "rawX": 160,
+      "rawY": 70,
+      "channel": "left",
+      "frameBases": [
+        768,
+        800,
+        832,
+        864,
+        896,
+        928,
+        960
+      ]
+    },
+    {
+      "selector": 6,
+      "romAddress": "0x1334",
+      "rawX": 160,
+      "rawY": 154,
+      "channel": "right",
+      "frameBases": [
+        512,
+        544,
+        576,
+        608,
+        640,
+        672,
+        704
+      ]
+    },
+    {
+      "selector": 7,
+      "romAddress": "0x1346",
+      "rawX": 212,
+      "rawY": 55,
+      "channel": "left",
+      "frameBases": [
+        2304,
+        2336,
+        2368,
+        2400,
+        2432,
+        2464,
+        2496
+      ]
+    },
+    {
+      "selector": 8,
+      "romAddress": "0x1358",
+      "rawX": 212,
+      "rawY": 206,
+      "channel": "right",
+      "frameBases": [
+        2048,
+        2080,
+        2112,
+        2144,
+        2176,
+        2208,
+        2240
+      ]
+    }
+  ],
+  "renderingLimitations": [
+    "Sprite placement and frame indices are original ROM data.",
+    "Table images are static composite candidates. Runtime palette and layering are not validated.",
+    "Browser keys and frame timing are a diagnostic test; no physics, score or coin state."
+  ]
+}
