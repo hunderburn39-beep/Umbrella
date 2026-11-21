@@ -1,0 +1,10 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),path=require('node:path');
+const ctx=vm.createContext({});
+for(const f of ['data/courses.js','src/course-model.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',f),'utf8'),ctx);
+const v=x=>vm.runInContext(x,ctx);
+assert.equal(v('turnValue([0,0,1])'),0);
+assert.equal(v('turnValue([0,64,2])'),1);
+assert.equal(v('turnValue([0,64,3])'),-1);
+assert.ok(v('turnValue([0,32,2])>turnValue([0,96,2])'));
+assert.ok(v('courseSequences.every((s,r)=>Array.from({length:courseLength(r)},(_,n)=>courseBend(r,n)).every(Number.isFinite))'));
+console.log('PASS: inverse radius and direction, all four routes finite');

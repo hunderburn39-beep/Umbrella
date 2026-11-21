@@ -1,0 +1,36 @@
+{
+  "version": "1.2",
+  "source": "User-supplied shangon.zip, cross-CPU analysis",
+  "subCpuSha256": "770332456d5c438c8e4741b9a386e1ba8c4c2c35b59391f04609b75f9e1109a5",
+  "pointerTable": "0x19E8",
+  "codeReferences": [
+    "0x102C",
+    "0x11EC"
+  ],
+  "blocks": 24,
+  "samplesPerBlock": 2048,
+  "vectorFormat": "signed big-endian int16 x,y",
+  "rawBytes": 196608,
+  "rawCRC32": "8429338f",
+  "rawSHA256": "bb50d4287274b44cb28fb10268272a88af6483130a3e93acc1e50185e0e0138d",
+  "validation": {
+    "records": 631,
+    "straight": 208,
+    "straightConfirmed": 208,
+    "curves": 423,
+    "directionConfirmed": 423,
+    "inverseRadiusWithin5Percent": 422,
+    "medianRadiusTimesAngularStep": 0.9919701397961106,
+    "exception": {
+      "block": 21,
+      "position": 578,
+      "radius": 103,
+      "type": 2,
+      "ratio": 0.8911710111892863
+    }
+  },
+  "limitations": [
+    "Browser projection scale and transition length remain approximate",
+    "Height profiles and original scenery graphic assignment pending"
+  ]
+}

@@ -1,4 +1,4 @@
-# Super Hang-On V1.1
+# Super Hang-On V1.2
 
 Native HTML5 / Canvas reconstruction, landscape with tilt. V0.8 sprites and PCM engine retained.
 
@@ -13,3 +13,7 @@ Recover four course sequences and 631 records from the main 68000 ROM at 0x8AEC 
 ## V1.1
 
 103 height-profile records and 1,283 scenery-pattern event records recovered. Original order and fields retained; runtime sorts a copy for visibility (one original position decreases). Scenery trigger coordinates replace uniform spacing. Each event currently draws a provisional atlas item; object count, graphics and side assignment have not been decoded. Hill shape remains provisional. Verify with `python3 tools/verify-course-events.py /path/to/shangon.zip` and `node tests/course-events.test.cjs`.
+
+## V1.2
+
+Sub-CPU pointer table at 0x19E8 provides 24 blocks of 2048 signed x/y road vectors. All 423 curve directions and all 208 straight records agree with the main CPU. 422 of 423 curves match inverse radius within 5%. Browser bend now scales as 64/radius (clamped), rather than radius/100. Visual gain and six-unit smoothing remain approximations. Validate and optionally export the vectors from your local ROM: `python3 tools/verify-road-vectors.py /path/to/shangon.zip [vectors.json]`. Run `node tests/road-vectors.test.cjs`. Elevations and object graphic mapping pending.
