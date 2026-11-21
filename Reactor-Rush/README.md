@@ -1,29 +1,36 @@
-# Reactor Rush — V1.3
+# Reactor Rush — V1.4
 
-**[🎰 Jogar a versão pública](https://reactor-rush-umbrella.vercel.app/)**
+🎰 **[Jogar online](https://reactor-rush-umbrella.vercel.app/)**
 
-Slot original de cascatas em HTML5/CSS/JavaScript, com visual vertical otimizado para iPhone. Funciona com **créditos fictícios**, sem depósitos, levantamentos nem prémios em dinheiro real. Esta é uma criação independente; não usa arte, código, áudio ou matemática original da Play’n GO e não tem RTP certificado.
+Protótipo HTML5 autónomo de slot de cascatas com **créditos fictícios**, otimizado para telemóveis. Não há depósitos, levantamentos, prémios com valor real nem RTP certificado. O jogo não reproduz a arte, o código, o áudio ou a matemática da Play’n GO.
 
-## Como jogar
-- Grelha 7×7, sem linhas; 5+ criaturas iguais adjacentes vencem.
-- Wild substitui uma cor. **Cada casa, incluindo Wild, pode ser contabilizada uma única vez por cascata**, sem pagamentos duplicados.
-- Grupo com bloco 2×2 ganha criatura visual gigante e duplicação do pagamento desse grupo.
-- Vitórias geram novas quedas, com multiplicador por cascata até ×5.
-- Energia quântica ativa efeitos; de cinco em cinco ativações ocorre um evento gigante.
-- Jackpot virtual acumulado ao longo das rodadas, com sorteio raro em eventos gigantes.
-- Turbo, 10 rodadas automáticas, crédito grátis de +1.000 CR e gravação local do saldo e recordes.
+## Mecânicas
 
-## Alterações da V1.3
-- **49 casas persistentes**: deixam de ser destruídas/recriadas a cada queda; apenas as referências dos SVG mudam.
-- **Wild sem dupla contagem**: atribuição por grupo de prémio, recalculando grupos após reservar as casas.
-- **Pop-up flutuante de prémio** durante cascatas e pequeno realce do saldo.
-- Afinamentos de ecrãs estreitos e respeito pela preferência de movimento reduzido.
+- Grelha 7×7, grupos de cinco ou mais símbolos ligados horizontal ou verticalmente.
+- Wilds que só são contabilizados uma vez por cascata, fusões visuais 2×2 e multiplicador de cascatas até ×5.
+- Gravidade animada: símbolos desaparecem e os restantes caem por coluna.
+- Energia quântica em cinco cargas; ativa Implosão, Mutação, Demolição ou Diagonais.
+- Em cada quinta ativação quântica, o Gigante transforma um quadrado 3×3 em Wilds e atribui prémio virtual. O jackpot virtual pode substituir esse prémio com probabilidade de 1/80 por evento gigante.
+- Turbo, Auto ×10, som sintetizado opcional, créditos gratuitos e gravação local de saldo e recordes.
 
-## Verificações
-- Jogabilidade testada em 375×812, 390×844 e 428×926 (motor Chromium).
-- Teste automático de 1.500 grelhas aleatórias e 20 rodadas Turbo, sem falhas de execução.
-- Botões, Auto ×10 e permanência dos 49 nós da grelha confirmados.
-- **Safari num iPhone físico ainda não verificado.**
+## Novidades da V1.4
+
+- **Transformações quânticas por vagas**, mostrando em vez de ocultar as mudanças no tabuleiro.
+- **Gigante 3×3 revelado em três linhas** e o prémio é creditado depois da transformação.
+- Indicador **"GIGANTE EM N ATIVAÇÕES"** junto ao medidor quântico.
+- **Efeitos de revelação e pulsação** com animações CSS leves; reduzidos automaticamente quando o sistema pede movimento reduzido.
+- **Dois planos de efeitos separados**: mensagens de bónus não apagam pop-ups de prémios.
+- Melhor desempenho do medidor: as cinco luzes persistem em vez de serem reconstruídas a cada atualização.
+- Historial do último tipo de bónus e total de ativações na janela de regras.
+- Proteção de mutação em tabuleiros sem cores normais e seleção da Implosão sem repetições.
+
+## Validação
+
+- Testes automatizados no Chromium com larguras 320, 375, 390 e 428 px, sem rolagem horizontal.
+- Quatro bónus normais e evento gigante exercitados; 49 nós de símbolo e cinco luzes persistentes verificados.
+- 2.000 grelhas aleatórias verificadas, Auto ×10 e 20 rodadas Turbo; sem erros JavaScript detetados.
+- O Safari físico no iPhone **ainda não foi testado**.
 
 ## Publicação
-Código-fonte: `index.html` — jogo autocontido e sem bibliotecas externas. O GitHub armazena a fonte em `Umbrella/Reactor-Rush`. O Vercel é publicado manualmente com este mesmo HTML; não há sincronização automática ao fazer push.
+
+Código-fonte: `index.html`, autocontido e sem dependências. A versão pública está hospedada no Vercel e é publicada **manualmente** a partir do mesmo HTML de `Umbrella/Reactor-Rush`; não existe sincronização automática entre GitHub e Vercel.
