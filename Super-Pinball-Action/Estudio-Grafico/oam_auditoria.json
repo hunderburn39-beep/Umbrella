@@ -1,0 +1,1525 @@
+{
+  "schema": 1,
+  "romSha256": "8c139defd9b807c15872aee7e51a1fc57c8c1e4c20c764fa213d575140ca67c7",
+  "sourceCodeAddresses": [
+    "0x124c..0x12d6",
+    "0x11c6..0x122e",
+    "0x12da..0x136a"
+  ],
+  "hardware": "Tecmo gaiden sprite OAM: attributes,tile,size/color,y,x, 3 unused words",
+  "attributeCaveat": "Runtime attributes may also include the ROM control-dependent bit 0x40; this report supplies a base value only",
+  "records": [
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 768,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 784,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 800,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 816,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 832,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 848,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 864,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 880,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 896,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 912,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 928,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 944,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 1,
+      "side": "right",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 960,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 976,
+          "sizeColor": 18,
+          "romY": 88,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 120,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 512,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 528,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 544,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 560,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 576,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 592,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 608,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 624,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 640,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 656,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 672,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 688,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 2,
+      "side": "left",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 704,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 448
+        },
+        {
+          "attributes_base": 20,
+          "tile": 720,
+          "sizeColor": 18,
+          "romY": 136,
+          "romX": 480
+        }
+      ],
+      "screenRect": {
+        "x": 72,
+        "y": 448,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2304,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2320,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2336,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2352,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2368,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2384,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2400,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2416,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2432,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2448,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2464,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2480,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 3,
+      "side": "right",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2496,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2512,
+          "sizeColor": 18,
+          "romY": 56,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 152,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2048,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2064,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2080,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2096,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2112,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2128,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2144,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2160,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2176,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2192,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2208,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2224,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 4,
+      "side": "left",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 20,
+          "tile": 2240,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 144
+        },
+        {
+          "attributes_base": 20,
+          "tile": 2256,
+          "sizeColor": 18,
+          "romY": 168,
+          "romX": 176
+        }
+      ],
+      "screenRect": {
+        "x": 40,
+        "y": 144,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 768,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 784,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 800,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 816,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 832,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 848,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 864,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 880,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 896,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 912,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 928,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 944,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 5,
+      "side": "right",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 960,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 976,
+          "sizeColor": 18,
+          "romY": 70,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 138,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 512,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 528,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 544,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 560,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 576,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 592,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 608,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 624,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 640,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 656,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 672,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 688,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 6,
+      "side": "left",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 704,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 160
+        },
+        {
+          "attributes_base": 52,
+          "tile": 720,
+          "sizeColor": 18,
+          "romY": 154,
+          "romX": 192
+        }
+      ],
+      "screenRect": {
+        "x": 54,
+        "y": 160,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2304,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2320,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2336,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2352,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2368,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2384,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2400,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2416,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2432,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2448,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2464,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2480,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 7,
+      "side": "right",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2496,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2512,
+          "sizeColor": 18,
+          "romY": 55,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 153,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 0,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2048,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2064,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 1,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2080,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2096,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 2,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2112,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2128,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 3,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2144,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2160,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 4,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2176,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2192,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 5,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2208,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2224,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    },
+    {
+      "selector": 8,
+      "side": "left",
+      "frame": 6,
+      "pieces": [
+        {
+          "attributes_base": 52,
+          "tile": 2240,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 212
+        },
+        {
+          "attributes_base": 52,
+          "tile": 2256,
+          "sizeColor": 18,
+          "romY": 206,
+          "romX": 244
+        }
+      ],
+      "screenRect": {
+        "x": 2,
+        "y": 212,
+        "width": 32,
+        "height": 64
+      }
+    }
+  ]
+}
