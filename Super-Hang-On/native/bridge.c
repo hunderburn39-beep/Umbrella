@@ -32,6 +32,9 @@ API int browser_load(const char *rom_path) {
     if (result) return result;
     sho_recomp = 1;
     sho_reset();
+    /* Upstream arcade test runner uses these DIP settings for genuine Free Play. */
+    sho_set_dips(0x00, 0xfe);
+    sho_set_view_width(SHO_W);
     memset(&input, 0, sizeof input);
     audio_phase = 0;
     audio_frames = 0;
@@ -64,6 +67,7 @@ API int browser_frame(void) {
 API const uint32_t *browser_pixels(void) { return loaded ? sho_framebuffer() : NULL; }
 API int browser_width(void) { return loaded ? sho_width() : 0; }
 API int browser_height(void) { return SHO_H; }
+API int browser_is_recompiled(void) { return loaded && sho_recomp == 1; }
 API const int16_t *browser_audio(void) { return audio_buffer; }
 API int browser_audio_frames(void) { return audio_frames; }
 API void browser_view_width(int width) {
