@@ -1,9 +1,11 @@
-name: Publicar Pinball Action no GitHub Pages
+name: Publicar jogos Umbrella no GitHub Pages
 on:
   push:
     branches: [main]
     paths:
       - 'Pinball-Action/**'
+      - 'Reactor-Rush/**'
+      - 'Super-Pinball-Action/**'
       - 'index.html'
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
@@ -25,9 +27,11 @@ jobs:
         uses: actions/checkout@v4
       - name: Preparar pagina estatica
         run: |
-          mkdir -p public/Pinball-Action
-          cp index.html public/index.html
-          cp -R Pinball-Action/. public/Pinball-Action/
+          mkdir -p public
+          if [ -f index.html ]; then cp index.html public/index.html; fi
+          for game in Pinball-Action Reactor-Rush Super-Pinball-Action; do
+            if [ -d "$game" ]; then cp -R "$game" public/; fi
+          done
           touch public/.nojekyll
       - name: Ativar GitHub Pages, se permitido
         uses: actions/configure-pages@v5
