@@ -1,4 +1,4 @@
-# Reactor Rush — V1.4
+# Reactor Rush — V1.5
 
 🎰 **[Jogar online](https://reactor-rush-umbrella.vercel.app/)**
 
@@ -34,3 +34,10 @@ Protótipo HTML5 autónomo de slot de cascatas com **créditos fictícios**, oti
 ## Publicação
 
 Código-fonte: `index.html`, autocontido e sem dependências. A versão pública está hospedada no Vercel e é publicada **manualmente** a partir do mesmo HTML de `Umbrella/Reactor-Rush`; não existe sincronização automática entre GitHub e Vercel.
+
+## V1.5 — locutor em português
+- Voz sintetizada pelo navegador (preferência por português de Portugal, se instalada).
+- Avisos de ativação do som, transformações quânticas, Gigante e jackpot virtual.
+- Apenas uma fala de cada vez, prioridades de locução e cancelamento ao silenciar ou ocultar a página.
+- Opção de locutor independente no painel de informações. O botão de som desativa também a voz.
+- A disponibilidade e o timbre dependem do dispositivo. A matemática e os prémios da V1.4 não foram alterados.
