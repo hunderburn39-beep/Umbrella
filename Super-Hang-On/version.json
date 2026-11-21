@@ -1,11 +1,13 @@
 {
-  "version": "0.8",
-  "base": "0.7",
+  "version": "0.9",
+  "base": "0.8",
   "orientation": "landscape",
   "input": [
     "deviceorientation",
     "touch",
     "keyboard"
   ],
-  "romFaithfulness": "partial"
+  "romFaithfulness": "partial",
+  "roadPixelsVerified": 131072,
+  "originalCourseSequences": "pending"
 }

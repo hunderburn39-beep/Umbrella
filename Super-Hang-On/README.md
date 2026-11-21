@@ -1,11 +1,7 @@
-# Super Hang-On V0.8
+# Super Hang-On V0.9
 
-Independent HTML5 reconstruction. V0.7 preserved as base; no change to native/.
+Native HTML5 / Canvas reconstruction, landscape with tilt. V0.8 sprites and PCM engine retained.
 
-- assets/sprites/: 32 recovered bike PNGs in two scales and one scene atlas, preserved byte-for-byte.
-- data/road.js: 256 scanlines of 512 entries each (run lengths).
-- data/palettes.json: 52 palettes of 16 entries, assignment not yet validated.
-- src/: existing renderer, gameplay and landscape / tilt controls, separated from HTML.
-- sprites.html: gallery using the same external PNGs as the game.
+V0.9 verifies all road pixels against EPR-10642.47 and uses decoded row boundaries for road, player, roadside and opponent projection. Original route sequences and background layouts remain unverified; procedural approximations are still present.
 
-V0.7 PCM engine sample retained. Full original music, course layouts, object palettes and gameplay timing remain unverified. Serve via HTTPS for iOS sensor permissions. Physical iPhone testing pending.
+Run `python3 tools/verify-road.py /path/to/shangon.zip` with your local ROM; no ROM binaries added. Run `node tests/road-geometry.test.cjs` to check projection boundaries. Physical iPhone and full browser testing pending.
