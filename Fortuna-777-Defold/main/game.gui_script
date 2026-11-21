@@ -26,6 +26,7 @@ local function draw_col(self,col,grid)
   local n=self.cells[row][col]
   gui.play_flipbook(n,id)
   gui.set_position(n,vmath.vector3(220+(col-1)*260,350-(row-1)*82,0))
+  gui.set_scale(n,vmath.vector3(1,1,1))
  end
 end
 local function refresh(self)
@@ -71,6 +72,8 @@ local function spin(self)
  self.last=0
  self.elapsed=0
  self.next_frame=0
+ self.reel_tick={0,0,0}
+ self.reel_phase={0,0,0}
  self.visual_stops={math.random(20),math.random(20),math.random(20)}
  self.stopped=0
  gui.set_text(self.status,"A RODAR")
@@ -83,7 +86,7 @@ function init(self)
  box(480,270,960,540,C.dark)
  box(480,270,920,510,C.green)
  label(480,500,"FORTUNA 777",2.8,C.gold)
- label(480,472,"DEFOLD V6.1 | CREDITOS VIRTUAIS",.9,C.white)
+ label(480,472,"DEFOLD V6.2 | CREDITOS VIRTUAIS",.9,C.white)
  box(480,270,820,272,C.gold)
  box(480,270,810,262,C.dark)
  for col=1,3 do
@@ -92,8 +95,11 @@ function init(self)
    box(x,y,246,76,C.gold)
    box(x,y,240,70,C.white)
    box(x,y,232,62,vmath.vector4(.88,.84,.72,1))
-   box(x,y+25,232,12,vmath.vector4(.71,.65,.52,1))
-   box(x,y-25,232,12,vmath.vector4(.71,.65,.52,1))
+   for stripe=1,15 do
+    local offset=(stripe-8)*4
+    local v=1-.30*(math.abs(offset)/30)^1.7
+    box(x,y+offset,232,4,vmath.vector4(.88*v,.84*v,.72*v,1))
+   end
    local n=box(x,y,74,74,vmath.vector4(1,1,1,1))
    gui.set_texture(n,"symbols")
    self.cells[row][col]=n
@@ -112,18 +118,31 @@ end
 function update(self,dt)
  if not self.pending then return end
  self.elapsed=self.elapsed+dt
- if self.elapsed>=self.next_frame then
-  self.next_frame=self.elapsed+.08
-  for col=self.stopped+1,3 do
+ for col=self.stopped+1,3 do
+  local stop_at=.65+(col-1)*.35
+  local remaining=math.max(0,stop_at-self.elapsed)
+  local speed=5+12*math.min(1,remaining/.40)
+  self.reel_phase[col]=self.reel_phase[col]+dt*speed
+  while self.reel_phase[col]>=1 do
+   self.reel_phase[col]=self.reel_phase[col]-1
    self.visual_stops[col]=(self.visual_stops[col]%20)+1
-   local fake=rules.grid(self.visual_stops)
-   draw_col(self,col,fake)
+   draw_col(self,col,rules.grid(self.visual_stops))
+  end
+  local phase=self.reel_phase[col]
+  local squash=1-.20*math.sin(math.pi*phase)
+  for row=1,3 do
+   gui.set_scale(self.cells[row][col],vmath.vector3(1,squash,1))
   end
  end
  while self.stopped<3 and self.elapsed>=.65+self.stopped*.35 do
   self.stopped=self.stopped+1
   draw_col(self,self.stopped,self.pending.grid)
   sound.play("/game#stop",{gain=.85})
+  for row=1,3 do
+   local n=self.cells[row][self.stopped]
+   gui.set_scale(n,vmath.vector3(1,.85,1))
+   gui.animate(n,gui.PROP_SCALE,vmath.vector3(1,1,1),gui.EASING_OUTBACK,.14)
+  end
  end
  if self.stopped==3 then
   self.last=self.pending.result.total
@@ -136,10 +155,7 @@ function update(self,dt)
  end
 end
 function on_input(self,id,action)
- if id==hash("touch_multi") then
-  if not action.touch or #action.touch~=1 then return end
-  action=action.touch[1]
- elseif id~=hash("touch") then return end
+ if id~=hash("touch") then return end
  if not action.pressed then return end
  if self.pending then return true end
  if gui.pick_node(self.spin.n,action.x,action.y) then spin(self)
