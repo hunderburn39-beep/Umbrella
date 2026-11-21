@@ -1,18 +1,26 @@
-# Reactor Rush — V1.0
+# Reactor Rush — V1.1
 
-Protótipo independente de slot de cascatas, feito em HTML, CSS e JavaScript. Funciona em Safari e Chrome, incluindo smartphones, sem bibliotecas externas.
+Protótipo original de slot de cascatas HTML5 para telemóveis, com **créditos exclusivamente virtuais**.
 
-## Jogar
-
-**Jogar online:** https://reactor-rush-umbrella.vercel.app/
-
-[Código-fonte HTML](./index.html). A versão pública de teste está alojada no Vercel, porque o GitHub Pages ainda não está ativo neste repositório. Esta publicação foi feita a partir do mesmo HTML, sem ligação automática ao GitHub.
+**🎰 Jogar:** https://reactor-rush-umbrella.vercel.app/
 
 ## Mecânicas
+- Grelha 7×7 com grupos de 5+ símbolos e cascatas.
+- Fusão 2×2 com criatura gigante e pagamento duplicado nesse grupo.
+- Multiplicador por cascata consecutiva até ×5.
+- Símbolos Wild ocasionais e símbolos com aro dourado que carregam mais energia.
+- Medidor de 5 cargas: Implosão, Mutação, Demolição e Diagonais.
+- A cada cinco ativações quânticas: evento gigante Wild com prémio de 10× a aposta. Jackpot progressivo virtual acumula 2% de cada aposta e pode substituir esse prémio (probabilidade de 1/80 por evento gigante).
+- Turbo, Auto ×10, som sintetizado, guarda de saldo e recordes, créditos gratuitos (+1.000 CR).
 
-- Grelha 7 × 7 e grupos de 5 ou mais símbolos adjacentes.
-- Cascatas, símbolos 2 × 2, medidor quântico, especiais e evento gigante.
-- Jackpot progressivo fictício, Turbo e 10 jogadas automáticas.
-- Botões para aposta, som e informação; saldo persistente no navegador.
+## V1.1
+- Sprites SVG reutilizados para reduzir repetições e desenho do DOM.
+- Criaturas grandes 2×2 visíveis na grelha, prémios com mínimo de 0,01 CR.
+- Multiplicador de cascatas, saldo virtual recarregável, raridade do jackpot revista.
+- Acumulação precisa do jackpot mesmo com apostas pequenas, recordes nas regras.
+- Auto para quando a página fica oculta e tem proteção contra saldo insuficiente.
 
-**Nota:** apenas créditos virtuais; sem depósitos, levantamentos ou prémios com valor monetário. É uma criação original e não usa código, arte, marcas ou matemática da Play’n GO. Não pretende ser uma reprodução exata do Reactoonz.
+## Publicação
+O jogo completo está em `index.html`. A versão pública foi publicada **manualmente** no Vercel, a partir do mesmo HTML deste diretório. Não existe sincronização automática entre GitHub e Vercel.
+
+Sem dinheiro real, depósitos ou levantamentos. Não existe RTP certificado. Não utiliza código, arte, áudio nem matemática original da Play’n GO.
