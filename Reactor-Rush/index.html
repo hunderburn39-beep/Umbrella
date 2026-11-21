@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V1.3 — Slot de Cascatas</title>
+<title>Reactor Rush V1.4 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -31,29 +31,45 @@ button{font:inherit;cursor:pointer;color:inherit;border:none;touch-action:manipu
 .stat .num.bump{animation:counterBump 300ms ease-out}
 @keyframes counterBump{50%{color:#fff1a7;transform:scale(1.07)}}
 @media(max-width:360px){.controlbar{gap:5px}.betbuttons{gap:2px}.betbuttons button{min-width:28px}.betvalue{font-size:16px}.strap{letter-spacing:.18em}.round-btn{width:38px}}
+
+/* V1.4: efeitos leves no tabuleiro, sem filtros de ecrã inteiro. */
+.meter-next{font-size:9px;letter-spacing:.055em;color:#e2c1ff;font-weight:800;margin-top:2px;white-space:nowrap}
+.pip{transition:background-color 170ms,border-color 170ms}
+.pip.just-on{animation:quantumPip 340ms ease-out}
+@keyframes quantumPip{0%{transform:scale(.7)}65%{transform:scale(1.16)}100%{transform:scale(1)}}
+.overlay{display:block}.banner-layer,.fx-layer{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.fx-layer{z-index:1}.banner-layer{z-index:2}
+.cell.quantum-reveal{z-index:6;animation:quantumReveal var(--reveal-ms,300ms) cubic-bezier(.18,.82,.24,1) both!important}
+@keyframes quantumReveal{0%{transform:scale(.25) rotate(-22deg);opacity:.3}55%{transform:scale(1.19) rotate(6deg);opacity:1;box-shadow:0 0 18px #81faffb9}100%{transform:scale(1);opacity:1}}
+.arena.quantum-burst{animation:arenaBurst 700ms ease-out}
+@keyframes arenaBurst{0%,100%{box-shadow:0 0 0 2px #263159,0 8px 24px #0009,inset 0 0 20px #122c79}45%{box-shadow:0 0 0 4px #5dffeb,0 0 34px #45ffdc98,inset 0 0 24px #41ffea68}}
+.quantum-caption{position:absolute;top:4%;left:50%;transform:translateX(-50%);background:#0a204bea;border:1px solid #84fff2;border-radius:9px;padding:5px 10px;color:#d8fff9;font-weight:900;font-size:11px;letter-spacing:.065em;white-space:nowrap;text-shadow:0 1px #000;box-shadow:0 3px 10px #0007;animation:captionIn 260ms ease-out both}
+@keyframes captionIn{from{opacity:0;transform:translate(-50%,-10px)}to{opacity:1;transform:translate(-50%,0)}}
+@media(prefers-reduced-motion:reduce){.cell.quantum-reveal,.arena.quantum-burst,.pip.just-on,.quantum-caption{animation-duration:.01ms!important}}
 </style>
 </head>
 <body>
 <div class="app" aria-label="Reactor Rush, jogo original de cascatas em modo livre">
  <header class="top"><button class="round-btn" id="info" aria-label="Informações">ⓘ</button><div><div class="brand">REACTOR <span>RUSH</span></div><div class="strap">NEON CASCADE • FREE PLAY</div></div><button class="round-btn" id="sound" aria-label="Ativar ou desativar o som">♪</button></header>
  <div class="jackpot"><div class="small">JACKPOT<br>PROGRESSIVO</div><div><span class="amt" id="jackpot">250,00</span><span class="unit"> CR</span></div></div>
- <div class="meters"><div><div class="meter-title">ENERGIA QUÂNTICA</div><div class="meter-info" id="meterLabel">0/5 CARGAS</div></div><div class="pips" id="pips"></div></div>
- <main class="arena" id="arena"><div class="grid" id="grid" aria-label="Tabuleiro de 7 por 7 símbolos"></div><div class="overlay" id="overlay" aria-live="polite"></div></main>
+ <div class="meters"><div><div class="meter-title">ENERGIA QUÂNTICA</div><div class="meter-info" id="meterLabel">0/5 CARGAS</div><div class="meter-next" id="nextGiant">GIGANTE EM 5 ATIVAÇÕES</div></div><div class="pips" id="pips"></div></div>
+ <main class="arena" id="arena"><div class="grid" id="grid" aria-label="Tabuleiro de 7 por 7 símbolos"></div><div class="overlay" id="overlay" aria-live="polite"><div class="banner-layer" id="bannerLayer"></div><div class="fx-layer" id="fxLayer"></div></div></main>
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V1.3</strong></footer>
+ <footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V1.4</strong></footer>
 </div>
-<div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p><b>Reactor Rush</b> é uma slot original inspirada na mecânica de cascatas. Tem 7×7 posições, sem linhas fixas.</p><ul><li><b>5+ criaturas iguais</b> ligadas horizontal ou verticalmente dão prémio.</li><li>Os símbolos premiados desaparecem com um efeito luminoso. Os restantes descem individualmente e novos símbolos caem de cima, criando cascatas sucessivas.</li><li>Cada símbolo Wild só pode ser contado <b>uma vez por cascata</b>, mesmo que ligue duas cores. Um quadrado de <b>2×2 criaturas iguais</b> transforma-se visualmente numa criatura gigante e duplica o pagamento desse grupo. Cascatas consecutivas aumentam o multiplicador até <b>×5</b>.</li><li>Os <b>Wild</b> luminosos substituem qualquer criatura. Os símbolos com aro dourado dão energia adicional quando desaparecem numa vitória.</li><li>As vitórias carregam 5 níveis de energia. Ao completar o medidor, ocorre um efeito especial: Implosão, Mutação, Demolição ou Diagonais.</li><li>A cada <b>5 ativações quânticas</b> ocorre um evento gigante com Wilds e um prémio de <b>10× a aposta</b>. O jackpot virtual acumula créditos ao longo das rodadas e tem uma hipótese adicional de 1 em 80 em cada evento gigante (substitui esse prémio).</li><li>Os ganhos aparecem por cima da grelha e os prémios acumulados ficam no painel. O modo Turbo reduz as esperas. AUTO executa até 10 rodadas. Usa o botão <b>+1.000 CR</b> para adicionar créditos virtuais gratuitamente.</li></ul><p class="separate"><b>Modo livre:</b> todos os valores são créditos fictícios, sem depósitos nem levantamentos. A mecânica, os gráficos e a tabela de prémios são originais e não representam o RTP ou a matemática do Reactoonz.</p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
+<div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p><b>Reactor Rush</b> é uma slot original inspirada na mecânica de cascatas. Tem 7×7 posições, sem linhas fixas.</p><ul><li><b>5+ criaturas iguais</b> ligadas horizontal ou verticalmente dão prémio.</li><li>Os símbolos premiados desaparecem com um efeito luminoso. Os restantes descem individualmente e novos símbolos caem de cima, criando cascatas sucessivas.</li><li>Cada símbolo Wild só pode ser contado <b>uma vez por cascata</b>, mesmo que ligue duas cores. Um quadrado de <b>2×2 criaturas iguais</b> transforma-se visualmente numa criatura gigante e duplica o pagamento desse grupo. Cascatas consecutivas aumentam o multiplicador até <b>×5</b>.</li><li>Os <b>Wild</b> luminosos substituem qualquer criatura. Os símbolos com aro dourado dão energia adicional quando desaparecem numa vitória.</li><li>As vitórias carregam 5 níveis de energia. Ao completar o medidor, ocorre um efeito especial: Implosão, Mutação, Demolição ou Diagonais. Na V1.4, as transformações são reveladas por fases e o contador mostra quantas ativações faltam para o Gigante.</li><li>A cada <b>5 ativações quânticas</b> ocorre um evento gigante com Wilds e um prémio de <b>10× a aposta</b>. O jackpot virtual acumula créditos ao longo das rodadas e tem uma hipótese adicional de 1 em 80 em cada evento gigante (substitui esse prémio). O Gigante é revelado em três linhas antes do prémio.</li><li>Os ganhos aparecem por cima da grelha e os prémios acumulados ficam no painel. O modo Turbo reduz as esperas. AUTO executa até 10 rodadas. Usa o botão <b>+1.000 CR</b> para adicionar créditos virtuais gratuitamente.</li></ul><p class="separate"><b>Modo livre:</b> todos os valores são créditos fictícios, sem depósitos nem levantamentos. A mecânica, os gráficos e a tabela de prémios são originais e não representam o RTP ou a matemática do Reactoonz.</p><p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b></p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
 <script>
 (()=>{'use strict';
 const N=7, TYPES=8, BETS=[.05,.10,.20,.40,.60,1,2,5,10], COLORS=['#ef6484','#65e898','#ffb25a','#66d3ff','#be88ff','#ff8570','#a3e077','#ffe377'];
 const GLYPHS=['horns','plant','star','tuft','ball','block','blob','sun'];
 const $=id=>document.getElementById(id);
-const gridEl=$('grid'), pipsEl=$('pips'), msgEl=$('message'), overlay=$('overlay');
-let state={balance:1000,betIndex:2,jackpot:250,charged:0,features:0,spins:0,lastWin:0,bestWin:0,bestCascades:0,turbo:false,sound:false};
+const gridEl=$('grid'), pipsEl=$('pips'), msgEl=$('message'), overlay=$('overlay'), fxLayer=$('fxLayer'), bannerLayer=$('bannerLayer'), arena=$('arena');
+pipsEl.innerHTML=Array.from({length:5},()=>'<div class="pip"></div>').join('');
+let state={balance:1000,betIndex:2,jackpot:250,charged:0,features:0,spins:0,lastWin:0,bestWin:0,bestCascades:0,turbo:false,sound:false,lastFeature:''};
 try{const loaded=JSON.parse(localStorage.getItem('reactor-rush-v1'));if(loaded&&typeof loaded.balance==='number'&&Number.isFinite(loaded.balance))state={...state,...loaded};}catch(e){}
-state.balance=Math.max(0,Number(state.balance)||0);state.jackpot=Math.max(250,Number(state.jackpot)||250);state.charged=Math.max(0,Math.min(5,Number(state.charged)||0));state.features=Math.max(0,Number(state.features)||0);state.betIndex=Math.max(0,Math.min(BETS.length-1,Number(state.betIndex)||0));
+state.balance=Math.max(0,Number(state.balance)||0);state.jackpot=Math.max(250,Number(state.jackpot)||250);state.charged=Math.max(0,Math.min(5,Number(state.charged)||0));state.features=Math.max(0,Math.floor(Number(state.features)||0));state.lastFeature=typeof state.lastFeature==='string'?state.lastFeature.slice(0,40):'';state.betIndex=Math.max(0,Math.min(BETS.length-1,Number(state.betIndex)||0));
 let board=[], busy=false, autoLeft=0, cascadeCount=0, won=0, audioCtx=null;
 const money=n=>(Math.round(n*100)/100).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -108,16 +124,16 @@ function paint(motions=null){
  if(fusions.length)gridEl.insertAdjacentHTML('beforeend',fusions.map(({r,c,t})=>`<div class="fusion" style="--gx:${c};--gy:${r}" aria-hidden="true">${spriteRef('t'+t)}<span class="boost">×2</span></div>`).join(''));
 }
 
-function update(){const bet=BETS[state.betIndex];$('balance').textContent=money(state.balance);$('bet').textContent=money(bet);$('jackpot').textContent=money(state.jackpot);$('lastwin').textContent=money(state.lastWin);$('bestWin').textContent=money(state.bestWin||0);$('bestCascades').textContent=String(state.bestCascades||0);$('cascades').textContent=String(cascadeCount);$('multi').textContent='MULTI ×'+Math.max(1,Math.min(cascadeCount,5));document.querySelector('.app').classList.toggle('is-turbo',state.turbo);$('meterLabel').textContent=`${state.charged}/5 CARGAS`;pipsEl.innerHTML=Array.from({length:5},(_,i)=>`<div class="pip${i<state.charged?' on':''}"></div>`).join('');$('spin').disabled=busy||state.balance+1e-5<bet;$('spin').classList.toggle('active',busy);$('spin').setAttribute('aria-label',busy?'Rodada em curso':'Rodar');$('minus').disabled=busy||state.betIndex===0;$('plus').disabled=busy||state.betIndex===BETS.length-1;$('turbo').classList.toggle('sel',state.turbo);$('auto').classList.toggle('sel',autoLeft>0);$('auto').textContent=autoLeft>0?`■ PARAR (${autoLeft})`:'↻ AUTO ×10';$('sound').textContent=state.sound?'♫':'♪';$('sound').classList.toggle('active',state.sound);}
+function update(){const bet=BETS[state.betIndex];$('balance').textContent=money(state.balance);$('bet').textContent=money(bet);$('jackpot').textContent=money(state.jackpot);$('lastwin').textContent=money(state.lastWin);$('bestWin').textContent=money(state.bestWin||0);$('bestCascades').textContent=String(state.bestCascades||0);$('lastFeature').textContent=state.lastFeature||'—';$('featureCount').textContent=String(state.features);$('cascades').textContent=String(cascadeCount);$('multi').textContent='MULTI ×'+Math.max(1,Math.min(cascadeCount,5));document.querySelector('.app').classList.toggle('is-turbo',state.turbo);$('meterLabel').textContent=`${state.charged}/5 CARGAS`;const toGiant=5-(state.features%5);$('nextGiant').textContent=`GIGANTE EM ${toGiant} ATIVAÇ${toGiant===1?'ÃO':'ÕES'}`;for(let i=0;i<5;i++){const pip=pipsEl.children[i],wasOn=pip.classList.contains('on'),isOn=i<state.charged;pip.classList.toggle('on',isOn);if(isOn&&!wasOn){pip.classList.remove('just-on');void pip.offsetWidth;pip.classList.add('just-on');}}$('spin').disabled=busy||state.balance+1e-5<bet;$('spin').classList.toggle('active',busy);$('spin').setAttribute('aria-label',busy?'Rodada em curso':'Rodar');$('minus').disabled=busy||state.betIndex===0;$('plus').disabled=busy||state.betIndex===BETS.length-1;$('turbo').classList.toggle('sel',state.turbo);$('auto').classList.toggle('sel',autoLeft>0);$('auto').textContent=autoLeft>0?`■ PARAR (${autoLeft})`:'↻ AUTO ×10';$('sound').textContent=state.sound?'♫':'♪';$('sound').classList.toggle('active',state.sound);}
 function message(s){msgEl.innerHTML=s}
 function prizePulse(amount){
  if(!amount||document.hidden)return;
  const el=document.createElement('div');el.className='win-float';el.textContent='+'+money(amount)+' CR';
- overlay.appendChild(el);setTimeout(()=>el.remove(),state.turbo?380:900);
+ fxLayer.appendChild(el);setTimeout(()=>el.remove(),state.turbo?380:900);
  for(const id of ['lastwin','balance']){const node=$(id);node.classList.remove('bump');void node.offsetWidth;node.classList.add('bump');}
 }
 
-function banner(s){overlay.innerHTML=`<div class="banner">${s}</div>`;setTimeout(()=>{if(overlay.firstElementChild?.textContent===s)overlay.innerHTML=''},820)}
+function banner(s){const token=String(s);bannerLayer.innerHTML=`<div class="banner">${token}</div>`;setTimeout(()=>{if(bannerLayer.firstElementChild?.textContent===token)bannerLayer.replaceChildren()},state.turbo?350:820)}
 function sound(freq=400, ms=80,type='sine',vol=.04){if(!state.sound)return;try{audioCtx=audioCtx||new(window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume();const osc=audioCtx.createOscillator(),gain=audioCtx.createGain(),now=audioCtx.currentTime;osc.type=type;osc.frequency.setValueAtTime(freq,now);gain.gain.setValueAtTime(vol,now);gain.gain.exponentialRampToValueAtTime(.001,now+ms/1000);osc.connect(gain);gain.connect(audioCtx.destination);osc.start(now);osc.stop(now+ms/1000);}catch(e){}}
 function neighbors(r,c){const arr=[];if(r>0)arr.push([r-1,c]);if(r<N-1)arr.push([r+1,c]);if(c>0)arr.push([r,c-1]);if(c<N-1)arr.push([r,c+1]);return arr;}
 function findGroups(){
@@ -181,14 +197,67 @@ function fall(remove){
 function addCharge(count){state.charged=Math.min(5,state.charged+Math.max(1,Math.floor(count/13)));update();}
 function waitMs(n){return sleep(state.turbo||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?Math.round(n*.30):n)}
 function mutate(type){const replacement=(type+1+rand(TYPES-1))%TYPES;for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(board[r][c].t===type&&!board[r][c].w)board[r][c].t=replacement;}
-async function special(){state.charged=0;state.features++;const bonus=state.features%5===0;let title='';const roll=rand(4);if(bonus){title='GIGANTE QUÂNTICO';const startR=rand(N-2),startC=rand(N-2);for(let y=startR;y<startR+3;y++)for(let x=startC;x<startC+3;x++)board[y][x]=wildCell();
- const jackpotWin=rand(80)===0;const award=jackpotWin?Math.round(state.jackpot*100)/100:Math.round(BETS[state.betIndex]*10*100)/100;
- state.balance=Math.round((state.balance+award)*100)/100;won=Math.round((won+award)*100)/100;state.lastWin=won;state.bestWin=Math.max(Number(state.bestWin)||0,won);
- if(jackpotWin){title='JACKPOT QUÂNTICO!';message(`🌟 JACKPOT VIRTUAL: <strong>+${money(award)} CR</strong>`);state.jackpot=250;}
- else message(`⚡ PRÉMIO QUÂNTICO: <strong>+${money(award)} CR</strong>`);
- }else if(roll===0){title='IMPLOSÃO';for(let i=0;i<5;i++){let r=rand(N),c=rand(N);board[r][c]=wildCell();}}else if(roll===1){title='MUTAÇÃO';mutate(rand(TYPES));}else if(roll===2){title='DEMOLIÇÃO';const ty=rand(TYPES);for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(board[r][c].t===ty&&!board[r][c].w)board[r][c]=wildCell();}else{title='DIAGONAIS';for(let i=0;i<N;i++){board[i][i]=wildCell();board[i][N-1-i]=wildCell();}}
- banner(title);sound(680,370,'triangle',.055);paint();update();save();await waitMs(980);
+// V1.4: preparar TODAS as alterações antes de tocar no tabuleiro, depois
+// mostrá-las em pequenas vagas. O pagamento do Gigante só vem após a revelação.
+function quantumPlan(){
+ const giant=state.features%5===0, changes=[],reserved=new Set();let title='';
+ const set=(r,c,tile)=>{const id=r*N+c;if(!reserved.has(id)){reserved.add(id);changes.push({r,c,tile})}};
+ if(giant){
+  title='GIGANTE QUÂNTICO';const startR=rand(N-2),startC=rand(N-2);
+  for(let r=startR;r<startR+3;r++)for(let c=startC;c<startC+3;c++)set(r,c,wildCell());
+  // Revelar as três linhas de cima para baixo, sem converter todas de uma vez.
+  return {title,giant,changes,waves:[changes.slice(0,3),changes.slice(3,6),changes.slice(6,9)]};
+ }
+ const roll=rand(4);
+ if(roll===0){
+  title='IMPLOSÃO';while(changes.length<5){set(rand(N),rand(N),wildCell())}
+ }else if(roll===1){
+  title='MUTAÇÃO';const types=[...new Set(board.flat().filter(t=>!t.w).map(t=>t.t))];const source=types[rand(types.length)];const dest=(source+1+rand(TYPES-1))%TYPES;
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(!board[r][c].w&&board[r][c].t===source)set(r,c,{...board[r][c],t:dest});
+ }else if(roll===2){
+  title='DEMOLIÇÃO';const types=[...new Set(board.flat().filter(t=>!t.w).map(t=>t.t))];const target=types[rand(types.length)];
+  for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(!board[r][c].w&&board[r][c].t===target)set(r,c,wildCell());
+ }else{
+  title='DIAGONAIS';for(let i=0;i<N;i++){set(i,i,wildCell());set(i,N-1-i,wildCell())}
+ }
+ // Levar as mudanças em 3 vagas curtas. Não existem efeitos se não houver casas.
+ const waves=[[],[],[]];changes.forEach((item,i)=>waves[i%3].push(item));
+ return {title,giant:false,changes,waves:waves.filter(w=>w.length)};
 }
+async function revealQuantum(plan){
+ const reduced=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+ const delay=state.turbo?85:reduced?30:225;
+ const cap=document.createElement('div');cap.className='quantum-caption';cap.textContent=plan.title;
+ fxLayer.appendChild(cap);arena.classList.remove('quantum-burst');void arena.offsetWidth;arena.classList.add('quantum-burst');
+ banner(plan.title);message(`⚡ <strong>${plan.title}</strong> • TRANSFORMAÇÃO QUÂNTICA`);
+ for(let step=0;step<plan.waves.length;step++){
+  const wave=plan.waves[step];
+  for(const {r,c,tile} of wave)board[r][c]=tile;
+  paint(); // Sincronizar sprites e qualquer fusão 2×2 real.
+  for(const {r,c} of wave){const cell=tiles[r*N+c];cell.style.setProperty('--reveal-ms',state.turbo?'100ms':'300ms');cell.classList.add('quantum-reveal')}
+  sound(400+(step*170),state.turbo?65:145,'triangle',.048);
+  await sleep(delay);
+ }
+ paint();cap.remove();arena.classList.remove('quantum-burst');
+}
+async function special(){
+ state.charged=0;state.features++;
+ const plan=quantumPlan();state.lastFeature=plan.title;update();
+ await revealQuantum(plan);
+ if(plan.giant){
+  // Award semelhante à V1.3: evita alterar a tabela de prémios nesta revisão.
+  const jackpotWin=rand(80)===0;
+  const award=jackpotWin?Math.round(state.jackpot*100)/100:Math.round(BETS[state.betIndex]*10*100)/100;
+  state.balance=Math.round((state.balance+award)*100)/100;
+  won=Math.round((won+award)*100)/100;state.lastWin=won;
+  state.bestWin=Math.max(Number(state.bestWin)||0,won);
+  if(jackpotWin){state.lastFeature='JACKPOT QUÂNTICO';state.jackpot=250;banner('JACKPOT QUÂNTICO!');message(`🌟 JACKPOT VIRTUAL: <strong>+${money(award)} CR</strong>`)}
+  else {banner('GIGANTE QUÂNTICO!');message(`⚡ PRÉMIO QUÂNTICO: <strong>+${money(award)} CR</strong>`)}
+  prizePulse(award);sound(790,230,'triangle',.060);
+ }else message(`⚡ <strong>${plan.title}</strong> • PROCURA NOVAS COMBINAÇÕES`);
+ update();save();await waitMs(plan.giant?420:230);
+}
+
 async function settle(){let cycles=0,featureTriggered=false;while(cycles<20){const groups=findGroups();if(!groups.length){if(state.charged>=5&&!featureTriggered){featureTriggered=true;await special();cycles++;continue;}break;}
  cascadeCount++;cycles++;const multiplier=Math.min(5,cascadeCount);let total=0,doubled=false;const removals=new Set();for(const g of groups){total+=payout(g,BETS[state.betIndex])*multiplier;if(g.doubled)doubled=true;for(const [r,c] of g.cells)removals.add(r*N+c);}
  total=Math.round(total*100)/100;won=Math.round((won+total)*100)/100;state.balance=Math.round((state.balance+total)*100)/100;state.lastWin=won;state.bestWin=Math.max(Number(state.bestWin)||0,won);state.bestCascades=Math.max(Number(state.bestCascades)||0,cascadeCount);
