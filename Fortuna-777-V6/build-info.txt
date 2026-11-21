@@ -1,0 +1,3 @@
+Fortuna 777 V6
+Defold WebAssembly build 6.0.0
+Publicacao: 2026-11-21
