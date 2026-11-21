@@ -210,12 +210,12 @@ function quantumPlan(){
  }
  const roll=rand(4);
  if(roll===0){
-  title='IMPLOSÃO';while(changes.length<5){set(rand(N),rand(N),wildCell())}
+  title='IMPLOSÃO';const pool=Array.from({length:N*N},(_,i)=>i);for(let i=0;i<5;i++){const pick=i+rand(pool.length-i),id=pool[pick];pool[pick]=pool[i];pool[i]=id;set(Math.floor(id/N),id%N,wildCell())}
  }else if(roll===1){
-  title='MUTAÇÃO';const types=[...new Set(board.flat().filter(t=>!t.w).map(t=>t.t))];const source=types[rand(types.length)];const dest=(source+1+rand(TYPES-1))%TYPES;
+  title='MUTAÇÃO';const types=[...new Set(board.flat().filter(t=>!t.w).map(t=>t.t))];if(!types.length)return {title,giant:false,changes,waves:[]};const source=types[rand(types.length)];const dest=(source+1+rand(TYPES-1))%TYPES;
   for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(!board[r][c].w&&board[r][c].t===source)set(r,c,{...board[r][c],t:dest});
  }else if(roll===2){
-  title='DEMOLIÇÃO';const types=[...new Set(board.flat().filter(t=>!t.w).map(t=>t.t))];const target=types[rand(types.length)];
+  title='DEMOLIÇÃO';const types=[...new Set(board.flat().filter(t=>!t.w).map(t=>t.t))];if(!types.length)return {title,giant:false,changes,waves:[]};const target=types[rand(types.length)];
   for(let r=0;r<N;r++)for(let c=0;c<N;c++)if(!board[r][c].w&&board[r][c].t===target)set(r,c,wildCell());
  }else{
   title='DIAGONAIS';for(let i=0;i<N;i++){set(i,i,wildCell());set(i,N-1-i,wildCell())}
