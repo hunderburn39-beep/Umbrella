@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V3.5 — Slot de Cascatas</title>
+<title>Reactor Rush V3.6 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -328,7 +328,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.5 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.5</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.6 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.6</strong></footer>
 </div>
 <div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais, com ligações ortogonais e Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias tem 18% de probabilidade de receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
 <p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b> · GARGANTOONS: <b id="gargantoonCount">0</b></p><p class="separate"><button id="testGargantoon" type="button" style="background:#593c91;padding:10px;border-radius:8px;font-weight:900">TESTAR GARGANTOON (SEM CRÉDITOS)</button><br>Mostra as três fases; não altera o saldo, prémios ou estatísticas.</p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p class="separate"><b>Novo grafismo horizontal V3.3</b><br><label for="skin33">Selecionar imagem Reactor-Rush-V3.3-horizontal.webp</label><input id="skin33" type="file" accept="image/webp,image/png,image/jpeg" style="display:block;width:100%;margin:8px 0"><span id="skin33Status" role="status">Grafismo anterior ativo</span> <button id="skin33Reset" type="button" style="background:#124d75;padding:6px;border-radius:6px">Repor</button></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="25" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="100" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
@@ -341,7 +341,7 @@ const gridEl=$('grid'), pipsEl=$('pips'), msgEl=$('message'), overlay=$('overlay
 pipsEl.innerHTML=Array.from({length:5},()=>'<div class="pip"></div>').join('');
 let state={balance:1000,betIndex:2,charged:0,features:0,spins:0,lastWin:0,bestWin:0,bestCascades:0,turbo:false,sound:false,voice:true,music:true,musicVolume:25,sfxVolume:100,lastFeature:'',gargantoonCount:0};
 try{const loaded=JSON.parse(localStorage.getItem('reactor-rush-v1'));if(loaded&&typeof loaded.balance==='number'&&Number.isFinite(loaded.balance))state={...state,...loaded};}catch(e){}
-if(state.audioMixVersion!==34){state.musicVolume=25;state.sfxVolume=100;state.audioMixVersion=34;}
+if(state.audioMixVersion!==36){state.musicVolume=25;state.sfxVolume=100;state.audioMixVersion=36;}
 state.balance=Math.max(0,Number(state.balance)||0);delete state.jackpot;state.charged=0;state.features=Math.max(0,Math.floor(Number(state.features)||0));state.lastFeature=typeof state.lastFeature==='string'?state.lastFeature.slice(0,40):'';state.betIndex=Math.max(0,Math.min(BETS.length-1,Number(state.betIndex)||0));
 let board=[], busy=false, autoLeft=0, cascadeCount=0, won=0, audioCtx=null;
 const ONE_EYED=[0,6], FEATURE_NAMES=['IMPLOSÃO','ALTERAÇÃO','DEMOLIÇÃO','INCISÃO'], CHARGE=25;let featureQueue=[],floatingType=0,giantPhase=0,giantSerial=0,activeFeature='';
@@ -498,32 +498,58 @@ function fizz(seconds,volume,delay=0,hz=1700,q=1.3){
  if(!audioAllowed()||!audioCtx||!effectBus||fxActive>=44)return;
  try{const c=audioCtx,t=c.currentTime+delay;if(!fxNoiseBuffer){fxNoiseBuffer=c.createBuffer(1,Math.ceil(c.sampleRate*.7),c.sampleRate);const d=fxNoiseBuffer.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=fxRand()*2-1}const src=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();src.buffer=fxNoiseBuffer;f.type='bandpass';f.frequency.setValueAtTime(hz,t);f.frequency.exponentialRampToValueAtTime(Math.max(180,hz*.55),t+seconds);f.Q.value=q;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(volume,t+.006);g.gain.exponentialRampToValueAtTime(.0001,t+seconds);src.connect(f);f.connect(g);g.connect(effectBus);fxActive++;src.onended=()=>{fxActive--;src.disconnect();f.disconnect();g.disconnect()};src.start(t,fxRand()*.08);src.stop(t+seconds)}catch(e){}
 }
-function bubble(delay=0,scale=1,vol=.075){creatureTone([[0,540*scale],[.22,350*scale],[.6,225*scale],[1,190*scale]],.10,vol,delay,'sine');creatureTone([[0,1150*scale],[1,570*scale]],.055,vol*.28,delay,'triangle');fizz(.047,vol*.14,delay,2100,1.8)}
-function squeak(delay=0,base=510,vol=.065){creatureTone([[0,base*.7],[.25,base*1.65],[.52,base*.9],[.78,base*1.28],[1,base*.54]],.19,vol,delay,'triangle',2350);creatureTone([[0,base*1.4],[.38,base*2.1],[1,base]],.10,vol*.19,delay+.02,'sine')}
-function pieceDropSound(motions=null){
- if(!audioEngine())return;
- const cols=motions?([...new Set([...motions.keys()].map(i=>i%7))]).sort((a,b)=>a-b):[0,1,2,3,4,5,6];const gap=state.turbo?.012:.032;
- cols.forEach((col,i)=>bubble(i*gap,.87+fxRand()*.40,.061));
+// V3.6 - original elastic creature effects and event-specific musical motifs.
+function bubble(delay=0,scale=1,vol=.075){
+ creatureTone([[0,390*scale],[.12,220*scale],[.38,320*scale],[1,125*scale]],.115,vol,delay,'sine');
+ creatureTone([[0,920*scale],[.2,1300*scale],[1,410*scale]],.075,vol*.34,delay,'triangle',2600);
+ fizz(.038,vol*.2,delay,1900,1.7);
 }
-function pieceClearSound(count=5){if(!audioEngine())return;const n=Math.min(7,Math.max(3,Math.ceil(count/3)));for(let i=0;i<n;i++)bubble(i*(state.turbo?.012:.025),1.27+fxRand()*.62,.061);fizz(.14,.037,0,2800,1.4)}
-function pieceMatchSound(n){if(!audioEngine())return;const f=450+Math.min(n,5)*25;squeak(0,f,.05);[1,1.26,1.5].forEach((m,i)=>creatureTone([[0,f*m],[1,f*m*.98]],.11,.041,i*.043,'sine'))}
-function spinLaunchSound(){if(!audioEngine())return;creatureTone([[0,230],[.33,480],[.7,700],[1,410]],.19,.06,0,'triangle');fizz(.12,.025,0,1300,1)}
-function quantumChargeSound(){if(!audioEngine())return;creatureTone([[0,230],[.6,780],[1,1150]],.22,.065,0,'triangle');creatureTone([[0,1060],[1,1580]],.10,.045,.19,'sine')}
+function squeak(delay=0,base=510,vol=.065){
+ creatureTone([[0,base*.55],[.15,base*1.55],[.34,base*.82],[.52,base*1.85],[.73,base*.72],[1,base*.43]],.16,vol,delay,'triangle',2600);
+ creatureTone([[0,base*2.1],[.33,base*3.2],[1,base*.9]],.085,vol*.24,delay+.012,'sine');
+}
+function pieceDropSound(motions=null,lead=0){
+ if(!audioEngine())return;
+ const cols=motions?([...new Set([...motions.keys()].map(i=>i%7))]).sort((a,b)=>a-b):[0,1,2,3,4,5,6];
+ const gap=state.turbo?.006:.012;
+ cols.forEach((col,i)=>{const d=lead+(col%3)*gap+i*.004;const s=.78+fxRand()*.55;bubble(d,s,.076);if(i%3===0)squeak(d+.025,360+fxRand()*180,.029)});
+}
+function pieceClearSound(count=5){
+ if(!audioEngine())return;
+ const n=Math.min(7,Math.max(3,Math.ceil(count/3)));
+ for(let i=0;i<n;i++){const d=i*(state.turbo?.009:.024);bubble(d,1.45+fxRand()*.75,.067);if(i%2===0)fizz(.065,.027,d,3200+fxRand()*1000,2.2)}
+}
+function rrNote(hz,dur,vol,delay=0){creatureTone([[0,hz*1.012],[.18,hz],[1,hz*.998]],dur,vol,delay,'sine');creatureTone([[0,hz*2],[1,hz*1.99]],dur*.55,vol*.22,delay,'triangle',3500)}
+function pieceMatchSound(n){
+ if(!audioEngine())return;
+ const f=349.23*Math.pow(2,Math.min(Math.max(0,n-1),10)/12);
+ [1,1.25,1.5].forEach((m,i)=>rrNote(f*m,.18,.057,i*(state.turbo?.026:.055)));
+ squeak(.026,f*.8,.047);
+}
+function spinLaunchSound(){if(!audioEngine())return;creatureTone([[0,175],[.22,440],[.58,820],[1,260]],.19,.071,0,'triangle');fizz(.15,.032,0,1800,1.7)}
+function quantumChargeSound(){if(!audioEngine())return;for(let i=0;i<3;i++){creatureTone([[0,180+i*150],[.75,600+i*220],[1,750+i*240]],.13,.047,i*.072,'triangle');fizz(.055,.018,i*.072,1500+i*650,2)}rrNote(1396.91,.19,.048,.23)}
+function rrWinSound(key){
+ const rank=['VITÓRIA!','GRANDE PRÉMIO!','MEGA GANHO!','SUPER GANHO!','ULTRA GANHO!'].indexOf(key);
+ const notes=rank<=0?[1,1.25,1.5]:[1,1.25,1.5,2,1.5,2,2.5,3];
+ const base=rank>=3?392:329.63;
+ notes.slice(0,rank<=0?3:4+rank).forEach((m,i)=>rrNote(base*m,.18+rank*.035,.058,i*.085));
+ if(rank>0){creatureTone([[0,120],[.35,75],[1,42]],.34,.11,0,'sine');fizz(.29,.042,0,2800,1.3);[1,1.25,1.5,2].forEach(m=>rrNote(base*m,.45,.036,.38+rank*.07));}
+}
 function featureSound(key){if(!audioEngine())return;
  switch(key){
- case 'IMPLOSÃO':creatureTone([[0,1100],[.4,360],[1,85]],.30,.10,0,'triangle');fizz(.22,.09,.10,1900,1.2);break;
- case 'ALTERAÇÃO':for(let i=0;i<3;i++)squeak(i*.09,470+i*115,.065);break;
- case 'DEMOLIÇÃO':creatureTone([[0,230],[1,43]],.34,.13,0,'triangle');fizz(.36,.10,0,700,.8);for(let i=0;i<3;i++)bubble(.07+i*.055,.7,.045);break;
- case 'INCISÃO':for(let i=0;i<2;i++){creatureTone([[0,1650],[.5,410],[1,1100]],.16,.07,i*.12,'triangle');fizz(.13,.04,i*.12,3100,1.8)}break;
- case 'GARGANTOON!':case 'GIGANTE':creatureTone([[0,92],[.4,190],[.75,135],[1,72]],.50,.13,0,'triangle');squeak(.27,320,.075);fizz(.25,.05,.09,600,1);break;
- case 'GIANTOONZ!':bubble(0,.7,.09);squeak(.08,410,.07);break;
- case 'SÍMBOLO FLUTUANTE':squeak(0,660,.06);creatureTone([[0,560],[1,1210]],.18,.038,.08,'sine');break;
- case 'WILDS ATIVADOS':for(let i=0;i<2;i++){bubble(i*.11,1.5,.062);creatureTone([[0,650],[1,1430]],.14,.043,i*.11,'sine')}break;
- case 'INSTABILIDADE':for(let i=0;i<4;i++)squeak(i*.065,550+fxRand()*300,.045);fizz(.22,.045,0,2600,2);break;
- default: if(key==='VITÓRIA!'||key==='GRANDE PRÉMIO!'||key==='MEGA GANHO!'||key==='SUPER GANHO!'||key==='ULTRA GANHO!'){bubble(0,1.3,.055);squeak(.055,670,.057);creatureTone([[0,780],[1,920]],.18,.042,.12,'sine')}else squeak(0,500,.045);
+ case 'IMPLOSÃO':creatureTone([[0,1500],[.35,850],[.8,150],[1,48]],.37,.12,0,'triangle');fizz(.29,.086,.03,2400,2);bubble(.28,.6,.09);break;
+ case 'ALTERAÇÃO':for(let i=0;i<4;i++)squeak(i*.077,380+i*105,.068);break;
+ case 'DEMOLIÇÃO':creatureTone([[0,135],[.2,73],[1,38]],.41,.14,0,'sine');fizz(.38,.10,0,760,.8);for(let i=0;i<3;i++)bubble(.07+i*.065,.69,.059);break;
+ case 'INCISÃO':for(let i=0;i<2;i++){creatureTone([[0,1900],[.35,650],[1,240]],.14,.084,i*.16,'triangle');fizz(.14,.058,i*.16,3900,2.2)}break;
+ case 'GARGANTOON!':case 'GIGANTE':creatureTone([[0,65],[.24,104],[.55,65],[1,42]],.58,.15,0,'triangle',850);fizz(.32,.061,.03,620,1.2);for(let i=0;i<3;i++)squeak(.19+i*.12,240+i*80,.057);[1,1.5,2].forEach((m,i)=>rrNote(196*m,.27,.055,.43+i*.08));break;
+ case 'GIANTOONZ!':bubble(0,.69,.087);squeak(.09,410,.073);rrNote(784,.24,.054,.21);break;
+ case 'SÍMBOLO FLUTUANTE':squeak(0,660,.066);creatureTone([[0,560],[1,1210]],.18,.047,.08,'sine');break;
+ case 'WILDS ATIVADOS':for(let i=0;i<3;i++){bubble(i*.09,1.5+i*.12,.065);rrNote(523.25*(1+i*.25),.15,.049,i*.09)}break;
+ case 'INSTABILIDADE':for(let i=0;i<5;i++){squeak(i*.052,550+fxRand()*450,.044);fizz(.085,.024,i*.052,3000,2.8)}break;
+ default:if(['VITÓRIA!','GRANDE PRÉMIO!','MEGA GANHO!','SUPER GANHO!','ULTRA GANHO!'].includes(key))rrWinSound(key);else squeak(0,500,.045);
  }
 }
-function featureRevealSound(step){if(!audioEngine())return;bubble(0,1.1+Math.min(step,12)*.025,.045);fizz(.09,.024,0,2500,2)}
+function featureRevealSound(step){if(!audioEngine())return;bubble(0,1.1+Math.min(step,12)*.025,.060);fizz(.075,.026,0,2900,2)}
 function stopVoice(){}
 
 function neighbors(r,c){const arr=[];if(r>0)arr.push([r-1,c]);if(r<N-1)arr.push([r+1,c]);if(c>0)arr.push([r,c-1]);if(c<N-1)arr.push([r,c+1]);return arr;}
@@ -609,7 +635,7 @@ function giantPlan(phase){const changes=new Map();const remove=new Set(allIds().
  for(const id of changes.keys())remove.delete(id);
  return {title:'GIGANTE · '+phase+'/3',changes,remove};
 }
-async function animateFall(removals){if(!removals.size)return;for(const i of removals)tiles[i].classList.add('clearing');pieceClearSound(removals.size);await sleep(state.turbo?45:145);const motions=fall(removals);paint(motions);await sleep(state.turbo?190:475);paint();pieceDropSound(motions);}
+async function animateFall(removals){if(!removals.size)return;for(const i of removals)tiles[i].classList.add('clearing');pieceClearSound(removals.size);await sleep(state.turbo?45:145);const motions=fall(removals);paint(motions);pieceDropSound(motions,state.turbo?.14:.365);await sleep(state.turbo?190:475);paint();}
 async function revealPlan(plan){banner(plan.title.startsWith('GIGANTE · 1/')?'GARGANTOON!':plan.title);message('⚡ <strong>'+plan.title+'</strong>');arena.classList.add('quantum-burst');const entries=[...plan.changes];for(let k=0;k<entries.length;k+=4){for(const [id,t] of entries.slice(k,k+4))put(id,t);paint();for(const [id] of entries.slice(k,k+4))tiles[id].classList.add('quantum-reveal');featureRevealSound(k);await waitMs(150)}paint();await animateFall(plan.remove);if(plan.title.startsWith('GIGANTE ·')){await sleep(plan.title.endsWith('1/3')?1450:1000);}arena.classList.remove('quantum-burst');}
 async function runFeature(name){activeFeature=name;state.lastFeature=name;state.features++;update();const key=name==='GIGANTE'?'GARGANTOON!':name;featureSound(key);if(name==='GIGANTE'){state.gargantoonCount=(Number(state.gargantoonCount)||0)+1;giantPhase=1;update();await revealPlan(giantPlan(1))}else await revealPlan(quantumPlan(name));activeFeature='';update();}
 async function settle(){let cycles=0,initial=true;while(cycles++<200){
@@ -628,9 +654,9 @@ async function settle(){let cycles=0,initial=true;while(cycles++<200){
  }
  message('Limite de segurança da ronda atingido');return won;
 }
-async function spin(){if(busy||state.balance+1e-5<BETS[state.betIndex])return;musicStart();busy=true;const bet=BETS[state.betIndex];state.balance=Math.round((state.balance-bet)*100)/100;state.lastWin=0;state.spins++;cascadeCount=0;won=0;state.charged=0;featureQueue=[];giantPhase=0;activeFeature='';createBoard();update();save();message('⚡ A energizar a grelha...');spinLaunchSound();await waitMs(160);const entering=new Map(allIds().map(id=>[id,{steps:N,fresh:true}]));paint(entering);await sleep(state.turbo?190:480);paint();pieceDropSound();
+async function spin(){if(busy||state.balance+1e-5<BETS[state.betIndex])return;musicStart();busy=true;const bet=BETS[state.betIndex];state.balance=Math.round((state.balance-bet)*100)/100;state.lastWin=0;state.spins++;cascadeCount=0;won=0;state.charged=0;featureQueue=[];giantPhase=0;activeFeature='';createBoard();update();save();message('⚡ A energizar a grelha...');spinLaunchSound();await waitMs(160);const entering=new Map(allIds().map(id=>[id,{steps:N,fresh:true}]));paint(entering);pieceDropSound(null,state.turbo?.14:.365);await sleep(state.turbo?190:480);paint();
  try{await settle()}catch(e){console.error(e)}
- state.balance=Math.round((state.balance+won)*100)/100;state.bestWin=Math.max(state.bestWin||0,won);if(won>0){banner(winLabel(won,bet),won,true);sound(600,180,'triangle');message('GANHASTE <strong>'+money(won)+' CR</strong> EM '+cascadeCount+' CASCATAS')}else message('Sem prémio nesta ronda.');featureQueue=[];giantPhase=0;activeFeature='';busy=false;update();save();if(autoLeft>0){autoLeft--;update();if(state.balance+1e-5>=BETS[state.betIndex]){await waitMs(700);if(autoLeft>0)spin()}else{autoLeft=0;update()}}}
+ state.balance=Math.round((state.balance+won)*100)/100;state.bestWin=Math.max(state.bestWin||0,won);if(won>0){banner(winLabel(won,bet),won,true);message('GANHASTE <strong>'+money(won)+' CR</strong> EM '+cascadeCount+' CASCATAS')}else message('Sem prémio nesta ronda.');featureQueue=[];giantPhase=0;activeFeature='';busy=false;update();save();if(autoLeft>0){autoLeft--;update();if(state.balance+1e-5>=BETS[state.betIndex]){await waitMs(700);if(autoLeft>0)spin()}else{autoLeft=0;update()}}}
 
 $('topup').addEventListener('click',()=>{if(busy)return;state.balance=Math.round((state.balance+1000)*100)/100;update();save();message('⚡ ADICIONADOS <strong>1.000,00 CR</strong> VIRTUAIS');sound(520,100,'triangle');});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){autoLeft=0;stopVoice();musicStop();update();if(audioCtx?.state==='running')audioCtx.suspend().catch(()=>{});}});
@@ -661,7 +687,7 @@ $('skin33').addEventListener('change',()=>{const file=$('skin33').files[0];if(!f
 $('skin33Reset').addEventListener('click',()=>{document.documentElement.classList.remove('rr33');try{localStorage.removeItem(rr33key)}catch(e){}$('skin33Status').textContent='Grafismo anterior ativo'});
 
 
-// V3.5: independent, non-paying visual test of the three Gargantoon stages.
+// V3.6: independent, non-paying visual test of the three Gargantoon stages.
 $('testGargantoon').addEventListener('click',async()=>{
  if(busy)return;
  const previous={board:board.map(row=>row.map(tile=>({...tile}))),floatingType,giantSerial,charged:state.charged,activeFeature,giantPhase,queue:featureQueue.slice(),message:msgEl.innerHTML};
