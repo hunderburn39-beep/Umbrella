@@ -1,0 +1,14 @@
+[project]
+title = Fortuna777
+version = 6.0.0
+[bootstrap]
+main_collection = /main/main.collectionc
+[display]
+width = 960
+height = 540
+high_dpi = 1
+vsync = 1
+[input]
+game_binding = /input/game.input_bindingc
+[html5]
+scale_mode = fit
