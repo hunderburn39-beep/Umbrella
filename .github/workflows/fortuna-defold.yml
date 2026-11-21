@@ -26,6 +26,10 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release download 1.14.1 --repo defold/defold --pattern bob.jar --output "$RUNNER_TEMP/bob.jar"
+      - name: Generate graphical and audio resources
+        run: |
+          python3 -m pip install Pillow
+          python3 Fortuna-777-Defold/tools/generate_assets.py
       - name: Build WebAssembly
         working-directory: Fortuna-777-Defold
         run: |
