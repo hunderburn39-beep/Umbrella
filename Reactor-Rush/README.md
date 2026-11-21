@@ -1,4 +1,4 @@
-# Reactor Rush — V1.7
+# Reactor Rush — V1.8
 
 **[Jogar Reactor Rush](https://reactor-rush-umbrella.vercel.app/?v=1.7)**
 
@@ -18,3 +18,9 @@ Jogo original de cascatas com créditos exclusivamente virtuais. Sem depósitos,
 
 ## Publicação
 O código está em `Umbrella/Reactor-Rush/index.html`. O Vercel recebe manualmente o mesmo HTML. Não existe sincronização automática.
+
+
+## V1.8 — Voz inglesa
+- Nove gravações MP3 em inglês americano, com sintetização masculina grave e efeito metálico robótico.
+- Mantém o grafismo horizontal HD, os menus em português e a lógica de jogo da V1.7.
+- O botão de som e a pré-escuta no menu de informações mantêm-se.
