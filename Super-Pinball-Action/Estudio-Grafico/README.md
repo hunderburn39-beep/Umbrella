@@ -47,3 +47,21 @@ node Super-Pinball-Action/Estudio-Grafico/validar_v05.mjs
 ```
 
 **Limite técnico importante:** o modo com máscara preserva a mistura da imagem estática, mas não calcula corretamente os píxeis em que um flipper de prioridade 1 colide com um primeiro plano de mistura aditiva/translúcida. Para isso é necessário reproduzir, por píxel, os índices de cor, os bits de mistura e a paleta efetivamente ativa. A prioridade base não equivale à validação do compositor inteiro em tempo de execução. O browser também não foi validado visualmente nesta sessão; a verificação atual cobre a sintaxe JavaScript, os metadados OAM e a existência dos ficheiros necessários.
+
+
+## V0.6 — localizar misturas gráficas ainda incertas (21-11-2026)
+
+O visualizador conserva a seleção dos quatro mapas, paletas, prioridades OAM e sete fotogramas originais de cada flipper. O novo modo de **auditoria de mistura** é ativado pela caixa “Assinalar sobreposições incertas”, apenas sobre a composição `Mesa ROM + máscara OAM`. As intersecções suspeitas são marcadas a magenta, sem alterar os PNG e com contagem de píxeis no estado da mesa.
+
+**Método:** compor separadamente os sprites que têm prioridade base 1, comparar por píxel `mixed_paletteN.png` e `combined_paletteN.png` nas zonas com primeiro plano opaco em `foreground_paletteN.png`, e assinalar apenas onde haja simultaneamente sprite e diferença RGB. O algoritmo está isolado em `mixer_auditoria.js`. Esta é uma inspeção *heurística* dos PNG de diagnóstico: algumas diferenças não significam necessariamente mistura de hardware e cores idênticas podem ocultar alguns casos. A máscara V0.5 continua a ser a base de visualização; o overlay novo **não** simula corretamente a mistura dinâmica.
+
+A leitura dos atributos foi reconfirmada com o pipeline de sprites Tecmo: `0x14` → prioridade 1; `0x34` → prioridade 3, após inserção no endereço de cor e multiplicação pela granularidade de 16 píxeis. A prioridade efetiva observada pelo mixer é `(sprpixel >> 8) & 3`; a mistura do sprite utiliza `(sprpixel >> 10) & 1`. O bit `0x40` pode ser acrescentado em execução e não é deduzido do atributo base. A interface mostra a prioridade e o indicador `blendBase` de cada flipper.
+
+**Verificações:**
+
+```sh
+node Super-Pinball-Action/Estudio-Grafico/validar_v05.mjs
+node Super-Pinball-Action/Estudio-Grafico/validar_v06.mjs
+```
+
+A auditoria sintética V0.6 cobre o mapa de colisão RGBA, atributos das 112 peças e sintaxe do JavaScript. A observação visual num navegador real e a comparação com capturas da máquina permanecem pendentes. A reprodução exata do mixer exige o mapa FG com bits de mistura, as paletas de execução completas e o estado do atributo `0x40`, além dos sprites dinâmicos da bola e das cancelas. Referências: [Tecmo spr](https://github.com/mamedev/mame/blob/master/src/mame/shared/tecmo_spr.cpp), [Tecmo mix](https://github.com/mamedev/mame/blob/master/src/mame/tecmo/tecmo_mix.cpp), [spbactn](https://github.com/mamedev/mame/blob/master/src/mame/tecmo/spbactn.cpp).
