@@ -14,6 +14,10 @@ on:
       - 'index.html'
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
+  workflow_run:
+    workflows: ['Fortuna 777 Defold V6']
+    types: [completed]
+    branches: [main]
 
 permissions:
   contents: read
@@ -26,6 +30,7 @@ concurrency:
 
 jobs:
   build:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - name: Ler ficheiros
