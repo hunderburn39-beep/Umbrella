@@ -1,0 +1,41 @@
+name: Gerar flippers HD do Super Pinball Action
+
+on:
+  push:
+    paths:
+      - "Super-Pinball-Action/Assets-HD/gerar_flippers_hd.py"
+      - ".github/workflows/spa-flippers-hd.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: spa-flippers-hd
+  cancel-in-progress: false
+
+jobs:
+  criar-hd:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Instalar dependências
+        run: python -m pip install "numpy>=1.26,<3" "opencv-python-headless>=4.8,<5" "Pillow>=10,<13"
+      - name: Gerar e validar os PNG com as dimensões e a geometria originais
+        run: python Super-Pinball-Action/Assets-HD/gerar_flippers_hd.py
+      - name: Publicar os PNG descomprimidos
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A -- Super-Pinball-Action/Assets-HD/04_Flippers
+          if ! git diff --cached --quiet; then
+            git commit -m "Gerar 224 PNG HD dos flippers preservando os sprites originais"
+            git push origin HEAD:main
+          fi
