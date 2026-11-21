@@ -32,3 +32,18 @@ Depois de auditar a ROM US (SHA256 `8c139defd9b807c15872aee7e51a1fc57c8c1e4c20c7
 **Pendente:** mistura BG/FG/sprites, prioridades e transparência, estados reais de RAM e teste visual por comparação fotograma-a-fotograma com a máquina. O Chromium deste ambiente bloqueou a abertura (`ERR_BLOCKED_BY_ADMINISTRATOR`), por isso não se reclama validação de navegador. Esta fase não significa que toda a composição da mesa esteja correta.
 
 **Fontes de verificação externas:** [MAME spbactn.cpp](https://github.com/mamedev/mame/blob/master/src/mame/tecmo/spbactn.cpp) e [tecmo_spr.cpp](https://github.com/mamedev/mame/blob/master/src/mame/shared/tecmo_spr.cpp).
+
+
+## V0.5 — composição estática com máscara OAM (21-11-2026)
+
+Foi adicionado o modo **Mesa ROM + máscara OAM** como seleção inicial do estúdio. Em vez de perder a mistura de cores pré-calculada da mesa, este modo usa a imagem `mixed_paletteN.png` original da extração, desenha os flippers de prioridade 1 apenas nas zonas não opacas do primeiro plano e sobrepõe os de prioridade 3. A máscara vem da transparência de `foreground_paletteN.png`; não são alterados nem redesenhados os PNG extraídos.
+
+A rotina lê e valida agora as **56 entradas** de `oam_auditoria.json`, que contêm **112 peças** de sprite, incluindo tiles, coordenadas, dimensões e prioridade. Existem duas prioridades base na ROM: `0x14` (prioridade 1, atrás do FG) e `0x34` (prioridade 3, à frente do FG). Os modos antigos permanecem acessíveis para comparação e o modo **Apenas flippers** permite avaliar as orientações dos sete fotogramas sem as ilustrações da mesa.
+
+Foi confirmada através da árvore GitHub a presença dos **272 PNG** exigidos pelo estúdio para estas vistas: 224 flippers (56 por paleta, quatro paletas) e 48 imagens de composição de mesa (4 mesas × 4 paletas × 3 camadas). A verificação é reproduzível depois de descarregar/clonar o repositório:
+
+```sh
+node Super-Pinball-Action/Estudio-Grafico/validar_v05.mjs
+```
+
+**Limite técnico importante:** o modo com máscara preserva a mistura da imagem estática, mas não calcula corretamente os píxeis em que um flipper de prioridade 1 colide com um primeiro plano de mistura aditiva/translúcida. Para isso é necessário reproduzir, por píxel, os índices de cor, os bits de mistura e a paleta efetivamente ativa. A prioridade base não equivale à validação do compositor inteiro em tempo de execução. O browser também não foi validado visualmente nesta sessão; a verificação atual cobre a sintaxe JavaScript, os metadados OAM e a existência dos ficheiros necessários.
