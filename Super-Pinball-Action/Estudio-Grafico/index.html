@@ -57,7 +57,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <body>
 <main>
 <header>
-<div class="eyebrow">Estúdio gráfico · V0.4 — prioridade OAM</div>
+<div class="eyebrow">Estúdio gráfico · V0.5 — máscara e prioridades</div>
 <h1>Super Pinball Action</h1>
 <p class="note">Quatro mesas originais com flippers montados a partir dos sprites e coordenadas da ROM. Testa os sete fotogramas de cada comando antes de criar os elementos HD.</p>
 <p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Os grupos esquerdo/direito foram corrigidos após conferir a rotação da ROM. Esta é uma bancada gráfica, não a física completa do jogo.</p>
@@ -78,7 +78,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <div class="controls">
 <div class="control"><label for="map">Mesa</label><select id="map"><option value="0">Mesa 1 · mapa 0</option><option value="1">Mesa 2 · mapa 1</option><option value="2">Mesa 3 · mapa 2</option><option value="3">Mesa 4 · mapa 3</option></select></div>
 <div class="control"><label for="bank">Paleta da ROM</label><select id="bank"><option value="0">Banco 0</option><option value="1">Banco 1</option><option value="2">Banco 2</option><option value="3">Banco 3</option></select></div>
-<div class="control"><label for="layer">Composição da mesa</label><select id="layer"><option value="priority">Prioridade OAM (diagnóstico)</option><option value="mixed">Mistura ROM (estática anterior)</option><option value="combined">BG + FG (camadas)</option><option value="background">Só fundo</option><option value="foreground">Só primeiro plano</option></select></div>
+<div class="control"><label for="layer">Composição da mesa</label><select id="layer"><option value="mixmask">Mesa ROM + máscara OAM</option><option value="priority">Camadas OAM (sem mistura)</option><option value="sprites">Apenas flippers (isolados)</option><option value="mixed">Mistura ROM (estática anterior)</option><option value="combined">BG + FG (camadas)</option><option value="background">Só fundo</option><option value="foreground">Só primeiro plano</option></select></div>
 <div class="control"><label for="speed">Chamadas de atualização*</label><select id="speed"><option value="1">1 por fotograma</option><option value="2">2 por fotograma</option><option value="4">4 por fotograma</option><option value="8">8 por fotograma</option></select></div>
 </div>
 <h2>2 · Animar ou rever fotogramas</h2>
@@ -103,7 +103,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <button id="export" class="main" disabled>Capturar mesa PNG</button>
 <button id="sheet" disabled>Folha dos 7 fotogramas PNG</button>
 </div>
-<p class="tiny">*A prioridade base OAM está implementada (1: entre BG e FG; 3: acima do FG). Este modo usa PNG estáticos; não implementa ainda a mistura aditiva da paleta em execução, nem a cadência original. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
+<p class="tiny">*Modo Mesa ROM + máscara OAM: mantém a mistura aditiva estática do fundo e oculta os sprites de prioridade 1 nas zonas opacas do FG. Ainda não reproduz a mistura em tempo real entre sprite e FG translúcido, a paleta dinâmica, outras entidades móveis ou a cadência original. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
 <p class="tiny"><a href="../Assets/02_Mesas/">Mesas no GitHub</a> · <a href="../Assets/04_Flippers/">Flippers originais</a> · <a href="../Assets-HD/">Área dos futuros assets HD</a></p>
 </section>
 </div>
@@ -117,7 +117,7 @@ const ctx=by("stage").getContext("2d",{alpha:false});
 let embedded=null;
 try{embedded=JSON.parse(by("spa-data").textContent)}catch(_){}
 const imageCache=new Map();
-let data=null,oam=null,revision=0,currentMap=0,bank=0,layer="priority",showAnchors=false;
+let data=null,oam=null,revision=0,currentMap=0,bank=0,layer="mixmask",showAnchors=false;
 let mode="live",left=false,right=false,accL=0,accR=0,manualL=0,manualR=0;
 let tickMs=0,lastDraw="",assetsReady=false;
 const fallback="Não consegui carregar as imagens. Abre esta página através do GitHub Pages ou do HTML autónomo.";
@@ -148,8 +148,13 @@ function loaded(path){
  return entry.loaded;
 }
 function scenePaths(map,bank,layer){
- return (layer==="priority"?["background","foreground"]:[layer]).map(l=>tablePath(map,bank,l));
+ if(layer==="sprites")return [];
+ const layers=layer==="mixmask"?["mixed","foreground"]:layer==="priority"?["background","foreground"]:[layer];
+ return layers.map(l=>tablePath(map,bank,l));
 }
+const spriteMaskCanvas=document.createElement("canvas");
+spriteMaskCanvas.width=224;spriteMaskCanvas.height=512;
+const spriteMaskCtx=spriteMaskCanvas.getContext("2d",{willReadFrequently:false});
 function drawSprites(destination,map,bank,fl,fr,priority=null){
  destination.save();
  destination.translate(224,0);
@@ -179,12 +184,29 @@ function paintScene(destination,map,bank,layer,fl,fr,anchors,ox=0){
  destination.translate(ox,0);
  destination.clearRect(0,0,224,512);
  const paths=scenePaths(map,bank,layer);
- destination.drawImage(loaded(paths[0]),0,0);
- if(layer==="priority"){
-  drawSprites(destination,map,bank,fl,fr,1);
-  destination.drawImage(loaded(paths[1]),0,0);
+ if(layer==="sprites"){
+  destination.fillStyle="#101927";destination.fillRect(0,0,224,512);
+  drawSprites(destination,map,bank,fl,fr);
+ }else if(layer==="mixmask"){
+  // Static ROM mixer already contains the BG/FG additive colour effects.
+  // Priority-1 sprites are visible only outside the FG solid-pixel mask.
+  // Blended FG/sprite collisions need a palette-indexed live mixer.
+  destination.drawImage(loaded(paths[0]),0,0);
+  spriteMaskCtx.clearRect(0,0,224,512);
+  drawSprites(spriteMaskCtx,map,bank,fl,fr,1);
+  spriteMaskCtx.globalCompositeOperation="destination-out";
+  spriteMaskCtx.drawImage(loaded(paths[1]),0,0);
+  spriteMaskCtx.globalCompositeOperation="source-over";
+  destination.drawImage(spriteMaskCanvas,0,0);
   drawSprites(destination,map,bank,fl,fr,3);
- }else drawSprites(destination,map,bank,fl,fr);
+ }else{
+  destination.drawImage(loaded(paths[0]),0,0);
+  if(layer==="priority"){
+   drawSprites(destination,map,bank,fl,fr,1);
+   destination.drawImage(loaded(paths[1]),0,0);
+   drawSprites(destination,map,bank,fl,fr,3);
+  }else drawSprites(destination,map,bank,fl,fr);
+ }
  if(anchors){
   for(const row of flipperRows(map)){
    const r=row.displayRect;
@@ -221,7 +243,7 @@ function render(){
  const key=[currentMap,bank,layer,frameL(),frameR(),showAnchors].join(":");
  if(key===lastDraw)return;
  try{paintScene(ctx,currentMap,bank,layer,frameL(),frameR(),showAnchors);
-   lastDraw=key;updateInfo();setStatus("ROM: "+flipperRows(currentMap).length+" grupos · 7 fotogramas · 224 × 512");
+   lastDraw=key;updateInfo();setStatus("ROM: "+flipperRows(currentMap).length+" grupos · 112 peças auditadas · 224 × 512");
  }catch(e){setStatus(e.message,true)}
 }
 async function prepare(){
@@ -334,6 +356,22 @@ async function boot(){
   if(audit.romSha256!==data.romSha256||audit.records.length!==56)throw Error("Auditoria OAM inválida");
   oam=new Map(audit.records.map(r=>[r.selector+":"+r.frame,r]));
   if(oam.size!==56)throw Error("Entradas OAM duplicadas");
+ let verifiedPieces=0;
+ for(const row of data.rows){
+  for(let frame=0;frame<7;frame++){
+   const entry=oam.get(row.selector+":"+frame);
+   if(!entry||entry.pieces.length!==2||entry.side!==row.channel)throw Error("Peças OAM em falta");
+   for(let i=0;i<2;i++){
+    const p=entry.pieces[i],priority=(p.attributes_base>>4)&3;
+    if(p.tile!==row.frameBases[frame]+i*16||p.romX!==row.rawX+i*32||p.romY!==row.rawY||
+       p.sizeColor!==0x12||!(p.attributes_base&4)||(priority!==1&&priority!==3)){
+       throw Error("Dados OAM inconsistentes: seletor "+row.selector+" fotograma "+frame);
+    }
+    verifiedPieces++;
+   }
+  }
+ }
+ if(verifiedPieces!==112)throw Error("Quantidade OAM incorreta");
   updateInfo();await prepare();requestAnimationFrame(loop);
  }catch(e){setStatus((e&&e.message)||fallback,true)}
 }
