@@ -57,7 +57,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <body>
 <main>
 <header>
-<div class="eyebrow">Estúdio gráfico · Fase de alinhamento</div>
+<div class="eyebrow">Estúdio gráfico · V0.4 — prioridade OAM</div>
 <h1>Super Pinball Action</h1>
 <p class="note">Quatro mesas originais com flippers montados a partir dos sprites e coordenadas da ROM. Testa os sete fotogramas de cada comando antes de criar os elementos HD.</p>
 <p class="note">Controlos: <kbd>←</kbd> / <kbd>→</kbd> ou <kbd>A</kbd> / <kbd>D</kbd>. No telemóvel, mantém os botões pressionados. Os grupos esquerdo/direito foram corrigidos após conferir a rotação da ROM. Esta é uma bancada gráfica, não a física completa do jogo.</p>
@@ -78,7 +78,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <div class="controls">
 <div class="control"><label for="map">Mesa</label><select id="map"><option value="0">Mesa 1 · mapa 0</option><option value="1">Mesa 2 · mapa 1</option><option value="2">Mesa 3 · mapa 2</option><option value="3">Mesa 4 · mapa 3</option></select></div>
 <div class="control"><label for="bank">Paleta da ROM</label><select id="bank"><option value="0">Banco 0</option><option value="1">Banco 1</option><option value="2">Banco 2</option><option value="3">Banco 3</option></select></div>
-<div class="control"><label for="layer">Composição da mesa</label><select id="layer"><option value="mixed">Mistura ROM (estática)</option><option value="combined">BG + FG (camadas)</option><option value="background">Só fundo</option><option value="foreground">Só primeiro plano</option></select></div>
+<div class="control"><label for="layer">Composição da mesa</label><select id="layer"><option value="priority">Prioridade OAM (diagnóstico)</option><option value="mixed">Mistura ROM (estática anterior)</option><option value="combined">BG + FG (camadas)</option><option value="background">Só fundo</option><option value="foreground">Só primeiro plano</option></select></div>
 <div class="control"><label for="speed">Chamadas de atualização*</label><select id="speed"><option value="1">1 por fotograma</option><option value="2">2 por fotograma</option><option value="4">4 por fotograma</option><option value="8">8 por fotograma</option></select></div>
 </div>
 <h2>2 · Animar ou rever fotogramas</h2>
@@ -103,7 +103,7 @@ kbd{font:12px ui-monospace,monospace;background:#303b4d;border-radius:4px;border
 <button id="export" class="main" disabled>Capturar mesa PNG</button>
 <button id="sheet" disabled>Folha dos 7 fotogramas PNG</button>
 </div>
-<p class="tiny">*A frequência real do motor e a prioridade de sobreposição ainda não foram validadas. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
+<p class="tiny">*A prioridade base OAM está implementada (1: entre BG e FG; 3: acima do FG). Este modo usa PNG estáticos; não implementa ainda a mistura aditiva da paleta em execução, nem a cadência original. Suavização é apenas uma opção de visualização — não cria gráficos HD. Nenhum elemento foi redesenhado ou substituído.</p>
 <p class="tiny"><a href="../Assets/02_Mesas/">Mesas no GitHub</a> · <a href="../Assets/04_Flippers/">Flippers originais</a> · <a href="../Assets-HD/">Área dos futuros assets HD</a></p>
 </section>
 </div>
@@ -117,7 +117,7 @@ const ctx=by("stage").getContext("2d",{alpha:false});
 let embedded=null;
 try{embedded=JSON.parse(by("spa-data").textContent)}catch(_){}
 const imageCache=new Map();
-let data=null,revision=0,currentMap=0,bank=0,layer="mixed",showAnchors=false;
+let data=null,oam=null,revision=0,currentMap=0,bank=0,layer="priority",showAnchors=false;
 let mode="live",left=false,right=false,accL=0,accR=0,manualL=0,manualR=0;
 let tickMs=0,lastDraw="",assetsReady=false;
 const fallback="Não consegui carregar as imagens. Abre esta página através do GitHub Pages ou do HTML autónomo.";
@@ -142,36 +142,49 @@ function tablePath(map,bank,layer){
  return "02_Mesas/map_"+map+"/"+layer+"_palette"+bank+".png";
 }
 function flipperRows(map){return data.maps[map].selectors.map(i=>data.rows[i-1])}
-function paintScene(destination,map,bank,layer,fl,fr,anchors,ox=0){
- destination.save();
- destination.translate(ox,0);
- const bg=imageCache.get(tablePath(map,bank,layer));
- if(!bg||!bg.loaded)throw Error("Mesa não carregada");
- destination.clearRect(0,0,224,512);
- destination.drawImage(bg.loaded,0,0);
+function loaded(path){
+ const entry=imageCache.get(path);
+ if(!entry||!entry.loaded)throw Error("Imagem não carregada: "+path);
+ return entry.loaded;
+}
+function scenePaths(map,bank,layer){
+ return (layer==="priority"?["background","foreground"]:[layer]).map(l=>tablePath(map,bank,l));
+}
+function drawSprites(destination,map,bank,fl,fr,priority=null){
  destination.save();
  destination.translate(224,0);
  destination.rotate(Math.PI/2);
  for(const row of flipperRows(map)){
-   const f=row.channel==="left"?fl:fr;
-   const base=row.frameBases[f];
-   for(let half=0;half<2;half++){
-     const promise=imageCache.get(pngPath(base+16*half,bank));
-     if(!promise||!promise.loaded)throw Error("Flipper não carregado");
-     destination.drawImage(promise.loaded,row.rawX+32*half,row.rawY-data.table.rawVisibleTop);
-   }
-   if(anchors){
-     destination.save();
-     destination.lineWidth=1;
-     destination.strokeStyle=row.channel==="left"?"#65f5f7":"#ffce77";
-     destination.strokeRect(row.rawX+.5,row.rawY-data.table.rawVisibleTop+.5,64,32);
-     destination.fillStyle=destination.strokeStyle;
-     destination.font="11px monospace";
-     destination.fillText(String(row.selector),row.rawX+2,row.rawY-data.table.rawVisibleTop+12);
-     destination.restore();
-   }
+  const frame=row.channel==="left"?fl:fr;
+  const record=oam.get(row.selector+":"+frame);
+  if(!record)throw Error("Entrada OAM em falta");
+  for(const piece of record.pieces){
+   const attr=piece.attributes_base;
+   if(!(attr&4)||(priority!==null&&((attr>>4)&3)!==priority))continue;
+   const size=piece.sizeColor, w=8*(1<<(size&3)),h=w;
+   const img=loaded(pngPath(piece.tile,bank));
+   if(img.width!==w||img.height!==h)throw Error("Dimensão OAM incorreta");
+   const fx=!!(attr&1),fy=!!(attr&2);
+   destination.save();
+   destination.translate(piece.romX+(fx?w:0),piece.romY-data.table.rawVisibleTop+(fy?h:0));
+   destination.scale(fx?-1:1,fy?-1:1);
+   destination.drawImage(img,0,0);
+   destination.restore();
+  }
  }
  destination.restore();
+}
+function paintScene(destination,map,bank,layer,fl,fr,anchors,ox=0){
+ destination.save();
+ destination.translate(ox,0);
+ destination.clearRect(0,0,224,512);
+ const paths=scenePaths(map,bank,layer);
+ destination.drawImage(loaded(paths[0]),0,0);
+ if(layer==="priority"){
+  drawSprites(destination,map,bank,fl,fr,1);
+  destination.drawImage(loaded(paths[1]),0,0);
+  drawSprites(destination,map,bank,fl,fr,3);
+ }else drawSprites(destination,map,bank,fl,fr);
  if(anchors){
   for(const row of flipperRows(map)){
    const r=row.displayRect;
@@ -215,7 +228,7 @@ async function prepare(){
  if(!data)return;
  assetsReady=false;lastDraw="";const id=++revision;
  by("export").disabled=by("sheet").disabled=true;setStatus("A carregar mesa e sprites...");
- const req=[tablePath(currentMap,bank,layer)];
+ const req=scenePaths(currentMap,bank,layer);
  for(const row of flipperRows(currentMap)){
   for(const base of row.frameBases){req.push(pngPath(base,bank),pngPath(base+16,bank))}
  }
@@ -317,6 +330,10 @@ async function boot(){
   data=embedded&&embedded.layout?embedded.layout:await fetch("flipper_layout.json").then(r=>{if(!r.ok)throw Error("JSON "+r.status);return r.json()});
   if(data.schema!==2||data.rows.length!==8||data.maps.length!==4)throw Error("Layout ROM inválido");
   for(const row of data.rows){if(row.frameBases.length!==7||row.frameBases.some(x=>x%32))throw Error("IDs ROM inválidos")}
+  const audit=embedded&&embedded.oam?embedded.oam:await fetch("oam_auditoria.json").then(r=>{if(!r.ok)throw Error("OAM "+r.status);return r.json()});
+  if(audit.romSha256!==data.romSha256||audit.records.length!==56)throw Error("Auditoria OAM inválida");
+  oam=new Map(audit.records.map(r=>[r.selector+":"+r.frame,r]));
+  if(oam.size!==56)throw Error("Entradas OAM duplicadas");
   updateInfo();await prepare();requestAnimationFrame(loop);
  }catch(e){setStatus((e&&e.message)||fallback,true)}
 }
