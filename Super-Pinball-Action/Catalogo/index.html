@@ -145,7 +145,7 @@ function openDetail(path){
  $("#mark").textContent=chosen.has(path)?"Retirar da lista HD":"Selecionar para HD";
  const variants=$("#variants");variants.replaceChildren();
  for(const item of variantsFor(path)){const a=el("button","variant");const img=el("img");img.src=urlOf(item);img.loading="lazy";img.alt="Variante de "+item;const n=el("div","",bankOf(item)===null?"Original":"Banco "+bankOf(item));a.append(img,n);a.onclick=()=>{current=item;openDetail(item)};variants.append(a)}
- $("#detail").showModal();
+ if(!$("#detail").open)$("#detail").showModal();
 }
 $("#close").onclick=()=>$("#detail").close();
 $("#mark").onclick=()=>{if(chosen.has(current))chosen.delete(current);else chosen.add(current);$("#mark").textContent=chosen.has(current)?"Retirar da lista HD":"Selecionar para HD";render()};
