@@ -1,0 +1,137 @@
+name: Pinball Action Android V9.18
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/pinball-android-v918.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Build and sign APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          SDK="${ANDROID_SDK_ROOT:-$ANDROID_HOME}"
+          BT=$(find "$SDK/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)
+          PLATFORM="$SDK/platforms/android-35/android.jar"
+          if [ ! -f "$PLATFORM" ]; then PLATFORM=$(find "$SDK/platforms" -name android.jar | sort -V | tail -1); fi
+          test -f "$PLATFORM"; test -x "$BT/aapt2"; test -x "$BT/d8"
+          mkdir -p build/src/pt/umbrella/pinballaction build/res/drawable build/assets/audio build/classes build/dex dist
+          cat > build/src/pt/umbrella/pinballaction/MainActivity.java <<'JAVA'
+          package pt.umbrella.pinballaction;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.graphics.Color;
+          import android.view.View;
+          import android.view.WindowManager;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebSettings;
+          import android.webkit.WebResourceRequest;
+          import android.webkit.WebResourceResponse;
+          import android.net.Uri;
+          import java.io.InputStream;
+          import java.io.ByteArrayInputStream;
+          import java.util.HashMap;
+          import java.util.Locale;
+          public final class MainActivity extends Activity {
+           private WebView web;
+           private static final String HOST="appassets.androidplatform.net";
+           private static final String HOME="https://"+HOST+"/assets/index.html";
+           @Override public void onCreate(Bundle state){
+            super.onCreate(state);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+            web=new WebView(this);web.setBackgroundColor(Color.BLACK);setContentView(web);
+            WebSettings s=web.getSettings();s.setJavaScriptEnabled(true);s.setDomStorageEnabled(true);
+            s.setMediaPlaybackRequiresUserGesture(false);s.setAllowFileAccess(false);s.setAllowContentAccess(false);
+            s.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+            s.setSupportZoom(false);s.setBuiltInZoomControls(false);s.setDisplayZoomControls(false);
+            web.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            web.setWebChromeClient(new WebChromeClient());
+            web.setWebViewClient(new WebViewClient(){
+             @Override public boolean shouldOverrideUrlLoading(WebView v,WebResourceRequest r){return !isLocal(r.getUrl());}
+             @Override public WebResourceResponse shouldInterceptRequest(WebView v,WebResourceRequest r){
+              Uri u=r.getUrl();if(!isLocal(u))return missing();
+              String path=u.getPath();if(path==null||!path.startsWith("/assets/")||path.contains(".."))return missing();
+              String file=path.substring(8);if(file.isEmpty())file="index.html";
+              try{InputStream in=getAssets().open(file);String mime=mime(file);
+               HashMap<String,String> headers=new HashMap<>();headers.put("Cache-Control","no-store");
+               return new WebResourceResponse(mime,mime.startsWith("text/")||mime.contains("javascript")||mime.contains("json")?"UTF-8":null,200,"OK",headers,in);
+              }catch(Exception ex){return missing();}
+             }
+            });
+            immersive();web.loadUrl(HOME);
+           }
+           private static boolean isLocal(Uri u){return "https".equals(u.getScheme())&&HOST.equals(u.getHost());}
+           private static WebResourceResponse missing(){return new WebResourceResponse("text/plain","UTF-8",404,"Not Found",new HashMap<String,String>(),new ByteArrayInputStream(new byte[0]));}
+           private static String mime(String f){f=f.toLowerCase(Locale.ROOT);if(f.endsWith(".html"))return "text/html";if(f.endsWith(".js"))return "application/javascript";if(f.endsWith(".css"))return "text/css";if(f.endsWith(".json"))return "application/json";if(f.endsWith(".svg"))return "image/svg+xml";if(f.endsWith(".png"))return "image/png";if(f.endsWith(".webp"))return "image/webp";if(f.endsWith(".mp3"))return "audio/mpeg";if(f.endsWith(".wav"))return "audio/wav";return "application/octet-stream";}
+           private void immersive(){getWindow().getDecorView().setSystemUiVisibility(5894|View.SYSTEM_UI_FLAG_LAYOUT_STABLE);}
+           @Override public void onWindowFocusChanged(boolean f){super.onWindowFocusChanged(f);if(f)immersive();}
+           @Override protected void onPause(){super.onPause();if(web!=null)web.onPause();}
+           @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();immersive();}
+           @Override protected void onDestroy(){if(web!=null){web.destroy();web=null;}super.onDestroy();}
+           @Override public void onBackPressed(){if(web!=null&&web.canGoBack())web.goBack();else super.onBackPressed();}
+          }
+          JAVA
+          cat > build/AndroidManifest.xml <<'XML'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="pt.umbrella.pinballaction" android:versionCode="918" android:versionName="9.18">
+           <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="34"/>
+           <application android:label="Pinball Action" android:theme="@android:style/Theme.Material.NoActionBar.Fullscreen" android:allowBackup="false" android:usesCleartextTraffic="false" android:hardwareAccelerated="true" android:icon="@drawable/pinball">
+            <activity android:name=".MainActivity" android:exported="true" android:configChanges="orientation|screenSize|keyboardHidden">
+             <intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter>
+            </activity>
+           </application>
+          </manifest>
+          XML
+          cat > build/res/drawable/pinball.xml <<'XML'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+           <path android:fillColor="#101A38" android:pathData="M0,0H108V108H0Z"/>
+           <path android:fillColor="#D6466F" android:pathData="M15,12H93V96H15Z"/>
+           <path android:fillColor="#183B69" android:pathData="M21,18H87V90H21Z"/>
+           <path android:fillColor="#F6C356" android:pathData="M22,76L31,66L52,81L46,88Z M86,76L77,66L56,81L62,88Z"/>
+           <path android:fillColor="#D7F7FF" android:pathData="M54,27 A17,17 0,1 0,54 61 A17,17 0,1 0,54 27Z"/>
+           <path android:fillColor="#FFFFFF" android:pathData="M49,31 A5,5 0,1 0,49 41 A5,5 0,1 0,49 31Z"/>
+          </vector>
+          XML
+          for f in index.html game-original-v918.html pixi-renderer-v869.js logo-original.svg; do cp "Pinball-Action/$f" "build/assets/$f"; done
+          cp Pinball-Action/audio/rom-psg-worklet.js build/assets/audio/
+          # Optional HD renderer; CRT works without this dependency.
+          if curl --fail --silent --show-error --location --max-time 20 https://cdn.jsdelivr.net/npm/pixi.js@8.14.3/dist/pixi.min.js -o build/assets/pixi.min.js; then sed -i "s|https://cdn.jsdelivr.net/npm/pixi.js@8.14.3/dist/pixi.min.js|./pixi.min.js|g" build/assets/pixi-renderer-v869.js; else rm -f build/assets/pixi.min.js; fi
+          grep -q "V9.18" build/assets/index.html
+          grep -q "introSource.loop=true" build/assets/index.html
+          grep -q "CRT Lite" build/assets/game-original-v918.html
+          grep -q "launcherHold" build/assets/game-original-v918.html
+          "$BT/aapt2" compile --dir build/res -o build/resources.zip
+          "$BT/aapt2" link -I "$PLATFORM" --manifest build/AndroidManifest.xml -A build/assets -o build/unsigned.apk build/resources.zip
+          javac -source 8 -target 8 -bootclasspath "$PLATFORM" -d build/classes build/src/pt/umbrella/pinballaction/MainActivity.java
+          jar cf build/app.jar -C build/classes .
+          "$BT/d8" --min-api 26 --lib "$PLATFORM" --output build/dex build/app.jar
+          zip -q -j build/unsigned.apk build/dex/classes.dex
+          "$BT/zipalign" -p -f 4 build/unsigned.apk build/aligned.apk
+          keytool -genkeypair -noprompt -keystore build/test-signing.jks -storepass android -keypass android -alias pinball-test -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Pinball Action Android Test"
+          "$BT/apksigner" sign --ks build/test-signing.jks --ks-pass pass:android --key-pass pass:android --out dist/Pinball-Action-V9.18.apk build/aligned.apk
+          "$BT/apksigner" verify --verbose --print-certs dist/Pinball-Action-V9.18.apk
+          "$BT/aapt" dump badging dist/Pinball-Action-V9.18.apk | head -n 12
+          unzip -t dist/Pinball-Action-V9.18.apk
+          ls -lh dist/Pinball-Action-V9.18.apk
+          (cd dist && sha256sum Pinball-Action-V9.18.apk > SHA256SUMS.txt)
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Pinball-Action-V9.18-Android
+          path: dist/
+      - name: Publish APK download
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create pinball-android-v9.18 dist/Pinball-Action-V9.18.apk dist/SHA256SUMS.txt --target "$GITHUB_SHA" --title "Pinball Action V9.18 Android" --notes "APK signed with a test key. Android 8.0+. Offline arcade, CRT and intro music." || gh release upload pinball-android-v9.18 dist/Pinball-Action-V9.18.apk dist/SHA256SUMS.txt --clobber
