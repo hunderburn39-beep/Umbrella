@@ -9,6 +9,7 @@ on:
       - 'Reactor-Rush/**'
       - 'Super-Pinball-Action/**'
       - 'Super-Hang-On/**'
+      - 'Fortuna-777/**'
       - 'index.html'
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
@@ -32,7 +33,7 @@ jobs:
         run: |
           mkdir -p public
           if [ -f index.html ]; then cp index.html public/index.html; fi
-          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On; do
+          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777; do
             if [ -d "$game" ]; then cp -R "$game" public/; fi
           done
           touch public/.nojekyll
