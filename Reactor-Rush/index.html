@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V3.2 — Slot de Cascatas</title>
+<title>Reactor Rush V3.3 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -244,7 +244,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 @keyframes rrArtReveal{0%{transform:scale(.72);opacity:0}13%{transform:scale(1.015);opacity:1}25%,83%{transform:scale(1);opacity:1}100%{transform:scale(1.03);opacity:0}}
 @media(prefers-reduced-motion:reduce){.app .banner.rr-art-banner{animation:none}}
 
-/* V3.2: horizontal artwork reflow. Split original artwork around the live square
+/* V3.3: horizontal artwork reflow. Split original artwork around the live square
    grid, keeping the center frame tight; the footer and portrait are untouched. */
 .rr-landscape-art{display:none}
 @media (orientation:landscape){
@@ -266,6 +266,52 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 .rr-skin .app .giant-stage,.rr-skin .app .fluct-wrap,.rr-skin .app .round-cascades{left:calc(var(--rr-right) + var(--rr-rw) * 0.2261905);width:calc(var(--rr-rw) * 0.5595238)}
 }
 
+
+/* V3.3: fit live values within their panels, optional new 16:9 horizontal graphic. */
+.app .status .stat .num,.app .betvalue,.app .charge-total,.app .queue-live,.app .giant-stage,.app .round-cascades,.app .version-top,.app .message{box-sizing:border-box;min-width:0;max-width:100%;overflow:hidden;text-align:center;line-height:1.05;white-space:nowrap;text-overflow:ellipsis}
+.app .status .stat .num{max-width:96%;margin:0;font-size:min(1.83cqw,3.8cqh)}
+.app .betvalue{display:flex;justify-content:center;align-items:center;gap:.12em;font-size:min(1.6cqw,3.5cqh)}
+.app .queue-live{display:grid;place-items:center;padding:0 .25em;min-height:0;line-height:1.05;white-space:nowrap}
+.app .fluct-wrap{min-width:0;overflow:hidden;line-height:1.05}
+.app .fluct-wrap span{min-width:0;white-space:nowrap}
+@media (orientation:portrait){.app .status .stat .num,.app .betvalue{font-size:3.7cqw}.app .queue-live{font-size:1.9cqw}}
+@media (orientation:landscape){
+.rr-skin .app .queue-live{height:4%;min-height:0;font-size:min(.85cqw,2cqh)}
+.rr-skin .app .giant-stage{height:4.4%;padding:0;display:grid;place-items:center;font-size:min(.93cqw,2.1cqh)}
+.rr-skin .app .fluct-wrap{height:6%;padding:0;font-size:min(.85cqw,1.8cqh)}
+.rr-skin .app .round-cascades{height:2.8%;font-size:min(.82cqw,1.8cqh)}
+.rr-skin .app .version-top{font-size:min(1.22cqw,2.2cqh)}
+.rr-skin.rr33 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(#08051b88,#08051b88),var(--rr-landscape33);background-size:cover;background-position:center;filter:blur(18px);transform:scale(1.06);pointer-events:none}
+.rr-skin.rr33 .app{width:min(100vw,177.6833dvh);height:min(100dvh,56.2799vw);background-image:var(--rr-landscape33);background-size:100% 100%;background-repeat:no-repeat;background-position:center}
+.rr-skin.rr33 .app .rr-landscape-art{display:none}
+.rr-skin.rr33 .app .arena{left:31.85%;top:12.05%;width:32.65%;height:auto;aspect-ratio:1;background:#070a24;border-radius:.6cqw;box-shadow:none}
+.rr-skin.rr33 .app .grid{width:100%;height:100%;aspect-ratio:1;gap:.21cqw}
+.rr-skin.rr33 .app .grid .cell,.rr-skin.rr33 .app .grid .fusion{background-size:contain;background-position:center}
+.rr-skin.rr33 .app .version-top{left:10.05%;top:29.45%;width:13.05%;height:3%;font-size:1.09cqw;border:0;background:#081335;border-radius:.35cqw}
+.rr-skin.rr33 .app #topup{left:7.55%;top:7.25%;width:18.8%;height:2.8%;font-size:1.05cqw;background:#091635;border:0}
+.rr-skin.rr33 .app #quantumBars{left:69.7%;top:19.8%;width:25.9%;height:9.6%;gap:1.75cqw}
+.rr-skin.rr33 .app .qbar>div{background:transparent;border:0;box-shadow:none}
+.rr-skin.rr33 .app .charge-total{left:73.2%;top:33.65%;width:18.2%;height:2.22%;display:grid;place-items:center;background:#100d33;font-size:1.0cqw}
+.rr-skin.rr33 .app .queue-live{left:68.5%;top:55.55%;width:26.3%;height:3.0%;background:#140d37;border:0;font-size:.89cqw}
+.rr-skin.rr33 .app .giant-stage{left:69.8%;top:60.4%;width:22.9%;height:3.2%;border:0;background:#271528;font-size:1.12cqw}
+.rr-skin.rr33 .app .fluct-wrap{left:70.5%;top:65.7%;width:20.6%;height:4.75%;background:#180c36;border-radius:.3cqw;gap:.65cqw;font-size:1.02cqw}
+.rr-skin.rr33 .app .fluct-icon{width:3.1cqw;height:3.1cqw;flex:none}
+.rr-skin.rr33 .app .round-cascades{left:73.2%;top:70.8%;width:18.0%;height:2.5%;display:grid;place-items:center;background:#180c36;font-size:1.0cqw}
+.rr-skin.rr33 .app .message{left:33.0%;top:74.5%;width:30.55%;height:3.4%;font-size:1.12cqw;background:#0a1844!important;white-space:nowrap}
+.rr-skin.rr33 .app .status .stat:nth-child(1){left:18.6%;top:90.9%;width:12.6%;height:4.0%;background:#090c28!important}
+.rr-skin.rr33 .app .status .stat:nth-child(2){left:33.6%;top:90.9%;width:11.2%;height:4.0%;background:#090c28!important}
+.rr-skin.rr33 .app .status .stat .num{font-size:1.83cqw}
+.rr-skin.rr33 .app .betvalue{left:50.1%;top:90.8%;width:8.1%;height:4%;font-size:1.68cqw}
+.rr-skin.rr33 .app #info{left:2.0%;top:87.0%;width:4.5%;height:9.4%}
+.rr-skin.rr33 .app #sound{left:7.2%;top:87.0%;width:4.5%;height:9.4%}
+.rr-skin.rr33 .app #settings{left:12.4%;top:87.0%;width:4.5%;height:9.4%}
+.rr-skin.rr33 .app #minus{left:47.0%;top:88.0%;width:3.4%;height:7.5%}
+.rr-skin.rr33 .app #plus{left:59.3%;top:88.0%;width:3.2%;height:7.5%}
+.rr-skin.rr33 .app #turbo{left:63.6%;top:87.1%;width:9.6%;height:8.6%}
+.rr-skin.rr33 .app #auto{left:74.0%;top:87.1%;width:9.6%;height:8.6%}
+.rr-skin.rr33 .app #spin{left:84.75%;top:81.0%;width:11.5%;height:19%;border-radius:50%}
+}
+
 </style>
 <link rel="stylesheet" href="./approved-skins.css?v=30">
 <link rel="stylesheet" href="./celebration-art.css?v=30">
@@ -282,10 +328,10 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.2 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.2</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.3 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.3</strong></footer>
 </div>
 <div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais com Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias pode receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
-<p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b></p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="45" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="85" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
+<p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b></p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p class="separate"><b>Novo grafismo horizontal V3.3</b><br><label for="skin33">Selecionar imagem Reactor-Rush-V3.3-horizontal.webp</label><input id="skin33" type="file" accept="image/webp,image/png,image/jpeg" style="display:block;width:100%;margin:8px 0"><span id="skin33Status" role="status">Grafismo anterior ativo</span> <button id="skin33Reset" type="button" style="background:#124d75;padding:6px;border-radius:6px">Repor</button></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="45" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="85" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
 <script>
 (()=>{'use strict';
 const N=7, TYPES=8, BETS=[.05,.10,.20,.40,.60,1,2,5,10], COLORS=['#ef6484','#65e898','#ffb25a','#66d3ff','#be88ff','#ff8570','#a3e077','#ffe377'];
@@ -605,6 +651,14 @@ const skinKey='reactor-rush-skin-v26';
 function installSkin(raw,persist){const values=['landscape','portrait'].map(k=>{const m=raw.match(new RegExp('--rr-'+k+':url\\((data:image/webp;base64,[A-Za-z0-9+/=]+)\\)'));return m&&m[1]});if(values.some(x=>!x)||raw.length>3000000)throw Error('Pacote de molduras inválido');['landscape','portrait'].forEach((k,i)=>document.documentElement.style.setProperty('--rr-'+k,'url('+values[i]+')'));document.documentElement.classList.add('rr-skin');$('skinStatus').textContent='Duas molduras personalizadas ativas';if(persist)try{localStorage.setItem(skinKey,raw)}catch(e){$('skinStatus').textContent='Ativas nesta sessão'};}
 document.documentElement.classList.add('rr-skin');
 $('skinFile').addEventListener('change',async()=>{const f=$('skinFile').files[0];if(!f)return;try{installSkin(await f.text(),true)}catch(e){$('skinStatus').textContent=e.message}});
+
+/* V3.3: install only a local image; keep the portrait and the game logic intact. */
+const rr33key='reactor-rush-horizontal-v33';
+function use33(data){if(!/^data:image\/(webp|png|jpeg);base64,[A-Za-z0-9+/=]+$/.test(data))return false;document.documentElement.style.setProperty('--rr-landscape33','url("'+data+'")');document.documentElement.classList.add('rr33');$('skin33Status').textContent='Novo grafismo horizontal ativo';return true}
+try{const old=localStorage.getItem(rr33key);if(old)use33(old)}catch(e){}
+$('skin33').addEventListener('change',()=>{const file=$('skin33').files[0];if(!file)return;if(file.size>3000000||!/^image\/(webp|png|jpeg)$/.test(file.type)){$('skin33Status').textContent='Seleciona uma imagem WebP, PNG ou JPEG até 3 MB';return}const reader=new FileReader();reader.onload=()=>{if(use33(String(reader.result)))try{localStorage.setItem(rr33key,reader.result)}catch(e){$('skin33Status').textContent='Grafismo ativo nesta sessão'}};reader.readAsDataURL(file)});
+$('skin33Reset').addEventListener('click',()=>{document.documentElement.classList.remove('rr33');try{localStorage.removeItem(rr33key)}catch(e){}$('skin33Status').textContent='Grafismo anterior ativo'});
+
 restoreTrack();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&audioAllowed())musicStart()});
 
