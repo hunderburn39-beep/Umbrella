@@ -164,8 +164,8 @@ s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture(nx
 # Previous 0xe00000==0xc00000 comparisons were impossible for 23-bit values.
 s=replace(s,'((md.vaddress & 0xe00000) == 0xc00000)',
   '((md.vaddress & 0x700000) == 0x600000)')
-s=replace(s,'((nx_addr & 0xe00000u) == 0xc00000u)',
-  '((nx_addr & 0x700000u) == 0x600000u)')
+# The V2.0 diagnostic insertion already uses 0x700000/0x600000.
+# No second rewrite is necessary here.
 
 # V2.2: verify VDP write acknowledge and count unique CPU bus address changes.
 s=replace(s,"    unsigned int nx_latest_addr=0;","    unsigned int nx_latest_addr=0;\n    unsigned long long nx_vdp_ack_clocks=0, nx_bus_changes=0;\n    unsigned int nx_previous_addr=0xffffffffu;")
