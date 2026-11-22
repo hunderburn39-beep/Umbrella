@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V1.0
+# Umbrella Mega Drive NX V1.1
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -40,3 +40,6 @@ The video renderer completed a first SDL blit on actual Switch hardware (stage `
 
 ## V1.0: periodic chip-phase crash checkpoints
 After stage `11a` video presentation and `W11` at 100K clocks were observed on the Switch, this diagnostic build adds `Worker stage: C<number> <phase>` snapshots every 32768 master-clock cycles. Phases are 68000, Z80, FC1004, VRAM, BUS, AUDIO VDP. The on-screen marker names the last *checkpoint reached*; it may not be the exact instruction that failed. An exception may still be caused by a graphics, synchronization, or operating-system failure. Device audio remains disabled. After a crash reopen the app and photograph both stage lines. A screenshot of a cycle marker is not proof that gameplay has started.
+
+## V1.1: isolate the audio sample mixer
+The actual Switch log is `Last stage 11a Video blit returned`, `Worker stage C196608 AUDIO VDP`, which records **196608** master clocks, not millions. Previous V1.0 output does not prove which instruction crashed. V1.1 leaves the YM2612, PSG and other chips clocked inside Nuked-MD, but bypasses `Audio_Update()` (the host sample aggregation routine) in the worker loop, while host sound output remains muted. The stage labels are updated to `VDP` and `W08 Video update OK`. If an exception occurs, reopen and report the last stage and worker stage. The output still needs hardware validation and does not claim playable game speed.

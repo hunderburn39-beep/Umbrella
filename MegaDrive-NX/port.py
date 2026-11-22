@@ -93,6 +93,16 @@ s=replace(s,"            // fc1004\n            ym.vdp.input.i_csync","         
 s=replace(s,"            // VRAM\n            update_vram();","            if (mcycles && ((mcycles & 32767) == 0) && i == 0) nx_worker_progress((unsigned long long)mcycles,\"FC1004\");\n            // VRAM\n            update_vram();\n            if (mcycles && ((mcycles & 32767) == 0) && i == 0) nx_worker_progress((unsigned long long)mcycles,\"VRAM\");")
 s=replace(s,"        Audio_Update();","        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress((unsigned long long)mcycles,\"BUS\");\n        Audio_Update();")
 s=replace(s,"        md.odclk = ym.vdp.input.i_clk1;","        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress((unsigned long long)mcycles,\"AUDIO VDP\");\n        md.odclk = ym.vdp.input.i_clk1;")
+
+# V1.1: compare chip execution with / without the host sound sample aggregator.
+# The chip clocks (YM2612, PSG) remain in the motherboard simulation; only
+# Audio_Update (output mixing/decimation) is excluded for this diagnostic.
+s=replace(s,'        Audio_Update();',
+    '        /* V1.1: skip host sound aggregation for failure isolation. */')
+s=replace(s,'        if (mcycles == 0) nx_worker_stage("W08 Audio/video update OK");',
+    '        if (mcycles == 0) nx_worker_stage("W08 Video update OK");')
+s=replace(s,'nx_worker_progress((unsigned long long)mcycles,"AUDIO VDP");',
+    'nx_worker_progress((unsigned long long)mcycles,"VDP");')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
