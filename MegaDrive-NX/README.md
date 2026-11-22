@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V3.6
+# Umbrella Mega Drive NX V3.7
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -134,3 +134,6 @@ Native sky-blue 1280x720 GPU-backed SDL2 frontend. Green EXECUTAR button, green 
 
 ## V3.6 sampled chip-stage profiler
 Samples every 2048 simulated master cycles, both chip half-cycles. Displays average nanoseconds for 68K (including input preparation), Z80, FC (FC1004 including VDP), VRAM, and VIDEO (conditional Video_PlotVDP) in a thin diagnostic line at the top. These timings are per sampled invocation, not percentage of total frame or a complete profile of bus and RAM overhead. RATE still measures simulated clocks per real second. Default auxiliary VDP probes disabled to reduce overhead; press ZL to toggle. The timing profiler has small nonzero overhead and does not change simulated chip clocks. No claim of full-speed performance; run on Switch and compare to find the expensive stage.
+
+## V3.7 compiler-level chip engine optimization
+The V3.6 Switch photograph showed sampled timings: 68K approximately 9876 ns, FC1004 4635 ns, Z80 988 ns, VRAM 4 ns, video 0 ns; RATE approximately 50921 master cycles/s at reported CPU 1224 MHz. These are not exhaustive component costs, but show where to focus. V3.7 builds all 17 C translation units with `-O3 -flto -fomit-frame-pointer -fno-semantic-interposition -DNDEBUG` and links with `-flto` for cross-module inlining and dead-code removal, retaining `-mtune=cortex-a57`. It does not skip any simulated chip clocks, change ROM bytes or raise CPU/GPU voltage or frequency beyond the prior conservative request. Compare V3.7 RATE with V3.6 using the same ROM, region and ZL mode, and verify that FRAMES, MOVES, PIXELS and CPU MHz still behave as expected. Performance improvement and gameplay are not yet validated on real hardware.
