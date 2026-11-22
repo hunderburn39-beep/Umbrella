@@ -172,6 +172,11 @@ s=replace(s,"    unsigned int nx_latest_addr=0;","    unsigned int nx_latest_add
 s=replace(s,"            m68k.input.i_dtack = md.dtack;","            m68k.input.i_dtack = md.dtack;\n            /* Count actual active-low acknowledge while the VDP address bus is selected. */\n            if (!md.as && !md.rw && ((md.vaddress & 0x700000)==0x600000) && !md.dtack)\n                nx_vdp_ack_clocks++;")
 s=replace(s,"                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;","                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;\n                if (nx_addr!=nx_previous_addr) {\n                    nx_bus_changes++;\n                    nx_previous_addr=nx_addr;\n                }")
 s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) { nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset); nx_bus_publish(nx_latest_addr,nx_vdp_cpu_writes); }","        if (mcycles && ((mcycles & 32767) == 0)) {\n            nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset);\n            nx_bus_publish(nx_latest_addr,nx_vdp_cpu_writes);\n            /* flags: bit0 TMSS unlocked; bit1 board DTACK asserted;\n               bit2 VDP internal acknowledge; bit3 CPU bus active;\n               bit4 CPU write; bit5 CPU reset deasserted. */\n            unsigned int nxflags = (!!ym.tmss.w3)\n                | ((!md.dtack)<<1) | ((!ym.vdp.w117)<<2)\n                | ((!md.as)<<3) | ((!md.rw)<<4) | ((!!md.reset)<<5);\n            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);\n        }")
+
+# V2.4: VDP input pin diagnostics without modifying chip behavior.
+s=replace(s,"    unsigned int nx_previous_addr=0xffffffffu;","    unsigned int nx_previous_addr=0xffffffffu;\n    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;")
+s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);","            FC1004_Clock(&ym, mcycles & 1, mcycles);\n            /* Count VDP selection, byte lane strobes, and VDP-owned DTACK.\n               Evaluate only while the 68000 requests a VDP write.\n               All are read-only probes, no chip or CPU pins changed. */\n            if (!md.as && !md.rw && ((md.vaddress & 0x700000u) == 0x600000u)) {\n                if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {\n                    nx_sel_samples++;\n                    if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)\n                        nx_strobe_samples++;\n                }\n                if (!ym.vdp.w117)\n                    nx_ready_samples++;\n            }")
+s=replace(s,"            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);","            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);\n            nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -287,6 +292,24 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
     SDL_SetRenderDrawColor(vid_renderer,(ack_flags&4)?62:228,(ack_flags&4)?224:94,105,255);
     SDL_Rect vdpacklamp={816,252,22,21};
     SDL_RenderFillRect(vid_renderer,&vdpacklamp);
+
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# V2.4: pin-level handshake probes above the existing first bar.
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    unsigned long long vsel=0,vstrobe=0,vready=0;
+    nx_handshake_read(&vsel,&vstrobe,&vready);
+    SDL_SetRenderDrawColor(vid_renderer, 128, 216, 235, 255);
+    nx_diag_text(vid_renderer,"SEL",102,41,3);
+    nx_diag_text(vid_renderer,"STB",389,41,3);
+    nx_diag_text(vid_renderer,"RDY",681,41,3);
+    char pinbuf[32];
+    SDL_snprintf(pinbuf,sizeof(pinbuf),"%llu",vsel);
+    for(int i=0;pinbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,pinbuf[i]-'0',102+i*28,73,1);
+    SDL_snprintf(pinbuf,sizeof(pinbuf),"%llu",vstrobe);
+    for(int i=0;pinbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,pinbuf[i]-'0',389+i*28,73,1);
+    SDL_snprintf(pinbuf,sizeof(pinbuf),"%llu",vready);
+    for(int i=0;pinbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,pinbuf[i]-'0',681+i*28,73,1);
 
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)
