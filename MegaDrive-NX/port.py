@@ -262,7 +262,7 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
 
 # V2.2: display ACK and address-transition counters and status indicators.
 s=replace(s,"        {'C',{15,16,16,16,16,16,15}}",
-  "        {'C',{15,16,16,16,16,16,15}},\\n        {'K',{17,18,20,24,20,18,17}},\\n        {'O',{14,17,17,17,17,17,14}},\\n        {'N',{17,25,21,19,17,17,17}}")
+  "        {'C',{15,16,16,16,16,16,15}},\n        {'K',{17,18,20,24,20,18,17}},\n        {'O',{14,17,17,17,17,17,14}},\n        {'N',{17,25,21,19,17,17,17}}")
 s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
 '''    unsigned long long ack_clocks=0, bus_changes=0;
     unsigned int ack_flags=0;
