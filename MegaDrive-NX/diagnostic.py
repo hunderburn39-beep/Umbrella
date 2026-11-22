@@ -29,6 +29,24 @@ emit(0x46fc,0x2700) # mask interrupts
 move_l(0x53454741,0xa14000) # TMSS
 for reg,val in enumerate([0x04,0x04,0x30,0x3c,0x07,0x6c,0,0,0,0,0xff,0,0x81,0x3f,0,2,1,0,0,0,0,0,0,0]):
     move_w(0x8000|(reg<<8)|val,0xc00004)
+# V4.0: render a minimal, unambiguous plane-A tile via the real 68000->VDP path.
+# VDP register 2 already sets plane A name table at VRAM 0xC000.
+# VDP register 1 already enables display; register 16 selects 32x32 cells.
+# Tile index 1 begins at VRAM 0x0020 (32 bytes). Each pixel uses palette index 1.
+move_w(0x4020,0xc00004)  # VRAM write, address 0x0020
+move_w(0x0000,0xc00004)
+for _ in range(16):
+    move_w(0x1111,0xc00000)  # 8 rows, 4 bytes each
+# Fill the entire visible plane with tile 1, so scroll/offset cannot hide it.
+move_w(0x4000,0xc00004)  # VRAM write, address 0xC000
+move_w(0x0003,0xc00004)
+for _ in range(32*32):
+    move_w(0x0001,0xc00000)
+# CRAM palette 0, colour 1: bright white.
+move_w(0xc002,0xc00004)
+move_w(0x0000,0xc00004)
+move_w(0x0eee,0xc00000)
+# Leave CRAM address 0 selected for the existing controller-driven colour loop.
 # Diagnostic V2.3: probe the 68000->VDP handshake by avoiding a
 # 32-bit MOVEL access across 0xC00004 and its 0xC00006 alias.
 # Two standalone 16-bit control-port writes encode the same VDP command.
