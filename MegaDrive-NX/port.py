@@ -387,6 +387,27 @@ if s.count("if (ym.vdp.nx_probe_w146) nx_pipe_gate_cycles++;") != 1:
     raise RuntimeError("Raw VDP gate pipeline probe missing")
 if s.count("if (ym.vdp.nx_probe_w125) nx_pipe_req_cycles++;") != 1:
     raise RuntimeError("Raw VDP request pipeline probe missing")
+# V4.4: independent 68000-side, board-side and VDP-side samples.
+# Publish through existing decode counters, preserving the internal CMD/PIPE/ASK.
+s=replace(s,"    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;",
+'''    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;
+    unsigned long long nx_cpu_write_seen=0,nx_board_write_seen=0,nx_chip_select_seen=0;''')
+s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
+'''            /* Observe three independent layers before FC1004 advances.
+               Counters are samples, not completed write transactions. */
+            if (!m68k.o_address_z && !m68k.o_as && !m68k.o_rw &&
+                ((m68k.o_address & 0x700000u)==0x600000u))
+                nx_cpu_write_seen++;
+            if (!md.as && !md.rw &&
+                ((md.vaddress & 0x700000u)==0x600000u))
+                nx_board_write_seen++;
+            if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as)
+                nx_chip_select_seen++;
+            FC1004_Clock(&ym, mcycles & 1, mcycles);''')
+s=replace(s,"            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);",
+'''            nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);''')
+if "nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);" not in s:
+    raise RuntimeError("Independent bus-layer diagnostic not published")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
