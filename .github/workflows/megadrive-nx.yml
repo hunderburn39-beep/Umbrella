@@ -61,7 +61,7 @@ jobs:
         with:
           name: Umbrella-MegaDrive-NX
           path: dist
-      - name: Publish V2.6
+      - name: Publish V2.7
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -69,8 +69,8 @@ jobs:
           cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
-          tag=megadrive-nx-v2.6
+          tag=megadrive-nx-v2.7
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V2.6' --notes 'Counts VDP internal address decode, access window, and control-write command stages without forcing DTACK or touching the ROM.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V2.7' --notes 'Corrects false-zero VDP control write counter for the word-address bus; adds raw 68000 data-drive count and last CPU data word. No chip logic or runtime SD I/O changes.'
           fi
           gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber

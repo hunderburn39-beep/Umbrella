@@ -187,6 +187,13 @@ s=replace(s,"            nx_handshake_publish(nx_sel_samples,nx_strobe_samples,n
 s=replace(s,"    int nx_prev_clock0=-1;","    int nx_prev_clock0=-1;\n    unsigned long long nx_dec_seen=0, nx_gate_seen=0, nx_ctrl_seen=0;")
 s=replace(s,"            int nx_clock0=ym.vdp.input.i_cpu_clk0;","            /* Observe original VDP combinational command-decode gates after FC1004_Clock.\n               No values are driven back into the simulated chips. */\n            if (!md.as && !md.rw && ((md.vaddress & 0x700000u)==0x600000u)) {\n                const int nx_dec=ym.vdp.input.i_sel0 &&\n                    ((ym.vdp.io_address & 0x738070) == 0x600000);\n                const int nx_gate=nx_dec && !ym.vdp.input.i_as &&\n                    (ym.vdp.t13 || ym.vdp.l23);\n                if (nx_dec) nx_dec_seen++;\n                if (nx_gate) nx_gate_seen++;\n                if (nx_gate && !ym.vdp.input.i_rw &&\n                    (ym.vdp.io_address & 0x0c) == 0x04) nx_ctrl_seen++;\n            }\n            int nx_clock0=ym.vdp.input.i_cpu_clk0;")
 s=replace(s,"            nx_vdp_state_publish(nx_clock_edges,\n                (unsigned int)(ym.vdp.io_data & 0xffffu),\n                (unsigned int)(ym.vdp.reg_m5 & 1));","            nx_vdp_state_publish(nx_clock_edges,\n                (unsigned int)(ym.vdp.io_data & 0xffffu),\n                (unsigned int)(ym.vdp.reg_m5 & 1));\n            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);")
+
+# V2.7: correct false-zero CTRL: VDP control is word-address bit 1 (A2),
+# not (io_address & 0x0c)==0x04. Also sample actual 68000 data drivers.
+s=replace(s,"    unsigned long long nx_dec_seen=0, nx_gate_seen=0, nx_ctrl_seen=0;","    unsigned long long nx_dec_seen=0, nx_gate_seen=0, nx_ctrl_seen=0;\n    unsigned long long nx_drive_clocks=0;\n    unsigned int nx_last_drive_word=0;")
+s=replace(s,"                nx_cpu_bus_cycles++;\n                if (nx_addr!=nx_previous_addr)","                nx_cpu_bus_cycles++;\n                /* The 68000's actual 16-bit output drivers must be active on a VDP write.\n                   This distinguishes a command stall from an undriven data bus. */\n                if (!m68k.o_rw && ((nx_addr & 0x700000u)==0x600000u) && !m68k.o_data_z) {\n                    nx_drive_clocks++;\n                    nx_last_drive_word=(unsigned int)m68k.o_data & 0xffffu;\n                }\n                if (nx_addr!=nx_previous_addr)")
+s=replace(s,"                if (nx_gate && !ym.vdp.input.i_rw &&\n                    (ym.vdp.io_address & 0x0c) == 0x04) nx_ctrl_seen++;","                /* VDP port layout uses the word-addressed 68000 A1..A23 bus:\n                   0x600002 (physical C00004) is command port, distinguished by A2\n                   (bit 1 of this word address), while &0x0c remains zero.\n                   The previous check for &0x0c==0x04 falsely reported CTRL=0. */\n                if (nx_gate && !ym.vdp.input.i_rw &&\n                    (ym.vdp.io_address & 0x0c) == 0x00 &&\n                    (ym.vdp.io_address & 2) &&\n                    (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)) nx_ctrl_seen++;")
+s=replace(s,"            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);","            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);\n            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -329,6 +336,19 @@ s=replace(s,"    /* A complete upstream chip-level frame is ~1,789,772 master cl
 # V2.6: move decorative bars to make room for DEC PASS CTRL counters.
 s=replace(s,"    for(int i=0;i<3;i++) SDL_RenderFillRect(vid_renderer,&bars[i]);","    /* Prior cosmetic bars hidden; VDP DEC/PASS/CTRL counters use this row. */")
 s=replace(s,"    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */","    /* V2.6 raw VDP decode stages: DEC->PASS->CTRL. */\n    unsigned long long dec=0, gate=0, ctrl=0;\n    nx_decode_read(&dec,&gate,&ctrl);\n    SDL_SetRenderDrawColor(vid_renderer, 152, 216, 243, 255);\n    nx_diag_text(vid_renderer,\"DEC\",104,158,3);\n    nx_diag_text(vid_renderer,\"PASS\",390,158,3);\n    nx_diag_text(vid_renderer,\"CTRL\",686,158,3);\n    char vbuf[32];\n    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",dec);\n    for(int i=0;vbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,vbuf[i]-'0',104+i*28,179,1);\n    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",gate);\n    for(int i=0;vbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,vbuf[i]-'0',390+i*28,179,1);\n    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",ctrl);\n    for(int i=0;vbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,vbuf[i]-'0',686+i*28,179,1);\n\n    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */")
+
+# V2.7 overlay: the DEC/PASS paths are already confirmed active in V2.6.
+# Show CPU DRIVE half-cycles and last 16-bit CPU WORD beside corrected CTRL.
+s=replace(s,'    nx_decode_read(&dec,&gate,&ctrl);',
+  '    nx_decode_read(&dec,&gate,&ctrl);\n    unsigned long long drive=0;\n    unsigned int word=0;\n    nx_drive_read(&drive,&word);')
+s=replace(s,'    nx_diag_text(vid_renderer,"DEC",104,158,3);',
+  '    nx_diag_text(vid_renderer,"DRIVE",104,158,3);')
+s=replace(s,'    nx_diag_text(vid_renderer,"PASS",390,158,3);',
+  '    nx_diag_text(vid_renderer,"WORD",390,158,3);')
+s=replace(s,'    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",dec);',
+  '    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",drive);')
+s=replace(s,'    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",gate);',
+  '    SDL_snprintf(vbuf,sizeof(vbuf),"%u",word);')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")

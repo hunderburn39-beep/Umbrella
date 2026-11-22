@@ -24,3 +24,5 @@ void nx_vdp_state_publish(unsigned long long edges,unsigned int data,unsigned in
 void nx_vdp_state_read(unsigned long long *edges,unsigned int *data,unsigned int *mode);
 void nx_decode_publish(unsigned long long decode,unsigned long long gate,unsigned long long ctrl);
 void nx_decode_read(unsigned long long *decode,unsigned long long *gate,unsigned long long *ctrl);
+void nx_drive_publish(unsigned long long clocks,unsigned int word);
+void nx_drive_read(unsigned long long *clocks,unsigned int *word);

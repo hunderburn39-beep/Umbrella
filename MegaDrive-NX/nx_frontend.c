@@ -117,6 +117,17 @@ void nx_decode_read(unsigned long long *decode,unsigned long long *gate,unsigned
     *gate=__atomic_load_n(&nx_gate_count,__ATOMIC_ACQUIRE);
     *ctrl=__atomic_load_n(&nx_ctrl_count,__ATOMIC_ACQUIRE);
 }
+/* V2.7: original 68000 data-output visibility for VDP command handshake. */
+static unsigned long long nx_drive_clocks=0;
+static unsigned int nx_drive_word=0;
+void nx_drive_publish(unsigned long long clocks,unsigned int word) {
+    __atomic_store_n(&nx_drive_clocks,clocks,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_drive_word,word,__ATOMIC_RELEASE);
+}
+void nx_drive_read(unsigned long long *clocks,unsigned int *word) {
+    *clocks=__atomic_load_n(&nx_drive_clocks,__ATOMIC_ACQUIRE);
+    *word=__atomic_load_n(&nx_drive_word,__ATOMIC_ACQUIRE);
+}
 unsigned long long nx_get_worker_clock(void) {
     return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
 }
@@ -222,7 +233,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.6\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.7\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.2: DTACK and stalled write diagnosis\n",previous,previous_worker);
