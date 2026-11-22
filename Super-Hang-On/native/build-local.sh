@@ -7,17 +7,31 @@ rom="$(realpath "${1:?Usage: build-local.sh /path/to/shangon.zip [output-directo
 out="$(realpath -m "${2:-$here/local-build}")"
 rev=4f5f25f1c680c53946323e0bf9a1cf8bfb4f72c2
 python3 "$here/verify-pcb.py" "$rom"
-for tool in git python3 emcc cc node; do command -v "$tool" >/dev/null || { echo "Missing tool: $tool" >&2; exit 1; }; done
+tools=(python3 cc)
+if [[ -n "${SHO_SOURCE_ARCHIVE:-}" ]]; then tools+=(tar); else tools+=(git); fi
+if [[ "${SHO_NATIVE_ONLY:-0}" != 1 ]]; then tools+=(emcc node); fi
+for tool in "${tools[@]}"; do command -v "$tool" >/dev/null || { echo "Missing tool: $tool" >&2; exit 1; }; done
 test -f "$rom"
 mkdir -p "$out"
 work="$(mktemp -d)"
 trap 'rm -rf "$work"' EXIT
-git clone https://github.com/chaotix359/Super-Hang-On-Ultimate.git "$work/upstream"
-cd "$work/upstream"
-git checkout --detach "$rev"
+if [[ -n "${SHO_SOURCE_ARCHIVE:-}" ]]; then
+  tar -xzf "$SHO_SOURCE_ARCHIVE" -C "$work"
+  cd "$work/upstream"
+  test -f setup.py
+else
+  git clone https://github.com/chaotix359/Super-Hang-On-Ultimate.git "$work/upstream"
+  cd "$work/upstream"
+  git checkout --detach "$rev"
+fi
 # setup.py generates and checks the translated game locally against the reference.
 python3 setup.py --rom "$rom" --cc cc
 cd source
+cp build/setup/selftest/hashes.txt "$out/native-hashes.txt"
+if [[ "${SHO_NATIVE_ONLY:-0}" == 1 ]]; then
+  echo "Native 1200-frame reference comparison passed; no WASM built."
+  exit 0
+fi
 python3 "$here/patch-wasm-fibers.py" src/rc_runtime.c
 cat recomp/overrides/*.c > "$work/overrides_all.c"
 M=src/third_party/musashi
