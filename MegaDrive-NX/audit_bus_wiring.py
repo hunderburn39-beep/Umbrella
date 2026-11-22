@@ -30,6 +30,18 @@ checks = {
         "FC1004_Clock(&ym, mcycles & 1, mcycles);",
     "Board acknowledge reaches CPU":
         "m68k.input.i_dtack = md.dtack;",
+    "FC1004 video clock reaches motherboard":
+        "md.vclk = ym.o_vclk;",
+    "Motherboard video clock reaches FC1004":
+        "ym.i_vclk = md.vclk;",
+    "Motherboard reset reaches 68000":
+        "m68k.input.i_reset = md.reset;",
+    "Motherboard reset reaches 68000 after chip arbitration":
+        "md.reset = ym.o_reset;",
+    "68000 clock depends on board video clock":
+        "if (!md.vclk)",
+    "VDP pixel clock advances renderer":
+        "Video_PlotVDP();",
 }
 failures = []
 for label, snippet in checks.items():
