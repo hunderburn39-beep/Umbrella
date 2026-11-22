@@ -145,6 +145,15 @@ s=replace(s,'    nx_stage("09 Creating worker thread");',
 
 # Main-thread read-only UI. No runtime filesystem access.
 s=replace(s,"        nx_flush_worker_stage(0);","        nx_flush_worker_stage(0);\n        nx_video_show_boot(nx_get_worker_clock());")
+
+# V1.9: sample real 68k bus activity and writes addressed to the VDP.
+# Worker accumulates counts in RAM, publishes to atomic snapshot every 32768 clocks.
+s=replace(s,'int SDLCALL work_thread(void *data)\n{\n    int i;',
+  'int SDLCALL work_thread(void *data)\n{\n    int i;\n    unsigned long long nx_cpu_bus_cycles=0, nx_vdp_wr_cycles=0;')
+s=replace(s,'            if (md.m3)\n                cart_handle_md();\n            else\n                cart_handle_m3();',
+  '            if (md.m3)\n                cart_handle_md();\n            else\n                cart_handle_m3();\n            if (!m68k.o_as && !m68k.o_address_z) nx_cpu_bus_cycles++;\n            if (!md.as && !md.rw && ((md.vaddress & 0xe00000) == 0xc00000)) nx_vdp_wr_cycles++;')
+s=replace(s,'        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress',
+  '        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset);\n        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -183,6 +192,33 @@ s=replace(s,"    int has_picture=0;\n    SDL_LockMutex(vid_mutex);\n    if (vid_
 s=replace(s,"            if (pixels[i] & 0x00ffffffu) { has_picture=1; break; }","            if (pixels[i] & 0x00ffffffu) { has_picture=1; sample_pixels++; }")
 s=replace(s,"    SDL_SetRenderDrawColor(vid_renderer, 7, 15, 31, 255);\n    SDL_RenderClear(vid_renderer);","    SDL_SetRenderDrawColor(vid_renderer, 7, 15, 31, 255);\n    SDL_RenderClear(vid_renderer);")
 s=replace(s,"    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */","    /* Frames count actual VDP vertical syncs, not theoretical clock division.\n       Pixels sample every seventh pixel of the latest completed VDP frame. */\n    char readout[32];\n    SDL_SetRenderDrawColor(vid_renderer, 100, 200, 230, 255);\n    nx_diag_text(vid_renderer,\"FRAMES\",115,407,3);\n    SDL_snprintf(readout,sizeof(readout),\"%u\",actual_frames);\n    for (int i=0; readout[i] && i<6;i++)\n        nx_draw_digit(vid_renderer,readout[i]-'0',112+i*32,444,1);\n    SDL_SetRenderDrawColor(vid_renderer, 100, 230, 174, 255);\n    nx_diag_text(vid_renderer,\"PIXELS\",570,407,3);\n    SDL_snprintf(readout,sizeof(readout),\"%u\",sample_pixels);\n    for (int i=0; readout[i] && i<6;i++)\n        nx_draw_digit(vid_renderer,readout[i]-'0',570+i*32,444,1);\n\n    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */")
+
+# V1.9: show raw bus reads, VDP write-level cycles, and VDP display enable state.
+s=replace(s,"        {'C',{15,16,16,16,16,16,15}}",
+  "        {'C',{15,16,16,16,16,16,15}},\n        {'U',{17,17,17,17,17,17,14}},\n        {'V',{17,17,17,17,17,10,4}},\n        {'D',{30,17,17,17,17,17,30}},\n        {'B',{30,17,17,30,17,17,30}},\n        {'W',{17,17,17,21,21,21,10}},\n        {'T',{31,4,4,4,4,4,4}}")
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    unsigned long long bus=0,writes=0;
+    int display=0,reset=0;
+    nx_diag_read(&bus,&writes,&display,&reset);
+    SDL_SetRenderDrawColor(vid_renderer, 105, 207, 238, 255);
+    nx_diag_text(vid_renderer,"CPU",115,598,3);
+    nx_diag_text(vid_renderer,"VDP",560,598,3);
+    char status[32];
+    SDL_snprintf(status,sizeof(status),"%llu",bus);
+    for(int i=0;status[i] && i<9;i++)nx_draw_digit(vid_renderer,status[i]-'0',115+i*30,627,1);
+    SDL_snprintf(status,sizeof(status),"%llu",writes);
+    SDL_SetRenderDrawColor(vid_renderer, 121, 238, 177, 255);
+    for(int i=0;status[i] && i<9;i++)nx_draw_digit(vid_renderer,status[i]-'0',560+i*30,627,1);
+    /* The CPU label counts 68k active bus half-cycles, not instructions.
+       The VDP label counts write-level half-cycles addressed to 0xC00000. */
+    SDL_SetRenderDrawColor(vid_renderer, display?75:240, display?236:104,115,255);
+    SDL_Rect disp_indicator={820,614,18,22};
+    SDL_RenderFillRect(vid_renderer,&disp_indicator);
+    SDL_SetRenderDrawColor(vid_renderer, reset?70:240, reset?236:104,115,255);
+    SDL_Rect reset_indicator={849,614,18,22};
+    SDL_RenderFillRect(vid_renderer,&reset_indicator);
+
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")

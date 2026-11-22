@@ -37,6 +37,24 @@ void nx_worker_progress(unsigned long long clock, const char *phase) {
     __atomic_store_n(&worker_phase, phase, __ATOMIC_RELEASE);
     __atomic_store_n(&worker_progress_mode, 1, __ATOMIC_RELEASE);
 }
+/* Read-only shared snapshots, published every 32768 master clocks. */
+static unsigned long long nx_bus_reads = 0, nx_vdp_write_cycles = 0;
+static int nx_vdp_disp = 0;
+static int nx_chip_reset = 0;
+void nx_diag_capture(unsigned long long bus_reads,
+                     unsigned long long vdp_writes,int vdp_disp,int chip_reset) {
+    __atomic_store_n(&nx_bus_reads,bus_reads,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_vdp_write_cycles,vdp_writes,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_vdp_disp,vdp_disp,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_chip_reset,chip_reset,__ATOMIC_RELEASE);
+}
+void nx_diag_read(unsigned long long *reads,unsigned long long *writes,
+                  int *display,int *reset) {
+    *reads=__atomic_load_n(&nx_bus_reads,__ATOMIC_ACQUIRE);
+    *writes=__atomic_load_n(&nx_vdp_write_cycles,__ATOMIC_ACQUIRE);
+    *display=__atomic_load_n(&nx_vdp_disp,__ATOMIC_ACQUIRE);
+    *reset=__atomic_load_n(&nx_chip_reset,__ATOMIC_ACQUIRE);
+}
 unsigned long long nx_get_worker_clock(void) {
     return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
 }
@@ -142,10 +160,10 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.8\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.9\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV1.8: VDP frame/pixel counters visible\n",previous,previous_worker);
+        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV1.9: CPU/VDP bus counters visible\n",previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;
