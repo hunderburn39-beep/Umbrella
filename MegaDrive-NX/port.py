@@ -792,6 +792,19 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
             nx_draw_digit(vid_renderer,tb[k]-'0',300+k*18,yy,1);
     }
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+# V4.4: show independent CPU / BOARD / CHIP counts in the top
+# diagnostic row. The underlying internal CMD/PIPE/ASK counters remain
+# collected and can be restored after the bus break is localized.
+s=replace(s,"    nx_pipe_read(&dec,&gate,&ctrl);",
+            "    nx_decode_read(&dec,&gate,&ctrl);")
+s=replace(s,'    nx_diag_text(vid_renderer,"CMD",104,158,3);',
+            '    nx_diag_text(vid_renderer,"CPU",104,158,3);')
+s=replace(s,'    nx_diag_text(vid_renderer,"PIPE",390,158,3);',
+            '    nx_diag_text(vid_renderer,"BOARD",390,158,3);')
+s=replace(s,'    nx_diag_text(vid_renderer,"ASK",686,158,3);',
+            '    nx_diag_text(vid_renderer,"CHIP",686,158,3);')
+if 'nx_decode_read(&dec,&gate,&ctrl);' not in s:
+    raise RuntimeError("CPU/BOARD/CHIP HUD wiring missing")
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")
