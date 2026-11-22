@@ -15,6 +15,18 @@ void nx_stage(const char *step) {
     FILE *f = fopen(ROOT "last-stage.txt", "wb");
     if (f) { fprintf(f, "%s\n", step); fclose(f); }
 }
+/* Worker has its own marker file, never overwritten by the video thread. */
+void nx_worker_stage(const char *step) {
+    FILE *f = fopen(ROOT "worker-stage.txt", "wb");
+    if (f) { fprintf(f, "%s\n", step); fclose(f); }
+}
+static void nx_previous_worker_stage(char *out, size_t cap) {
+    snprintf(out, cap, "%s", "No worker run recorded");
+    FILE *f = fopen(ROOT "worker-stage.txt", "rb");
+    if (!f) return;
+    if (fgets(out, cap, f)) out[strcspn(out, "\r\n")] = 0;
+    fclose(f);
+}
 static void nx_previous_stage(char *out, size_t cap) {
     snprintf(out, cap, "%s", "No previous startup recorded");
     FILE *f = fopen(ROOT "last-stage.txt", "rb");
@@ -47,6 +59,8 @@ int nx_choose_rom(char **rom) {
     int count=0,selected=0,ok=0;
     char previous[128];
     nx_previous_stage(previous, sizeof(previous));
+    char previous_worker[128];
+    nx_previous_worker_stage(previous_worker, sizeof(previous_worker));
     DIR *d=opendir(ROMS);
     if(d) {
         struct dirent *e;
@@ -78,10 +92,10 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.8\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.9\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: launch  X: diagnostic  B: exit\nLast stage: %.80s\n",previous);
+        printf("\nA: launch  X: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;

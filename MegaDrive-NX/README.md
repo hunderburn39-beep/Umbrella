@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V0.8
+# Umbrella Mega Drive NX V0.9
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -34,3 +34,6 @@ The console reached stage `07 Video ready` in V0.6. This diagnostic version bypa
 
 ## V0.8: separate GPU startup from chip-thread crash
 Before starting the Nuked-MD chip worker, the program now performs a single `Video_Blit()` with the prepared blank video buffers. If the Switch crashes there, Last stage remains `09 Single-thread video test`. Otherwise `09a Video test passed` confirms the SDL renderer can present with no emulation thread active. Subsequent markers `09 Creating worker thread`, `10 Worker created`, `11 Video loop started` and `11a Video blit returned` narrow down the next failure. This is a diagnostic build, not verified gameplay; audio output remains disabled.
+
+## V0.9: chip-worker crash isolation
+The video renderer completed a first SDL blit on actual Switch hardware (stage `11a`). This release writes a **separate** `worker-stage.txt`, displayed on the ROM menu as `Worker stage` after an exception. W00: not started; W01: thread entered; W02: loop entered; W03: 68000 clock; W04: Z80 clock; W05: FC1004 ASIC; W06: VRAM; W07: bus cycle; W08: audio/video update; W09: first complete clock; W10: 1000 clocks; W11: 100K; W12: 1M. Both `last-stage.txt` and `worker-stage.txt` are stored under `/switch/Umbrella-MegaDrive-NX/`. Instrumentation runs only on the first clock and at coarse milestones. Host audio remains muted pending validation. No claim of full-speed operation or functional gameplay.

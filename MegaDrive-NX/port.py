@@ -75,6 +75,17 @@ s=replace(s,'    int first_blit = 1;',
   '    int first_blit = 1;\n    int first_post_blit = 1;')
 s=replace(s,'        Video_Blit();\n    }\n    while (!quit_signal);',
   '        Video_Blit();\n        if (first_post_blit) { nx_stage("11a Video blit returned"); first_post_blit = 0; }\n    }\n    while (!quit_signal);')
+
+# V0.9: separate the chip worker from main video progress.
+s=replace(s,"int SDLCALL work_thread(void *data)\n{\n    int i;","int SDLCALL work_thread(void *data)\n{\n    int i;\n    nx_worker_stage(\"W01 Worker thread entered\");")
+s=replace(s,"    while (work_thread_run)\n    {\n        const int frame_div = 1789772;","    while (work_thread_run)\n    {\n        if (mcycles == 0) nx_worker_stage(\"W02 Chip loop entered\");\n        const int frame_div = 1789772;")
+s=replace(s,"            // z80\n            z80.input.ext_data_i = md.zdata;","            if (mcycles == 0 && i == 0) nx_worker_stage(\"W03 M68K clock OK\");\n            // z80\n            z80.input.ext_data_i = md.zdata;")
+s=replace(s,"            // fc1004\n            ym.vdp.input.i_csync","            if (mcycles == 0 && i == 0) nx_worker_stage(\"W04 Z80 clock OK\");\n            // fc1004\n            ym.vdp.input.i_csync")
+s=replace(s,"            // VRAM\n            update_vram();","            if (mcycles == 0 && i == 0) nx_worker_stage(\"W05 FC1004 clock OK\");\n            // VRAM\n            update_vram();\n            if (mcycles == 0 && i == 0) nx_worker_stage(\"W06 VRAM update OK\");")
+s=replace(s,"        Audio_Update();","        if (mcycles == 0) nx_worker_stage(\"W07 Chip bus cycle OK\");\n        Audio_Update();")
+s=replace(s,"        md.odclk = ym.vdp.input.i_clk1;","        if (mcycles == 0) nx_worker_stage(\"W08 Audio/video update OK\");\n        md.odclk = ym.vdp.input.i_clk1;")
+s=replace(s,"        mcycles++;\n    }\n    return 0;","        mcycles++;\n        if (mcycles == 1) nx_worker_stage(\"W09 First full clock OK\");\n        else if (mcycles == 1000) nx_worker_stage(\"W10 1000 clocks OK\");\n        else if (mcycles == 100000) nx_worker_stage(\"W11 100K clocks OK\");\n        else if (mcycles == 1000000) nx_worker_stage(\"W12 1M clocks OK\");\n    }\n    return 0;")
+s=replace(s,"    nx_stage(\"09 Creating worker thread\");","    nx_worker_stage(\"W00 Worker not started\");\n    nx_stage(\"09 Creating worker thread\");")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
