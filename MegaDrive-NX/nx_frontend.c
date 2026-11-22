@@ -17,20 +17,47 @@ void nx_stage(const char *step) {
     FILE *f = fopen(ROOT "last-stage.txt", "wb");
     if (f) { fprintf(f, "%s\n", step); fclose(f); }
 }
-/* Worker has its own marker file, never overwritten by the video thread. */
+/* Native worker must never issue filesystem IPC. Main thread flushes snapshots. */
+static const char *worker_label = "W00 Not started";
+static const char *worker_phase = "CLOCK";
+static unsigned long long worker_clock = 0;
+static int worker_progress_mode = 0;
 void nx_worker_stage(const char *step) {
-    FILE *f = fopen(ROOT "worker-stage.txt", "wb");
-    if (f) { fprintf(f, "%s\n", step); fclose(f); }
+    __atomic_store_n(&worker_label, step, __ATOMIC_RELEASE);
+    __atomic_store_n(&worker_progress_mode, 0, __ATOMIC_RELEASE);
 }
 void nx_worker_progress(unsigned long long clock, const char *phase) {
-    char buf[112];
-    static u64 first_tick = 0;
-    u64 tick = SDL_GetTicks64();
-    if (!first_tick) first_tick = tick;
-    u64 elapsed_s = (tick - first_tick) / 1000ULL;
-    snprintf(buf, sizeof(buf), "C%llu %s%s T%llus",
-             clock, phase, nx_video_bypass ? " NR" : "", (unsigned long long)elapsed_s);
-    nx_worker_stage(buf);
+    __atomic_store_n(&worker_clock, clock, __ATOMIC_RELEASE);
+    __atomic_store_n(&worker_phase, phase, __ATOMIC_RELEASE);
+    __atomic_store_n(&worker_progress_mode, 1, __ATOMIC_RELEASE);
+}
+/* Called ONLY from the main SDL loop, never from the chip clock worker. */
+void nx_flush_worker_stage(int force) {
+    static u64 initial_tick=0, last_flush_tick=0;
+    static char last_saved[128] = "";
+    u64 now = SDL_GetTicks64();
+    if (!initial_tick) initial_tick = now;
+    if (!force && (now - last_flush_tick < 1200)) return;
+    last_flush_tick = now;
+    const int mode = __atomic_load_n(&worker_progress_mode, __ATOMIC_ACQUIRE);
+    char buf[128];
+    if (mode) {
+        unsigned long long clock = __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
+        const char *phase = __atomic_load_n(&worker_phase, __ATOMIC_ACQUIRE);
+        snprintf(buf,sizeof(buf),"C%llu %s%s T%llus",clock,phase,
+                 nx_video_bypass ? " NR" : "",(unsigned long long)((now-initial_tick)/1000));
+    } else {
+        const char *label=__atomic_load_n(&worker_label, __ATOMIC_ACQUIRE);
+        snprintf(buf,sizeof(buf),"%s",label);
+    }
+    if (!force && strcmp(buf,last_saved)==0) return;
+    FILE *out = fopen(ROOT "worker-stage.txt","wb");
+    if(out) {
+        fputs(buf,out);
+        fputc('\n',out);
+        fclose(out);
+        snprintf(last_saved,sizeof(last_saved),"%s",buf);
+    }
 }
 static void nx_previous_worker_stage(char *out, size_t cap) {
     snprintf(out, cap, "%s", "No worker run recorded");
@@ -105,7 +132,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.4\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.5\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);

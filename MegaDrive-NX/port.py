@@ -131,6 +131,13 @@ s=replace(s,'            Video_UpdateTitle(ms);',
 # Distinguish a requested clean exit from an unexpected termination.
 s=replace(s,'    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);',
   '    nx_stage("12 Controlled shutdown");\n    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);')
+
+# V1.5: resolve confirmed fs IPC crash. Never open worker-stage.txt on the
+# chip-worker thread. All SD I/O is delegated to the main thread (max 1/1.2s).
+s=replace(s,'    nx_worker_stage("W00 Worker not started");',
+  '    nx_worker_stage("W00 Worker not started");\n    nx_flush_worker_stage(1);')
+s=replace(s,'        if (first_post_blit) { nx_stage("11a Video blit returned"); first_post_blit = 0; }',
+  '        if (first_post_blit) { nx_stage("11a Video blit returned"); first_post_blit = 0; }\n        nx_flush_worker_stage(0);')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
