@@ -1,5 +1,5 @@
 'use strict';
-const CACHE='sho-pwa-shell-v229';
+const CACHE='sho-pwa-shell-v230';
 const urls=['app.html','sho-app.webmanifest','sho-app-icon.png','sho-app-icon.svg','../logohorizontal.png','../logovertical.png'].map(p=>new URL(p,self.registration.scope).href);
 self.addEventListener('install',e=>e.waitUntil((async()=>{const c=await caches.open(CACHE);await c.addAll(urls.map(p=>new Request(p,{cache:'reload'})));await self.skipWaiting()})()));
 self.addEventListener('activate',e=>e.waitUntil((async()=>{for(const k of await caches.keys())if(k.startsWith('sho-pwa-shell-')&&k!==CACHE)await caches.delete(k);await self.clients.claim()})()));
