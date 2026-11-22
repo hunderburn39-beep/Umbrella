@@ -454,7 +454,7 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
 # which hid every debug value exactly when the user saw the first blue rectangle.
 # Draw the HUD in Video_Blit *before* SDL_RenderPresent, on the main/UI thread.
 # Avoid rendering after SDL_RenderPresent: the backbuffer contents are undefined.
-s=replace(s,'void Video_Blit(void)\\n{',
+s=replace(s,'void Video_Blit(void)\n{',
 '''static void nx_draw_digit(SDL_Renderer *r,int d,int x,int y,int scale);
 static void nx_diag_text(SDL_Renderer *r,const char *msg,int x,int y,int sz);
 void Video_Blit(void)
@@ -466,7 +466,7 @@ s=replace(s,'    SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WID
     const uint32_t *nx_pix=&vid_currentbuffer[0][0];
     for(size_t q=0;q<(size_t)VID_WIDTH*VID_HEIGHT;q+=7)
         if(nx_pix[q]&0x00ffffffu) nx_picture_pixels++;''')
-s=replace(s,'    SDL_RenderCopy(vid_renderer, vid_texture, NULL, NULL);\\n    SDL_RenderPresent(vid_renderer);',
+s=replace(s,'    SDL_RenderCopy(vid_renderer, vid_texture, NULL, NULL);\n    SDL_RenderPresent(vid_renderer);',
 '''    SDL_SetRenderDrawColor(vid_renderer,0,0,0,255);
     SDL_RenderClear(vid_renderer);
     SDL_RenderCopy(vid_renderer, vid_texture, NULL, NULL);
