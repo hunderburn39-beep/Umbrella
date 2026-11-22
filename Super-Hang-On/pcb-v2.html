@@ -3,8 +3,9 @@
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.1</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:18px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}#remove{background:none;color:#a7b6ca;font:13px system-ui;margin-top:8px} [hidden]{display:none!important}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.1</h1><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.1</h1><small>Lançador corrigido V2.1.1</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
 <script>
+(()=>{
 "use strict";
 const $=id=>document.getElementById(id),game=$('game'),button=$('launch'),status=$('status');
 const expected='0b910a0e7585da7f5228ead8e85e130725c9c215d827acff34fe6cb80171f91a';
@@ -41,4 +42,5 @@ $('remove').onclick=async()=>{try{if(db)await remove();game.value='';needsFile('
 function launch(){if(!source)return;const gameDocument=source;try{document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
 button.onclick=launch;
 init();
+})();
 </script></body></html>
