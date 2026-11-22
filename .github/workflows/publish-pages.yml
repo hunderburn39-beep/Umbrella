@@ -17,7 +17,7 @@ on:
       - '.github/workflows/publish-pages.yml'
   workflow_dispatch:
   workflow_run:
-    workflows: ['Fortuna 777 Defold V6']
+    workflows: ['Fortuna 777 Defold V6', 'Mega Drive NX build']
     types: [completed]
     branches: [main]
 
@@ -45,8 +45,12 @@ jobs:
             if [ -d "$game" ]; then cp -R "$game" public/; fi
           done
           test -s public/Fortuna-777-V7/index.html
-          curl --fail --location --retry 3 --output public/nx.nro https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v0.2/Umbrella-MegaDrive-NX.nro
-          curl --fail --location --retry 3 --output /tmp/nx.sha256 https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v0.2/Umbrella-MegaDrive-NX.sha256
+          nx_base=https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v0.3
+          if ! curl --fail --location --retry 3 --output public/nx.nro "$nx_base/Umbrella-MegaDrive-NX.nro"; then
+            nx_base=https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v0.2
+            curl --fail --location --retry 3 --output public/nx.nro "$nx_base/Umbrella-MegaDrive-NX.nro"
+          fi
+          curl --fail --location --retry 3 --output /tmp/nx.sha256 "$nx_base/Umbrella-MegaDrive-NX.sha256"
           echo "$(cut -d ' ' -f1 /tmp/nx.sha256)  public/nx.nro" | sha256sum -c -
           touch public/.nojekyll
       - name: Bundle Babylon.js locally for Fortuna V8
