@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-PT">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.2</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.3</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:18px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}#remove{background:none;color:#a7b6ca;font:13px system-ui;margin-top:8px} [hidden]{display:none!important}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.2</h1><small>Modo arcade original · COIN e START · Inclinação corrigida</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.3</h1><small>Arcade vertical 9:16 · Controlos táteis</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
 <script>
 (()=>{
 "use strict";
@@ -24,7 +24,7 @@ if(!t.includes('Super Hang-On | PCB Native V2.1')||!t.includes('createShoModule'
 return t;
 }
 function ready(saved){
-$('intro').textContent=saved?'Jogo instalado. Roda o iPhone e carrega em JOGAR.':'Pacote pronto nesta sessão. Carrega em JOGAR.';
+$('intro').textContent=saved?'Jogo instalado. Carrega em JOGAR.':'Pacote pronto nesta sessão. Carrega em JOGAR.';
 status.textContent=saved?'Instalação local concluída. Nas próximas visitas não precisas do ficheiro.':'O Safari não permitiu guardar o jogo; será necessário voltar a selecionar o pacote.';
 $('import').hidden=true;$('remove').hidden=!saved;button.disabled=false;
 }
@@ -39,7 +39,25 @@ button.disabled=true;source='';
 try{const f=game.files[0];if(!f){needsFile();return;}status.textContent='A verificar e instalar…';const bytes=await f.arrayBuffer();source=await validated(bytes);let saved=false;try{db=db||await openDB();await write(bytes);saved=true;}catch(e){console.warn('Storage unavailable',e)}ready(saved);launch();}catch(e){needsFile(e.message);}
 };
 $('remove').onclick=async()=>{try{if(db)await remove();game.value='';needsFile('Instalação removida.');}catch(e){status.textContent='Não foi possível remover: '+e.message;}};
-function patchedGame(source){for(const [from,to] of [["Super Hang-On | PCB Native V2.1","Super Hang-On | PCB Native V2.2"],["<h2>Super Hang-On | PCB Native V2.1</h2>","<h2>Super Hang-On | PCB Native V2.2</h2>"],["<button id=\"credit\">START</button>","<button id=\"coin\">COIN</button><button id=\"credit\">START</button>"],["$(\"credit\").onclick=()=>{start=5};","$(\"coin\").onclick=()=>{if(coin===0)coin=10};$(\"credit\").onclick=()=>{if(coin===0)start=5};"],["if(e.code===\"Enter\"){","if(e.code===\"Digit5\"){e.preventDefault();if(!e.repeat&&coin===0)coin=10;return}if(e.code===\"Enter\"){"],["neutral=null;running=true;","m._browser_dips(255,255);neutral=null;running=true;"],["(Math.abs(delta)<2?0:delta)/30","(Math.abs(delta)<2?0:-delta)/30"],["Iniciar e autorizar inclinação","Ligar máquina e autorizar inclinação"]]){if(!source.includes(from))throw Error('Não foi possível aplicar a atualização V2.2.');source=source.replace(from,to);}return source;}
+function patchedGame(source){
+  const replace=(a,b)=>{if(!source.includes(a))throw Error('Atualização V2.3: elemento ausente '+a.slice(0,70));source=source.replace(a,b)};
+  source=source.replaceAll('PCB Native V2.1','PCB Native V2.3').replaceAll('ROM pronta. Roda o ecrã e inicia.','ROM pronta. Liga a máquina.');
+  replace('Iniciar e autorizar inclinação','LIGAR MÁQUINA');
+  replace('<button id="credit">START</button><button id="cal">CALIBRAR</button><button id="resume" hidden>ATIVAR SOM</button><span id="motion">Inclinação: a aguardar</span>','<button id="coin">COIN</button><button id="credit">START</button><button id="resume" hidden>SOM</button>');
+  replace('<button data-key="brake">TRAVÃO</button></div><div id="right">','</div><div id="right"><button data-key="brake">TRAVÃO</button>');
+  replace('<div id="rotate">Roda o telemóvel para jogar na horizontal.</div>','');
+  replace('</style>',`main{position:relative;width:min(100vw,56.25dvh);height:min(100dvh,177.7778vw);margin:auto;display:block;background:linear-gradient(180deg,#1b2940,#090d15);border:1px solid #344559;border-radius:12px;overflow:hidden}body{display:grid;place-items:center}canvas{position:absolute;top:12%;left:0;width:100%;height:auto;aspect-ratio:10/7;object-fit:contain;background:#000;border-block:2px solid #40516a;box-shadow:0 8px 24px #0008}#setup{top:50%;left:50%;transform:translate(-50%,-50%);width:90%}#top{top:2%;left:3%;right:3%;justify-content:center;gap:8px}#top button{padding:8px 14px;min-height:40px;font-size:13px}#left,#right{bottom:7%;gap:8px;align-items:center}#left{left:4%;width:46%}#right{right:4%;width:41%;flex-direction:column;align-items:stretch}#left button{width:50%;height:clamp(52px,17vw,80px);font-size:26px}#right button{height:clamp(44px,12vw,63px);padding:5px;font-size:13px}#controls button{background:linear-gradient(#394a60,#172337);border:1px solid #718aa4;box-shadow:0 3px 0 #070b13}#controls button[data-key="throttle"]{background:linear-gradient(#387a4e,#16482b)}#controls button[data-key="brake"]{background:linear-gradient(#954540,#502523)}#controls button:active{background:#718942;transform:translateY(2px)}#controls button[data-key]:active{filter:brightness(1.5)}#coin{color:#ffe177}#credit{color:#9deca5}</style>`);
+  const first=source.indexOf('function angle(){'),last=source.indexOf('$("credit").onclick=',first);if(first<0||last<0)throw Error('Atualização V2.3: sensores');source=source.slice(0,first)+'window.addEventListener("orientationchange",()=>{resetInputs();resetAudio();});\n'+source.slice(last);
+  replace('$("credit").onclick=()=>{start=5};','$("coin").onclick=()=>{if(coin===0)coin=10};$("credit").onclick=()=>{if(coin===0)start=5;else queuedStart=true};');
+  replace('if(e.code==="Enter"){','if(e.code==="Digit5"){e.preventDefault();if(!e.repeat&&coin===0)coin=10;return}if(e.code==="Enter"){');
+  replace('if(!landscape())throw Error("Roda o telemóvel.");','');
+  const a=source.indexOf('// Call both gesture-sensitive APIs'),b=source.indexOf('m.FS.writeFile("/shangon.zip"',a);if(a<0||b<0)throw Error('Atualização V2.3: permissões');source=source.slice(0,a)+'await unlockSound();\n'+source.slice(b);
+  replace('neutral=null;running=true;','m._browser_dips(255,255);neutral=null;running=true;');
+  replace('const delta=((raw-(neutral??raw)+540)%360)-180;const target=manual||(sensorSeen?clamp((Math.abs(delta)<2?0:delta)/30,-1,1):0);','const target=manual;');
+  replace('if(!landscape()||document.hidden)','if(document.hidden)');
+  replace('const landscape=()=>innerWidth>innerHeight;','');
+  return source;
+}
 function launch(){if(!source)return;try{const gameDocument=patchedGame(source);document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
 button.onclick=launch;
 init();
