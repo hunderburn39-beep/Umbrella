@@ -267,6 +267,21 @@ s=replace(s,'        Video_Blit();\n        if (first_post_blit) { nx_stage("11a
         }''')
 s=replace(s,'        nx_flush_worker_stage(0);\n        nx_video_show_boot(nx_get_worker_clock());',
   '        nx_flush_worker_stage(0);')
+
+# V3.3: isolate the overhead of read-only VDP diagnostic probes.
+# The 68000, Z80, FC1004, VDP and VRAM clocks still run every cycle.
+# ZL only disables optional probe accounting. Compare RATE before/after.
+s=replace(s,'            /* Observe original VDP combinational command-decode gates after FC1004_Clock.',
+'''            if (!nx_light_probes) {
+            /* Observe original VDP combinational command-decode gates after FC1004_Clock.''')
+s=replace(s,'            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);',
+'''            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);''')
+# Close the optional-probe guard after all CMD/PIPE/ASK/CLK/SEL sampling,
+# but BEFORE the upstream // VRAM chip update.
+s=replace(s,'            // VRAM\n            update_vram();',
+'''            } /* end optional VDP diagnostic probes */
+            // VRAM
+            update_vram();''')
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")

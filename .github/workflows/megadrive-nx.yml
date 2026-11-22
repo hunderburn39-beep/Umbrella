@@ -61,7 +61,7 @@ jobs:
         with:
           name: Umbrella-MegaDrive-NX
           path: dist
-      - name: Publish V3.2
+      - name: Publish V3.3
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -69,8 +69,8 @@ jobs:
           cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
-          tag=megadrive-nx-v3.2
+          tag=megadrive-nx-v3.3
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V3.2' --notes 'Reduces redundant SDL presentations and texture uploads; preserves live bus telemetry and adds measured master-clock-per-second RATE. Full-speed gameplay remains unverified.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V3.3' --notes 'Adds ZL to toggle high-frequency read-only VDP probe overhead for an A/B RATE test; simulated chip clocks unchanged.'
           fi
           gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber
