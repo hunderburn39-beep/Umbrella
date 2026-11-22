@@ -59,6 +59,20 @@ for label, snippet in {
     print(f"{'PASS' if ok else 'FAIL'}: {label}")
     if not ok:
         failures.append(label)
+# The two HUD counters previously disagreed although they should count
+# the exact same VDP selection event. Verify the generated C, not port.py.
+import re
+sel_blocks = re.findall(
+    r"if\\s*\\(ym\\.vdp\\.input\\.i_sel0\\s*&&\\s*!ym\\.vdp\\.input\\.i_as\\)\\s*\\{([^}]*)\\}",
+    b, re.S,
+)
+shared = len(sel_blocks) == 1 and all(
+    sel_blocks[0].count(token) == 1
+    for token in ("nx_sel_samples++;", "nx_chip_select_seen++;")
+)
+print(f"{'PASS' if shared else 'FAIL'}: CHIP and SEL increment inside one identical VDP event")
+if not shared:
+    failures.append("CHIP and SEL sample mismatch")
 print("RESULT:", "FAIL" if failures else "PASS", "| Static wiring only; Switch hardware test required")
 if failures:
     raise SystemExit(1)
