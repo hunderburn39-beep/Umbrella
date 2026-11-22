@@ -31,13 +31,14 @@ function needsFile(message=''){
 source='';button.disabled=true;$('remove').hidden=true;$('import').hidden=false;$('intro').textContent='Na primeira visita, seleciona Super-Hang-On-V2.1.txt. Nas seguintes, basta abrir este endereço.';status.textContent=message;
 }
 async function init(){
-try{db=await openDB();const bytes=await read();if(bytes){source=await validated(bytes);ready(true);return;}}catch(e){console.warn('Local install',e)}needsFile();
+try{db=await openDB();const bytes=await read();if(bytes){source=await validated(bytes);ready(true);if(new URLSearchParams(location.search).get('manage')!=='1'){launch();return;}return;}}catch(e){console.warn('Local install',e)}needsFile();
 }
 game.onchange=async()=>{
 button.disabled=true;source='';
-try{const f=game.files[0];if(!f){needsFile();return;}status.textContent='A verificar e instalar…';const bytes=await f.arrayBuffer();source=await validated(bytes);let saved=false;try{db=db||await openDB();await write(bytes);saved=true;}catch(e){console.warn('Storage unavailable',e)}ready(saved);}catch(e){needsFile(e.message);}
+try{const f=game.files[0];if(!f){needsFile();return;}status.textContent='A verificar e instalar…';const bytes=await f.arrayBuffer();source=await validated(bytes);let saved=false;try{db=db||await openDB();await write(bytes);saved=true;}catch(e){console.warn('Storage unavailable',e)}ready(saved);launch();}catch(e){needsFile(e.message);}
 };
 $('remove').onclick=async()=>{try{if(db)await remove();game.value='';needsFile('Instalação removida.');}catch(e){status.textContent='Não foi possível remover: '+e.message;}};
-button.onclick=()=>{if(!source)return;const gameDocument=source;try{document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}};
+function launch(){if(!source)return;const gameDocument=source;try{document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
+button.onclick=launch;
 init();
 </script></body></html>
