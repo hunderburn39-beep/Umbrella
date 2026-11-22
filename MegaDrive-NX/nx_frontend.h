@@ -40,3 +40,7 @@ void nx_skip_request(void);
 int nx_skip_take(void);
 void nx_skip_report(int status);
 void nx_skip_read(unsigned int *tries,int *status);
+
+unsigned long long nx_prof_begin(void);
+void nx_prof_end(int id,unsigned long long start);
+unsigned int nx_prof_avg_ns(int id);
