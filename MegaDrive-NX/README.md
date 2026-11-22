@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V3.4
+# Umbrella Mega Drive NX V3.5
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -128,3 +128,6 @@ While the Super Hang-On ROM runs in RetroArch, the chip-level Nuked-MD Switch po
 
 ## V3.4: conservative CPU clock request, with automatic restoration
 On launch, after ROM selection and before worker creation, the native Switch frontend attempts `clkrstInitialize` and opens the official `PcvModuleId_CpuBus` clock service. It reads the current frequency and makes a single best-effort request for **1,224,000,000 Hz**. If the console denies the request or the service is unavailable, the program continues at its current clock without attempting privilege escalation or changing voltage. On clean shutdown, the original clock rate is restored and the session closed. The boot diagnostics show the **observed CPU MHZ** (0 if the service is unavailable) and a green lamp only when the requested rate was verified; red indicates unavailable, refused or unverified. The program does not force 1.785 GHz, overclock the GPU, bypass thermal limits, or claim this fixes the VDP. Compare `RATE` with V3.3 under the same conditions. The clock API may be restricted depending on firmware and CFW; the effect must be verified on real hardware.
+
+## V3.5 graphical launcher
+Native sky-blue 1280x720 GPU-backed SDL2 frontend. Green EXECUTAR button, green region selection (Japan/USA/Europe), scrollable ROM list, blue DIAGNOSTICO button, controller D-pad + A/X/Y/L/R/B and touchscreen support. The UI is separate from the chip-level 68000/VDP/FC1004 implementation and is destroyed before the simulation begins. Touch uses SDL logical 1280x720 coordinates. The launcher uses SDL_RENDERER_ACCELERATED with a software fallback; GPU availability depends on the console environment. V3.4 CPU clock request remains best-effort and requires runtime verification. No guarantee yet of Super Hang-On graphics or full-speed gameplay.
