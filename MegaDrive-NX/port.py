@@ -360,6 +360,14 @@ s=replace(s,
             }
             if (!ym.vdp.w117)
                 nx_ready_samples++;''')
+# V4.2: fail loudly if the raw VDP probe was lost in an earlier
+# transformation. This prevents another successful build with stale counters.
+if s.count("nx_sel_samples++;") != 1:
+    raise RuntimeError("Expected exactly one VDP SEL counter in md.c")
+if "if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {" not in s:
+    raise RuntimeError("Raw VDP selection probe missing after patching")
+if "nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);" not in s:
+    raise RuntimeError("VDP handshake counters not published")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
