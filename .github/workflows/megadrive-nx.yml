@@ -27,6 +27,8 @@ jobs:
           bash -n MegaDrive-NX/build.sh
           python3 -m py_compile MegaDrive-NX/port.py MegaDrive-NX/diagnostic.py MegaDrive-NX/test_diagnostic_rom.py
           python3 MegaDrive-NX/test_diagnostic_rom.py
+          PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_va4*.py" -v
+          python3 -m py_compile MegaDrive-NX/vdp_transaction_diagnostic.py
       - name: Compile and package NRO
         run: bash MegaDrive-NX/build.sh
       - name: Verify NRO header and hash
