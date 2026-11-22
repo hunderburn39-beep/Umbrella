@@ -25,9 +25,9 @@ void nx_worker_stage(const char *step) {
 void nx_worker_progress(unsigned long long clock, const char *phase) {
     char buf[112];
     static u64 first_tick = 0;
-    u64 tick = armGetSystemTick();
+    u64 tick = SDL_GetTicks64();
     if (!first_tick) first_tick = tick;
-    u64 elapsed_s = armTicksToNs(tick - first_tick) / 1000000000ULL;
+    u64 elapsed_s = (tick - first_tick) / 1000ULL;
     snprintf(buf, sizeof(buf), "C%llu %s%s T%llus",
              clock, phase, nx_video_bypass ? " NR" : "", (unsigned long long)elapsed_s);
     nx_worker_stage(buf);
