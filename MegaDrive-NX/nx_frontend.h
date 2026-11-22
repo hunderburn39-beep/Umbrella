@@ -27,3 +27,5 @@ void nx_decode_publish(unsigned long long decode,unsigned long long gate,unsigne
 void nx_decode_read(unsigned long long *decode,unsigned long long *gate,unsigned long long *ctrl);
 void nx_drive_publish(unsigned long long clocks,unsigned int word);
 void nx_drive_read(unsigned long long *clocks,unsigned int *word);
+void nx_pipe_publish(unsigned long long cmd,unsigned long long gate,unsigned long long req);
+void nx_pipe_read(unsigned long long *cmd,unsigned long long *gate,unsigned long long *req);

@@ -134,6 +134,18 @@ void nx_drive_read(unsigned long long *clocks,unsigned int *word) {
     *clocks=__atomic_load_n(&nx_drive_clocks,__ATOMIC_ACQUIRE);
     *word=__atomic_load_n(&nx_drive_word,__ATOMIC_ACQUIRE);
 }
+/* V2.9 VDP internal command/acknowledge gate samples. */
+static unsigned long long nx_pipe_cmd=0,nx_pipe_gate=0,nx_pipe_req=0;
+void nx_pipe_publish(unsigned long long cmd,unsigned long long gate,unsigned long long req) {
+    __atomic_store_n(&nx_pipe_cmd,cmd,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_pipe_gate,gate,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_pipe_req,req,__ATOMIC_RELEASE);
+}
+void nx_pipe_read(unsigned long long *cmd,unsigned long long *gate,unsigned long long *req) {
+    *cmd=__atomic_load_n(&nx_pipe_cmd,__ATOMIC_ACQUIRE);
+    *gate=__atomic_load_n(&nx_pipe_gate,__ATOMIC_ACQUIRE);
+    *req=__atomic_load_n(&nx_pipe_req,__ATOMIC_ACQUIRE);
+}
 unsigned long long nx_get_worker_clock(void) {
     return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
 }
@@ -243,7 +255,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.8\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.9\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nRegion [L/R]: %s\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.8: select chip jumpers before launch\n",nx_region_names[nx_region_setting],previous,previous_worker);

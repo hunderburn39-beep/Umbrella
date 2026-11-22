@@ -204,7 +204,24 @@ s=replace(s,'    if (!nx_choose_rom(&rom_filename)) return 0;',
   '    /* Region jumper state from the native L/R menu: JP, US, EU. */\n'
   '    pal = (nx_region_setting == 2);\n'
   '    _jap = (nx_region_setting == 0);')
+
+# V2.9: sample original VDP's internal command and DTACK request path.
+s=replace(s,"    unsigned long long nx_drive_clocks=0;","    unsigned long long nx_drive_clocks=0;\n    unsigned long long nx_pipe_cmd_cycles=0,nx_pipe_gate_cycles=0,nx_pipe_req_cycles=0;")
+s=replace(s,"            int nx_clock0=ym.vdp.input.i_cpu_clk0;","            if (!md.as && !md.rw && ((md.vaddress & 0x700000u)==0x600000u)) {\n                if (ym.vdp.nx_probe_w139) nx_pipe_cmd_cycles++;\n                if (ym.vdp.nx_probe_w146) nx_pipe_gate_cycles++;\n                if (ym.vdp.nx_probe_w125) nx_pipe_req_cycles++;\n            }\n            int nx_clock0=ym.vdp.input.i_cpu_clk0;")
+s=replace(s,"            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);","            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);\n            nx_pipe_publish(nx_pipe_cmd_cycles,nx_pipe_gate_cycles,nx_pipe_req_cycles);")
 save("md.c",s)
+# V2.9: expose three *existing* VDP logic signals, without altering equations.
+s=load("vdp.h")
+s=replace(s,'    int w117;',
+  '    int w117;\n    int nx_probe_w139, nx_probe_w146, nx_probe_w125;')
+save("vdp.h",s)
+s=load("vdp.c")
+s=replace(s,'    chip->w117 = !(w24 || w125 || w128 || w129 || w133); // dtack',
+'''    chip->nx_probe_w139 = w139;
+    chip->nx_probe_w146 = w146;
+    chip->nx_probe_w125 = w125;
+    chip->w117 = !(w24 || w125 || w128 || w129 || w133); // dtack''')
+save("vdp.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
   '    /* No console output after the Switch ROM selector closes. */')
@@ -364,6 +381,14 @@ s=replace(s,'    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",gate);',
 # timing guarantee. PAL uses more scanlines per frame.
 s=replace(s,'const unsigned long long frame_clocks=1789772ULL;',
     'const unsigned long long frame_clocks=(nx_region_setting == 2) ? 2136200ULL : 1789772ULL;')
+
+# V2.9 replace the top DRIVE/WORD/CTRL row with VDP CMD/PIPE/ASK gates.
+s=replace(s,"    nx_decode_read(&dec,&gate,&ctrl);","    nx_pipe_read(&dec,&gate,&ctrl);")
+s=replace(s,"    nx_diag_text(vid_renderer,\"DRIVE\",104,158,3);","    nx_diag_text(vid_renderer,\"CMD\",104,158,3);")
+s=replace(s,"    nx_diag_text(vid_renderer,\"WORD\",390,158,3);","    nx_diag_text(vid_renderer,\"PIPE\",390,158,3);")
+s=replace(s,"    nx_diag_text(vid_renderer,\"CTRL\",686,158,3);","    nx_diag_text(vid_renderer,\"ASK\",686,158,3);")
+s=replace(s,"    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",drive);","    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",dec);")
+s=replace(s,"    SDL_snprintf(vbuf,sizeof(vbuf),\"%u\",word);","    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",gate);")
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")
