@@ -59,6 +59,21 @@ for label, snippet in {
     print(f"{'PASS' if ok else 'FAIL'}: {label}")
     if not ok:
         failures.append(label)
+# Cartridge must be a real participant on the 68000 motherboard bus.
+cart_upstream = (root / "third_party" / "Nuked-MD" / "cartridge.c").read_text()
+cart_ported = (root / "build" / "cartridge.c").read_text()
+cart_checks = {
+    "Cartridge ROM loader": "romfile = fopen(filename, \"rb\");",
+    "Cartridge ROM word conversion": "rom[i] = short_swap(rom[i]);",
+    "Cartridge chip enable": "if (!ym.o_ce0)",
+    "Cartridge read strobe": "if (!ym.o_cas0)",
+    "Cartridge ROM data reaches motherboard": "md.vdata = rom[md.vaddress & 0x1fffff];",
+}
+for label, snippet in cart_checks.items():
+    ok = snippet in cart_upstream and snippet in cart_ported
+    print(f"{'PASS' if ok else 'FAIL'}: {label}")
+    if not ok:
+        failures.append(label)
 # The two HUD counters previously disagreed although they should count
 # the exact same VDP selection event. Verify the generated C, not port.py.
 import re
