@@ -1,0 +1,22 @@
+reference,part,subsystem,model_priority,implementation,status,source
+OSC1,53.203424 MHz oscillator,master clock,critical,cycle clock and dividers,not verified,SEGA PAL-G VA4 parts list
+IC1,SCN68000C8N64,main CPU,critical,chip clock and bus pins,existing core needs VA4 verification,SEGA PAL-G VA4 parts list
+IC2,32Kx8 SRAM,main RAM,high,access timing and bus mapping,to audit,SEGA PAL-G VA4 parts list
+IC3,32Kx8 SRAM,main RAM,high,access timing and bus mapping,to audit,SEGA PAL-G VA4 parts list
+IC4,315-5364 YM6045C,bus and control logic,critical,decode arbitration and handshakes,not implemented as VA4 discrete chip,SEGA PAL-G VA4 parts list
+IC5,315-5309 YM6046,control logic,critical,pin-level control and IO,not implemented as VA4 discrete chip,SEGA PAL-G VA4 parts list
+IC6,Z80A,sound CPU,critical,cycle accurate execution and bus request,to audit,SEGA PAL-G VA4 parts list
+IC7,8Kx8 SRAM,Z80 RAM,high,access timing,to audit,SEGA PAL-G VA4 parts list
+IC8,315-5313 or 315-5313A VDP,video,critical,VDP bus and pixel generation,existing core needs VA4 verification,SEGA PAL-G VA4 parts list
+IC9,64Kx4 DRAM,video RAM,critical,VDP memory timing,to audit,SEGA PAL-G VA4 parts list
+IC10,64Kx4 DRAM,video RAM,critical,VDP memory timing,to audit,SEGA PAL-G VA4 parts list
+IC11,YM2612,FM audio,high,chip outputs and DAC transfer,to audit,SEGA PAL-G VA4 parts list
+IC12,CXA1034 or AN7108,audio amplifier,medium,analog gain and filter model,not implemented as circuit,SEGA PAL-G VA4 parts list
+IC13,CXA1145P,video encoder,medium,RGB and composite transfer,not implemented as circuit,SEGA PAL-G VA4 parts list
+IC14,LM358,analog circuitry,medium,op amp transfer model,not implemented as circuit,SEGA PAL-G VA4 parts list
+IC15,7805,power,low,nominal voltage assumption,no electrical simulation,SEGA PAL-G VA4 parts list
+IC17,7805,power,low,nominal voltage assumption,no electrical simulation,SEGA PAL-G VA4 parts list
+R*,resistors and networks,board analog and digital,variable,extract designators values and nets,not inventoried,SEGA PAL-G VA4 schematic sheets
+C*,capacitors,board analog and digital,variable,extract designators values and nets,not inventoried,SEGA PAL-G VA4 schematic sheets
+Q*,transistors,board analog and digital,variable,extract designators values and nets,not inventoried,SEGA PAL-G VA4 schematic sheets
+D*,diodes,board protection and logic,variable,extract designators values and nets,not inventoried,SEGA PAL-G VA4 schematic sheets
