@@ -10,6 +10,18 @@
 #include "nx_frontend.h"
 #define ROOT "sdmc:/switch/Umbrella-MegaDrive-NX/"
 #define ROMS ROOT "roms/"
+/* Crash marker persists after the Switch closes the executable. */
+void nx_stage(const char *step) {
+    FILE *f = fopen(ROOT "last-stage.txt", "wb");
+    if (f) { fprintf(f, "%s\n", step); fclose(f); }
+}
+static void nx_previous_stage(char *out, size_t cap) {
+    snprintf(out, cap, "%s", "No previous startup recorded");
+    FILE *f = fopen(ROOT "last-stage.txt", "rb");
+    if (!f) return;
+    if (fgets(out, cap, f)) out[strcspn(out, "\r\n")] = 0;
+    fclose(f);
+}
 static PadState pad;
 static char chosen[512];
 static char names[128][256];
@@ -33,6 +45,8 @@ int nx_choose_rom(char **rom) {
     /* A command-line path takes priority; otherwise present a native ROM list. */
     if(strcmp(*rom,ROOT "rom.bin")!=0) return 1;
     int count=0,selected=0,ok=0;
+    char previous[128];
+    nx_previous_stage(previous, sizeof(previous));
     DIR *d=opendir(ROMS);
     if(d) {
         struct dirent *e;
@@ -59,14 +73,15 @@ int nx_choose_rom(char **rom) {
         if(b&HidNpadButton_Up) selected=(selected+count-1)%count;
         if(b&HidNpadButton_Down) selected=(selected+1)%count;
         if(b&HidNpadButton_B) break;
+        if(b&HidNpadButton_X) { *rom="builtin:diagnostic"; ok=1; break; }
         if(b&HidNpadButton_A) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.3\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.4\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: launch   B: exit\n");
+        printf("\nA: launch  X: diagnostic  B: exit\nLast stage: %.80s\n",previous);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;

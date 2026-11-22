@@ -4,3 +4,4 @@ void nx_error(const char *message);
 void nx_pad_init(void);
 int nx_pad_poll(void);
 int nx_video_init(int ntsc);
+void nx_stage(const char *step);

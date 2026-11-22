@@ -24,6 +24,32 @@ s=replace(s,'    Audio_Init(audioout_filename, md.ntsc);\n    Video_Init(videoou
 s=replace(s,'    if (!thread)\n    {\n        Audio_Shutdown();','    if (!thread)\n    {\n        nx_error("Worker thread creation failed");\n        Audio_Shutdown();')
 s=replace(s,'        SDL_Delay(30);','        SDL_Delay(1);\n        if (!appletMainLoop() || nx_pad_poll()) quit_signal = 1;')
 s=replace(s,'            printf("frame %lld\\n", (long long)(mcycles / frame_div));','            (void)frame_div;')
+
+# Persist startup checkpoints to diagnose native Switch exceptions.
+s=replace(s,'    if (!nx_choose_rom(&rom_filename)) return 0;',
+  '    if (!nx_choose_rom(&rom_filename)) return 0;\\n    nx_stage("01 ROM selected");')
+s=replace(s,'    if (load_tmss_rom(tmss_filename))',
+  '    nx_stage("02 TMSS load");\\n    if (load_tmss_rom(tmss_filename))')
+s=replace(s,'    init_chips();',
+  '    nx_stage("03 Cartridge loaded");\\n    init_chips();')
+s=replace(s,'    FC1004_Init(&ym);',
+  '    FC1004_Init(&ym);\\n    nx_stage("04 Chip init complete");')
+s=replace(s,'    SDL_SetMainReady();',
+  '    nx_stage("05 SDL starting");\\n    SDL_SetMainReady();')
+s=replace(s,'    if (!nx_video_init(md.ntsc))',
+  '    nx_stage("06 SDL base ready");\\n    if (!nx_video_init(md.ntsc))')
+s=replace(s,'    Audio_Init(audioout_filename, md.ntsc);',
+  '    nx_stage("07 Video ready");\\n    Audio_Init(audioout_filename, md.ntsc);')
+s=replace(s,'    nx_pad_init();',
+  '    nx_pad_init();\\n    nx_stage("08 Audio and controls ready");')
+s=replace(s,'    thread = SDL_CreateThread(work_thread, "work thread", 0);',
+  '    nx_stage("09 Creating worker thread");\\n    thread = SDL_CreateThread(work_thread, "work thread", 0);')
+s=replace(s,'    int quit_signal = 0;',
+  '    nx_stage("10 Worker created");\\n    int quit_signal = 0;')
+s=replace(s,'        Video_Blit();',
+  '        if (first_blit) { nx_stage("11 Video loop started"); first_blit = 0; }\\n        Video_Blit();')
+s=replace(s,'    int quit_signal = 0;',
+  '    int first_blit = 1;\\n    int quit_signal = 0;')
 save("md.c",s)
 s=load("video.c")
 s=replace(s,'void Video_Init(char* videoout_filename, int ntsc)','int nx_video_init(int ntsc)')
