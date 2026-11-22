@@ -17,6 +17,15 @@ class VA4ResetSequenceTests(unittest.TestCase):
         self.assertFalse(seq.reset_button_vres(seq.button_pulse_s / 2))
         self.assertTrue(seq.reset_button_vres(seq.button_pulse_s * 2))
 
+    def test_pulse_is_microseconds_not_milliseconds(self):
+        seq = VA4ResetSequence()
+        # 128 cycles at PAL MCLK/7 are approximately 16.84 microseconds.
+        self.assertGreater(seq.button_pulse_s, 16e-6)
+        self.assertLess(seq.button_pulse_s, 18e-6)
+        # Cold-boot release delay is distinct from the reset pulse width.
+        self.assertGreater(seq.vres_release_delay_s, 0.01)
+        self.assertLess(seq.button_pulse_s, seq.vres_release_delay_s)
+
     def test_negative_time(self):
         with self.assertRaises(ValueError):
             VA4ResetSequence().power_on(-0.01)
