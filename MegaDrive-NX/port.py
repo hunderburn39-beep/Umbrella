@@ -175,7 +175,16 @@ s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) { nx_diag_capture(
 
 # V2.4: VDP input pin diagnostics without modifying chip behavior.
 s=replace(s,"    unsigned int nx_previous_addr=0xffffffffu;","    unsigned int nx_previous_addr=0xffffffffu;\n    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;")
-s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);","            FC1004_Clock(&ym, mcycles & 1, mcycles);\n            /* Raw VDP pin probes, independent of the board-side address decoder.\n               The old probe gated all counters on md.vaddress and could report\n               three zeroes even when the chip input pins were active.\n               These are sample counts, not acknowledged write transactions. */\n            if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {\n                nx_sel_samples++;\n                if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)\n                    nx_strobe_samples++;\n            }\n            if (!ym.vdp.w117)\n                nx_ready_samples++;")
+s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);","            FC1004_Clock(&ym, mcycles & 1, mcycles);\n            /* Count VDP selection, byte lane strobes, and VDP-owned DTACK.
+               Raw chip input samples, independent of board address decoding.
+               These are clock samples, not confirmed write transactions. */
+            if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {
+                nx_sel_samples++;
+                if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)
+                    nx_strobe_samples++;
+            }
+            if (!ym.vdp.w117)
+                nx_ready_samples++;")
 s=replace(s,"            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);","            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);\n            nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);")
 
 # V2.5: probe VDP CPU interface clock, data bus, and M5 register state.
