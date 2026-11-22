@@ -1,0 +1,49 @@
+name: Fortuna V8 3D verification
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'Fortuna-777-V8/**'
+      - '.github/workflows/fortuna-v8-test.yml'
+permissions:
+  contents: read
+concurrency:
+  group: fortuna-v8-browser
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    env:
+      BROWSER: ${{ matrix.browser }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify source and install exact engine
+        run: |
+          node --check Fortuna-777-V8/scene.js
+          node --check Fortuna-777-V8/test-3d.cjs
+          npm install --prefix "$RUNNER_TEMP/fortuna-v8" --no-audit --no-fund babylonjs@7.0.0 playwright@1.51.1
+          mkdir -p Fortuna-777-V8/vendor
+          cp "$RUNNER_TEMP/fortuna-v8/node_modules/babylonjs/babylon.js" Fortuna-777-V8/vendor/
+          "$RUNNER_TEMP/fortuna-v8/node_modules/.bin/playwright" install --with-deps "$BROWSER"
+      - name: Load 3D and play a full virtual round
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 &
+          server=$!
+          trap 'kill "$server" || true' EXIT
+          for n in {1..20}; do curl -fsS http://127.0.0.1:8765/Fortuna-777-V8/ >/dev/null && break; sleep 1; done
+          NODE_PATH="$RUNNER_TEMP/fortuna-v8/node_modules" node Fortuna-777-V8/test-3d.cjs
+      - name: Save screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fortuna-${{ matrix.browser }}-screenshots
+          path: ${{ runner.temp }}/fortuna-*.png
+          if-no-files-found: ignore
