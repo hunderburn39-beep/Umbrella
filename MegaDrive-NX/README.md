@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V0.4
+# Umbrella Mega Drive NX V0.5
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -22,3 +22,6 @@ Preserve all upstream notices and licenses. Redistribute corresponding source an
 
 ## Startup crash diagnosis (V0.4)
 On the ROM menu, X boots the built-in diagnostic. After a crash, launch the app again and read 'Last stage' below the menu. The same marker is written to `/switch/Umbrella-MegaDrive-NX/last-stage.txt` on the SD card. Send the marker for targeted repair. Full-speed operation remains unverified.
+
+## V0.5 TMSS/cartridge diagnostics
+ROM start writes last-stage checkpoints 02a (TMSS complete), 03a-03g (cartridge file opening, file size, buffer clearing, read and byte swapping), and then continues to chip startup. After a crash reopen the app and photograph Last stage, or retrieve `/switch/Umbrella-MegaDrive-NX/last-stage.txt` via FTP. X runs built-in diagnostic. Experimental and unverified on Switch hardware.

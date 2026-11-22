@@ -50,6 +50,10 @@ s=replace(s,'        Video_Blit();',
   '        if (first_blit) { nx_stage("11 Video loop started"); first_blit = 0; }\n        Video_Blit();')
 s=replace(s,'    int quit_signal = 0;',
   '    int first_blit = 1;\n    int quit_signal = 0;')
+
+# Distinguish TMSS completion from cartridge loading.
+s=replace(s,'        load_dummy_tmss();\n    }\n    if (cart_load_game_rom',
+  '        load_dummy_tmss();\n    }\n    nx_stage("02a TMSS ready");\n    if (cart_load_game_rom')
 save("md.c",s)
 s=load("video.c")
 s=replace(s,'void Video_Init(char* videoout_filename, int ntsc)','int nx_video_init(int ntsc)')
@@ -131,4 +135,18 @@ s=replace(s,'    romfile = fopen(filename, "rb");','''    if (!strcmp(filename, 
         return 0;
     }
     romfile = fopen(filename, "rb");''')
+
+# Fine-grained checkpoints: a user can see the last successful cartridge step.
+s=replace(s,'#include "diagnostic_rom.h"',
+  '#include "diagnostic_rom.h"\n#include "nx_frontend.h"')
+s=replace(s,'    romfile = fopen(filename, "rb");',
+  '    nx_stage("03a ROM opening");\n    romfile = fopen(filename, "rb");')
+s=replace(s,'    fseek(romfile, 0, SEEK_END);',
+  '    nx_stage("03b ROM file opened");\n    fseek(romfile, 0, SEEK_END);')
+s=replace(s,'    rewind(romfile);',
+  '    rewind(romfile);\n    nx_stage("03c ROM size read");')
+s=replace(s,'    memset(rom, 0, sizeof(rom));\n    ret = fread(rom, 1, siz, romfile);',
+  '    nx_stage("03d Clearing ROM buffer");\n    memset(rom, 0, sizeof(rom));\n    nx_stage("03e Reading ROM data");\n    ret = fread(rom, 1, siz, romfile);')
+s=replace(s,'    for (i = 0; i < ROM_SIZE * 2; i++)\n        rom[i] = short_swap(rom[i]);',
+  '    nx_stage("03f ROM data loaded");\n    for (i = 0; i < ROM_SIZE * 2; i++)\n        rom[i] = short_swap(rom[i]);\n    nx_stage("03g ROM conversion done");')
 save("cartridge.c",s)
