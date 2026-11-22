@@ -194,6 +194,16 @@ s=replace(s,"    unsigned long long nx_dec_seen=0, nx_gate_seen=0, nx_ctrl_seen=
 s=replace(s,"                nx_cpu_bus_cycles++;\n                if (nx_addr!=nx_previous_addr)","                nx_cpu_bus_cycles++;\n                /* The 68000's actual 16-bit output drivers must be active on a VDP write.\n                   This distinguishes a command stall from an undriven data bus. */\n                if (!m68k.o_rw && ((nx_addr & 0x700000u)==0x600000u) && !m68k.o_data_z) {\n                    nx_drive_clocks++;\n                    nx_last_drive_word=(unsigned int)m68k.o_data & 0xffffu;\n                }\n                if (nx_addr!=nx_previous_addr)")
 s=replace(s,"                if (nx_gate && !ym.vdp.input.i_rw &&\n                    (ym.vdp.io_address & 0x0c) == 0x04) nx_ctrl_seen++;","                /* VDP port layout uses the word-addressed 68000 A1..A23 bus:\n                   0x600002 (physical C00004) is command port, distinguished by A2\n                   (bit 1 of this word address), while &0x0c remains zero.\n                   The previous check for &0x0c==0x04 falsely reported CTRL=0. */\n                if (nx_gate && !ym.vdp.input.i_rw &&\n                    (ym.vdp.io_address & 0x0c) == 0x00 &&\n                    (ym.vdp.io_address & 2) &&\n                    (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)) nx_ctrl_seen++;")
 s=replace(s,"            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);","            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);\n            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);")
+
+# V2.8: offer real Mega Drive motherboard NTSC/PAL and Japan/export
+# jumper combinations, not postprocessed or scaled RGB.
+# Upstream parser stores pal/_jap locals; insert after the native ROM chooser
+# so the selection is applied before both FC1004_Init and region pin wiring.
+s=replace(s,'    if (!nx_choose_rom(&rom_filename)) return 0;',
+  '    if (!nx_choose_rom(&rom_filename)) return 0;\n'
+  '    /* Region jumper state from the native L/R menu: JP, US, EU. */\n'
+  '    pal = (nx_region_setting == 2);\n'
+  '    _jap = (nx_region_setting == 0);')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -349,6 +359,11 @@ s=replace(s,'    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",dec);',
   '    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",drive);')
 s=replace(s,'    SDL_snprintf(vbuf,sizeof(vbuf),"%llu",gate);',
   '    SDL_snprintf(vbuf,sizeof(vbuf),"%u",word);')
+
+# V2.8: the VDP diagnostic progress track is indicative, not a gameplay
+# timing guarantee. PAL uses more scanlines per frame.
+s=replace(s,'const unsigned long long frame_clocks=1789772ULL;',
+    'const unsigned long long frame_clocks=(nx_region_setting == 2) ? 2136200ULL : 1789772ULL;')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")

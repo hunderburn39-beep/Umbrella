@@ -8,6 +8,7 @@ void nx_stage(const char *step);
 void nx_worker_stage(const char *step);
 void nx_worker_progress(unsigned long long clock, const char *phase);
 extern int nx_video_bypass;
+extern int nx_region_setting;
 void nx_flush_worker_stage(int force);
 void nx_disable_runtime_io(void);
 unsigned long long nx_get_worker_clock(void);

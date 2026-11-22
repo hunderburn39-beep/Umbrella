@@ -12,6 +12,12 @@
 #define ROMS ROOT "roms/"
 /* Enable isolated raster test from the ROM selector via Y. */
 int nx_video_bypass = 0;
+/* Hardware jumpers: 0 JP/NTSC, 1 export/NTSC, 2 export/PAL.
+ * The original Nuked-MD i_jap signal is active low. */
+int nx_region_setting = 0;
+static const char *nx_region_names[] = {
+    "Japan (NTSC 60Hz)", "USA (NTSC 60Hz)", "Europe (PAL 50Hz)"
+};
 /* V1.6: disable filesystem IPC once simulation starts. */
 static int nx_runtime_io_blocked = 0;
 void nx_disable_runtime_io(void) {
@@ -226,6 +232,10 @@ int nx_choose_rom(char **rom) {
         u64 b=padGetButtonsDown(&pad);
         if(b&HidNpadButton_Up) selected=(selected+count-1)%count;
         if(b&HidNpadButton_Down) selected=(selected+1)%count;
+        if(b&(HidNpadButton_L|HidNpadButton_Left))
+            nx_region_setting=(nx_region_setting+2)%3;
+        if(b&(HidNpadButton_R|HidNpadButton_Right))
+            nx_region_setting=(nx_region_setting+1)%3;
         if(b&HidNpadButton_B) break;
         if(b&HidNpadButton_X) { *rom="builtin:diagnostic"; ok=1; break; }
         if(b&(HidNpadButton_A|HidNpadButton_Y)) {
@@ -233,10 +243,10 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.7\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.8\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.2: DTACK and stalled write diagnosis\n",previous,previous_worker);
+        printf("\nRegion [L/R]: %s\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.8: select chip jumpers before launch\n",nx_region_names[nx_region_setting],previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;
