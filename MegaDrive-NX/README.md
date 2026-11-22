@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V1.2
+# Umbrella Mega Drive NX V1.3
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -46,3 +46,7 @@ The actual Switch log is `Last stage 11a Video blit returned`, `Worker stage C19
 
 ## V1.2 raster isolation (Y selector)
 The Switch crash persisted around `Worker stage C163840 VDP` after bypassing host audio mixing in V1.1; that marker does not establish the exact cause. Select a ROM with **A** for the normal simulation or **Y** for a diagnostic run that bypasses `Video_PlotVDP()` only, while continuing 68000, Z80, FC1004, VDP clock logic and SDL screen presentation. The Y-mode screen will remain black by design and is not a gameplay mode. It adds `NR` to the `Worker stage` cyclic markers. Reopen the app after a fault to compare cycle counts for normal vs Y mode. X continues to load the built-in diagnostic with normal raster. Host audio remains intentionally muted. This is not confirmed playable on Switch.
+
+
+## V1.3 performance isolation
+On Switch V1.2, Y mode (raster off) reached C393216 VDP NR compared with C163840 in V1.1, without proving that raster is the cause. V1.3 avoids redundant screen texture uploads and presents until the VDP has completed another frame, reduces the host SDL loop from approximately 1000 iterations/sec to 60, and limits SD diagnostic writes to **one per 32768 simulated master clocks** instead of six. 'Worker stage' now includes 'T<number>s' as elapsed time since the first progress marker. The same A normal and Y no-raster comparison remains. The underlying chip emulation logic is unchanged; host sound output and audio sample mixing remain disabled for diagnosis. Chip clock speed, gameplay, and stability are not yet established.

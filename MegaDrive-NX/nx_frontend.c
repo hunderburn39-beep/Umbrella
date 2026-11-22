@@ -24,7 +24,12 @@ void nx_worker_stage(const char *step) {
 }
 void nx_worker_progress(unsigned long long clock, const char *phase) {
     char buf[112];
-    snprintf(buf, sizeof(buf), "C%llu %s%s", clock, phase, nx_video_bypass ? " NR" : "");
+    static u64 first_tick = 0;
+    u64 tick = armGetSystemTick();
+    if (!first_tick) first_tick = tick;
+    u64 elapsed_s = armTicksToNs(tick - first_tick) / 1000000000ULL;
+    snprintf(buf, sizeof(buf), "C%llu %s%s T%llus",
+             clock, phase, nx_video_bypass ? " NR" : "", (unsigned long long)elapsed_s);
     nx_worker_stage(buf);
 }
 static void nx_previous_worker_stage(char *out, size_t cap) {
@@ -100,7 +105,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.2\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.3\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);

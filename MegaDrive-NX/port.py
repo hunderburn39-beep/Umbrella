@@ -211,3 +211,30 @@ s=replace(s,'    memset(rom, 0, sizeof(rom));\n    ret = fread(rom, 1, siz, romf
 s=replace(s,'    for (i = 0; i < ROM_SIZE * 2; i++)\n        rom[i] = short_swap(rom[i]);',
   '    nx_stage("03f ROM data loaded");\n    for (i = 0; i < ROM_SIZE * 2; i++)\n        rom[i] = short_swap(rom[i]);\n    nx_stage("03g ROM conversion done");')
 save("cartridge.c",s)
+
+# V1.3: reduce overhead introduced by diagnostics and redundant GPU presents.
+# The pixel raster still runs for A mode, Y retains its diagnostic bypass.
+s=replace(s,'        SDL_Delay(1);', '        SDL_Delay(16);')
+s=replace(s,'    if (!vid_mutex || !vid_texture || !vid_renderer) return;\n    SDL_LockMutex(vid_mutex);',
+'''    if (!vid_mutex || !vid_texture || !vid_renderer) return;
+    static uint32_t last_presented = UINT32_MAX;
+    SDL_LockMutex(vid_mutex);
+    /* Present once initially, then only when a complete VDP frame arrives. */
+    if (vid_counter == last_presented) {
+        SDL_UnlockMutex(vid_mutex);
+        return;
+    }
+    last_presented = vid_counter;''')
+# Earlier debug versions wrote as many as six SD markers per 32768 clocks,
+# potentially stalling the worker. Keep one milestone per interval instead.
+for phase, indent in (
+    ("68000","            "), ("Z80","            "),
+    ("FC1004","            "), ("VRAM","            "),
+    ("BUS","        "), ("VDP","        ")):
+    condition = " && i == 0" if phase in ("68000","Z80","FC1004","VRAM") else ""
+    line = indent + 'if (mcycles && ((mcycles & 32767) == 0)' + condition + ') nx_worker_progress((unsigned long long)mcycles,"' + phase + '");\n'
+    if s.count(line) != 1: raise RuntimeError("Phase marker mismatch: "+phase)
+    s=s.replace(line,'')
+s=replace(s,'        mcycles++;\n        if (mcycles == 1)',
+    '        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress((unsigned long long)mcycles,"CLOCK");\n        if (mcycles == 1)')
+
