@@ -32,7 +32,7 @@ assert (0x4020, 0x0000) in pairs, "Missing VRAM tile-data address command"
 assert (0x4000, 0x0003) in pairs, "Missing plane-A name-table address command"
 assert (0xC002, 0x0000) in pairs, "Missing palette-index-1 CRAM address command"
 def immediate_data_writes(value):
-    pattern = b"\\x33\\xfc" + struct.pack(">H", value) + b"\\x00\\xc0\\x00\\x00"
+    pattern = bytes((0x33, 0xFC)) + struct.pack(">H", value) + bytes((0x00, 0xC0, 0x00, 0x00))
     return data.count(pattern)
 assert immediate_data_writes(0x1111) >= 16, "Missing 8x8 tile pixel data"
 assert immediate_data_writes(0x0001) >= 1024, "Missing 32x32 plane-A name table"
