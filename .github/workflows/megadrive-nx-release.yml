@@ -1,0 +1,32 @@
+name: Publish Mega Drive NX direct download
+on:
+  push:
+    paths:
+      - '.github/workflows/megadrive-nx-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Umbrella-MegaDrive-NX
+          run-id: 44984278312
+          github-token: ${{ github.token }}
+          path: dist
+      - name: Verify and publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cd dist
+          sha256sum -c Umbrella-MegaDrive-NX.sha256
+          tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
+          tag=megadrive-nx-v0.2
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target 4ffc35d232abdb0a83e39002018b258cd0f2798b --title "Umbrella Mega Drive NX V0.2" --notes "Experimental Nintendo Switch homebrew. Compiled NRO; hardware performance untested. Includes corresponding GPL source."
+          fi
+          gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber
