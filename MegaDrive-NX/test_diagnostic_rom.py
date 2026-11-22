@@ -27,5 +27,15 @@ pairs = [(a[1], b[1]) for a, b in zip(vdpcmds, vdpcmds[1:])]
 assert pairs.count((0xC000, 0x0000)) >= 2, "Split VDP CRAM address writes missing"
 assert any(data[i:i+2] == b"\x33\xc0" and data[i+2:i+6] == b"\x00\xc0\x00\x00"
            for i in range(0x200, len(data)-6, 2)), "Controller-driven VDP data write missing"
-print("PASS: ROM size, 68000 vectors, header, VDP commands and CRAM writes")
+# The generated ROM must also provide actual VRAM pixels, not just CRAM colours.
+assert (0x4020, 0x0000) in pairs, "Missing VRAM tile-data address command"
+assert (0x4000, 0x0003) in pairs, "Missing plane-A name-table address command"
+assert (0xC002, 0x0000) in pairs, "Missing palette-index-1 CRAM address command"
+def immediate_data_writes(value):
+    pattern = b"\\x33\\xfc" + struct.pack(">H", value) + b"\\x00\\xc0\\x00\\x00"
+    return data.count(pattern)
+assert immediate_data_writes(0x1111) >= 16, "Missing 8x8 tile pixel data"
+assert immediate_data_writes(0x0001) >= 1024, "Missing 32x32 plane-A name table"
+assert immediate_data_writes(0x0EEE) >= 1, "Missing visible tile palette colour"
+print("PASS: ROM size, 68000 vectors, header, VDP commands, VRAM tile, plane A and CRAM palette")
 print("NOTE: static checks only; do not imply 68000/FC1004/VDP timing correctness.")
