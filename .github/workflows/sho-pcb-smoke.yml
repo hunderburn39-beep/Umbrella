@@ -52,3 +52,41 @@ jobs:
           emcc -O2 -I/tmp/sho-upstream/source/src -c Super-Hang-On/native/bridge.c -o /tmp/bridge.o
           test -s /tmp/rc_runtime.o
           test -s /tmp/bridge.o
+      - name: Link complete board and boot synthetic diagnostic ROM
+        shell: bash
+        run: |
+          HERE="$GITHUB_WORKSPACE/Super-Hang-On/native"
+          cd /tmp/sho-upstream/source
+          M=src/third_party/musashi
+          emcc -O2 -fno-strict-aliasing -ffp-contract=off -Isrc \
+            "$HERE/board-smoke.c" "$HERE/bridge.c" \
+            src/rc_runtime.c src/sho_core.c src/sho_video.c src/sho_music.c \
+            src/sho_md.c src/sho_mdgfx.c src/sho_mdcourse.c src/sho_mdsnd.c \
+            "$M/m68kcpu.c" "$M/m68kops.c" "$M/m68kdasm.c" "$M/softfloat/softfloat.c" \
+            src/third_party/z80/z80.c src/third_party/nukedopn2/ym3438.c \
+            src/third_party/nukedopm/opm.c src/third_party/puff/puff.c \
+            -sASYNCIFY=1 -sASYNCIFY_STACK_SIZE=8388608 -sSTACK_SIZE=8388608 \
+            -sINITIAL_MEMORY=100663296 -sALLOW_MEMORY_GROWTH=1 -sMODULARIZE=1 \
+            -sENVIRONMENT=node -sFORCE_FILESYSTEM=1 -sEXPORTED_RUNTIME_METHODS=FS,ccall --no-entry -o /tmp/board-smoke.cjs
+          node <<'NODE'
+          const assert=require('node:assert/strict');
+          (async()=>{
+            const m=await require('/tmp/board-smoke.cjs')();
+            assert.equal(m._browser_is_recompiled(),0);
+            m.FS.writeFile('/invalid.zip',new Uint8Array([80,75,5,6,...new Array(18).fill(0)]));
+            assert.notEqual(m.ccall('browser_load','number',['string'],['/invalid.zip']),0);
+            // Invalid ROM allocates board state; use a fresh module for the diagnostic.
+            const d=await require('/tmp/board-smoke.cjs')();
+            assert.equal(d._diagnostic_boot(),1);
+            assert.equal(d._diagnostic_width(),320);
+            assert.equal(d._diagnostic_height(),224);
+            for(let f=0;f<120;f++){
+              d._diagnostic_step();
+              assert.equal(d._diagnostic_frames(),f+1);
+            }
+            assert.ok(d._diagnostic_ticks(0)>100000);
+            assert.ok(d._diagnostic_ticks(1)>100000);
+            assert.equal(d._diagnostic_pixels(),1);
+            console.log('PASS: full linked board, 120 synthetic frames, both CPU dispatch tables active, video/audio pipeline invoked; original ROM not tested.');
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
