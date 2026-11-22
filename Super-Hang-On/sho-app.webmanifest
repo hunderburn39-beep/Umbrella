@@ -1,0 +1,25 @@
+{
+  "id": "./app.html",
+  "name": "Super Hang-On",
+  "short_name": "Hang-On",
+  "start_url": "./app.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#060b17",
+  "theme_color": "#060b17",
+  "icons": [
+    {
+      "src": "./sho-app-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./sho-app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
