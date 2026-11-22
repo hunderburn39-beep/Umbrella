@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-PT">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.0</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.1</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:20px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.0</h1><p>Seleciona o ficheiro privado da V2.0 que recebeste no ChatGPT. O núcleo será executado nesta página HTTPS, sem enviar o ficheiro para o servidor.</p><label>Ficheiro do jogo<input type="file" id="game" accept=".html,text/html"></label><button id="launch" disabled>ABRIR JOGO</button><p id="status" role="status">Seleciona Super-Hang-On-PCB-V2.0.html.</p><small>Depois seleciona o ZIP original e autoriza o giroscópio. O ficheiro do jogo e a ROM ficam no teu dispositivo.</small></main>
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.1</h1><p>Seleciona o pacote privado V2.1 que recebeste no ChatGPT. O núcleo será executado nesta página HTTPS, sem enviar o ficheiro para o servidor.</p><label>Ficheiro do jogo<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>ABRIR JOGO</button><p id="status" role="status">Seleciona Super-Hang-On-V2.1.txt.</p><small>A ROM já está incluída no pacote V2.1. Autoriza a inclinação no ecrã do jogo. O ficheiro do jogo e a ROM ficam no teu dispositivo.</small></main>
 <script>
 const game=document.getElementById('game'),button=document.getElementById('launch'),status=document.getElementById('status');
 let source='';
@@ -11,9 +11,12 @@ game.addEventListener('change',async()=>{
 button.disabled=true;source='';
 try{
 const f=game.files[0];if(!f)return;
-if(f.size<1000000||f.size>12000000)throw Error('Seleciona o HTML completo da V2.0.');
-const t=await f.text();
-if(!t.includes('Super Hang-On | PCB Native V2.0')||!t.includes('createShoModule')||!t.includes('browser_completed_frames'))throw Error('Este ficheiro não corresponde ao jogo V2.0.');
+if(f.size<1000000||f.size>12000000)throw Error('Seleciona o pacote completo V2.1.');
+const bytes=await f.arrayBuffer();
+const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+if(digest!=='0b910a0e7585da7f5228ead8e85e130725c9c215d827acff34fe6cb80171f91a')throw Error('Pacote incorreto ou alterado. Usa o ficheiro privado V2.1 original.');
+const t=new TextDecoder().decode(bytes);
+if(!t.includes('Super Hang-On | PCB Native V2.0')||!t.includes('createShoModule')||!t.includes('browser_completed_frames'))throw Error('Este ficheiro não corresponde ao jogo V2.1.');
 source=t;status.textContent='Ficheiro pronto. Carrega em ABRIR JOGO.';button.disabled=false;
 }catch(e){status.textContent=e.message;}
 });
