@@ -66,6 +66,15 @@ s=replace(s,'    nx_pad_init();\n    nx_stage("08 Audio and controls ready");',
 # Distinguish TMSS completion from cartridge loading.
 s=replace(s,'        load_dummy_tmss();\n    }\n    if (cart_load_game_rom',
   '        load_dummy_tmss();\n    }\n    nx_stage("02a TMSS ready");\n    if (cart_load_game_rom')
+
+# V0.8: render a frame *before* the chip worker is created. The previous
+# V0.7 stage 11 could represent either SDL rendering or a worker crash.
+s=replace(s,'    work_thread_run = 1;\n    nx_stage("09 Creating worker thread");',
+  '    nx_stage("09 Single-thread video test");\n    Video_Blit();\n    nx_stage("09a Video test passed");\n    work_thread_run = 1;\n    nx_stage("09 Creating worker thread");')
+s=replace(s,'    int first_blit = 1;',
+  '    int first_blit = 1;\n    int first_post_blit = 1;')
+s=replace(s,'        Video_Blit();\n    }\n    while (!quit_signal);',
+  '        Video_Blit();\n        if (first_post_blit) { nx_stage("11a Video blit returned"); first_post_blit = 0; }\n    }\n    while (!quit_signal);')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
