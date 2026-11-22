@@ -11,6 +11,7 @@ if [[ ! -d "$SRC/.git" ]]; then git clone "$REPO" "$SRC"; fi
 git -C "$SRC" fetch origin "$REV"
 git -C "$SRC" archive "$REV" | tar -x -C "$OUT"
 python3 "$ROOT/diagnostic.py" "$OUT"
+python3 "$ROOT/test_diagnostic_rom.py"
 python3 "$ROOT/port.py" "$OUT"
 cp "$ROOT"/nx_frontend.{c,h} "$OUT/"
 if [[ "${1:-build}" == prepare ]]; then exit 0; fi
