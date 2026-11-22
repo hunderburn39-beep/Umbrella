@@ -103,6 +103,11 @@ s=replace(s,'        if (mcycles == 0) nx_worker_stage("W08 Audio/video update O
     '        if (mcycles == 0) nx_worker_stage("W08 Video update OK");')
 s=replace(s,'nx_worker_progress((unsigned long long)mcycles,"AUDIO VDP");',
     'nx_worker_progress((unsigned long long)mcycles,"VDP");')
+
+# V1.2: Y mode isolates the video pixel rasterization, keeping
+# the VDP/chip clock chain and SDL renderer running unchanged.
+s=replace(s,'            Video_PlotVDP();',
+  '            if (!nx_video_bypass) Video_PlotVDP();')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',

@@ -10,6 +10,8 @@
 #include "nx_frontend.h"
 #define ROOT "sdmc:/switch/Umbrella-MegaDrive-NX/"
 #define ROMS ROOT "roms/"
+/* Enable isolated raster test from the ROM selector via Y. */
+int nx_video_bypass = 0;
 /* Crash marker persists after the Switch closes the executable. */
 void nx_stage(const char *step) {
     FILE *f = fopen(ROOT "last-stage.txt", "wb");
@@ -22,7 +24,7 @@ void nx_worker_stage(const char *step) {
 }
 void nx_worker_progress(unsigned long long clock, const char *phase) {
     char buf[112];
-    snprintf(buf, sizeof(buf), "C%llu %s", clock, phase);
+    snprintf(buf, sizeof(buf), "C%llu %s%s", clock, phase, nx_video_bypass ? " NR" : "");
     nx_worker_stage(buf);
 }
 static void nx_previous_worker_stage(char *out, size_t cap) {
@@ -93,14 +95,15 @@ int nx_choose_rom(char **rom) {
         if(b&HidNpadButton_Down) selected=(selected+1)%count;
         if(b&HidNpadButton_B) break;
         if(b&HidNpadButton_X) { *rom="builtin:diagnostic"; ok=1; break; }
-        if(b&HidNpadButton_A) {
+        if(b&(HidNpadButton_A|HidNpadButton_Y)) {
+            nx_video_bypass = !!(b&HidNpadButton_Y);
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.1\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.2\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: launch  X: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);
+        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;
