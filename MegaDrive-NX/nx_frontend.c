@@ -20,7 +20,27 @@ int nx_region_setting = 0;
  * Toggle with L during simulation, never changes the chip logic. */
 int nx_show_hud = 1;
 /* ZL: omit optional high-frequency VDP diagnostic probes, not chip clocks. */
-int nx_light_probes = 1; /* performance-first: skip auxiliary per-cycle VDP probes by default; ZL re-enables */
+int nx_light_probes = 1;
+/* Sampled wall-time profiler, 1 in 2048 simulated master clocks.
+   Only a few performance-counter reads per sample; no filesystem I/O. */
+static unsigned long long nx_prof_total[5]={0};
+static unsigned long long nx_prof_count[5]={0};
+unsigned long long nx_prof_begin(void) { return SDL_GetPerformanceCounter(); }
+void nx_prof_end(int id,unsigned long long start) {
+    if(id<0 || id>=5) return;
+    unsigned long long elapsed=SDL_GetPerformanceCounter()-start;
+    __atomic_fetch_add(&nx_prof_total[id],elapsed,__ATOMIC_RELAXED);
+    __atomic_fetch_add(&nx_prof_count[id],1,__ATOMIC_RELAXED);
+}
+unsigned int nx_prof_avg_ns(int id) {
+    if(id<0 || id>=5) return 0;
+    unsigned long long count=__atomic_load_n(&nx_prof_count[id],__ATOMIC_RELAXED);
+    if(!count) return 0;
+    unsigned long long ticks=__atomic_load_n(&nx_prof_total[id],__ATOMIC_RELAXED);
+    unsigned long long freq=SDL_GetPerformanceFrequency();
+    return freq ? (unsigned int)((ticks/count)*1000000000ULL/freq) : 0;
+}
+ /* performance-first: skip auxiliary per-cycle VDP probes by default; ZL re-enables */
 /* V3.4: best-effort official clock service; never assume elevated rights. */
 static ClkrstSession nx_cpu_session;
 static int nx_cpu_clock_open = 0;
