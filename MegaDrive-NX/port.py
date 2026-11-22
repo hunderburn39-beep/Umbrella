@@ -154,6 +154,11 @@ s=replace(s,'            if (md.m3)\n                cart_handle_md();\n        
   '            if (md.m3)\n                cart_handle_md();\n            else\n                cart_handle_m3();\n            if (!m68k.o_as && !m68k.o_address_z) nx_cpu_bus_cycles++;\n            if (!md.as && !md.rw && ((md.vaddress & 0xe00000) == 0xc00000)) nx_vdp_wr_cycles++;')
 s=replace(s,'        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress',
   '        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset);\n        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress')
+
+# V2.0: cross-check VDP address detection against the 68000 CPU-side bus.
+s=replace(s,"    unsigned long long nx_cpu_bus_cycles=0, nx_vdp_wr_cycles=0;","    unsigned long long nx_cpu_bus_cycles=0, nx_vdp_wr_cycles=0, nx_vdp_cpu_writes=0;\n    unsigned int nx_latest_addr=0;")
+s=replace(s,"            if (!m68k.o_as && !m68k.o_address_z) nx_cpu_bus_cycles++;","            if (!m68k.o_as && !m68k.o_address_z) {\n                unsigned int nx_addr=(unsigned int)m68k.o_address & 0xffffffu;\n                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;\n                if (!m68k.o_rw && ((nx_addr & 0xe00000u) == 0xc00000u)) nx_vdp_cpu_writes++;\n            }")
+s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset);","        if (mcycles && ((mcycles & 32767) == 0)) { nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset); nx_bus_publish(nx_latest_addr,nx_vdp_cpu_writes); }")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -218,6 +223,27 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
     SDL_SetRenderDrawColor(vid_renderer, reset?70:240, reset?236:104,115,255);
     SDL_Rect reset_indicator={849,614,18,22};
     SDL_RenderFillRect(vid_renderer,&reset_indicator);
+
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# V2.0: display last 68000 address (decimal 24-bit) and CPU-side VDP writes.
+s=replace(s,"        {'C',{15,16,16,16,16,16,15}}",
+    "        {'C',{15,16,16,16,16,16,15}},\\n        {'D',{30,17,17,17,17,17,30}},\\n        {'T',{31,4,4,4,4,4,4}}")
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    unsigned int nxaddr=0;
+    unsigned long long nxwrites=0;
+    nx_bus_read(&nxaddr,&nxwrites);
+    SDL_SetRenderDrawColor(vid_renderer, 148, 220, 242, 255);
+    nx_diag_text(vid_renderer,"ADDR",115,668,2);
+    char addrbuf[32];
+    SDL_snprintf(addrbuf,sizeof(addrbuf),"%u",nxaddr);
+    for(int i=0;addrbuf[i] && i<9;i++)
+        nx_draw_digit(vid_renderer,addrbuf[i]-'0',115+i*30,688,1);
+    SDL_SetRenderDrawColor(vid_renderer, 113, 236, 181, 255);
+    nx_diag_text(vid_renderer,"DIRECT",560,668,2);
+    SDL_snprintf(addrbuf,sizeof(addrbuf),"%llu",nxwrites);
+    for(int i=0;addrbuf[i] && i<9;i++)
+        nx_draw_digit(vid_renderer,addrbuf[i]-'0',560+i*30,688,1);
 
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)

@@ -55,6 +55,17 @@ void nx_diag_read(unsigned long long *reads,unsigned long long *writes,
     *display=__atomic_load_n(&nx_vdp_disp,__ATOMIC_ACQUIRE);
     *reset=__atomic_load_n(&nx_chip_reset,__ATOMIC_ACQUIRE);
 }
+/* Clock worker snapshots. Never performs filesystem I/O. */
+static unsigned int nx_last_cpu_address = 0;
+static unsigned long long nx_direct_vdp_writes = 0;
+void nx_bus_publish(unsigned int address,unsigned long long direct_writes) {
+    __atomic_store_n(&nx_last_cpu_address,address,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_direct_vdp_writes,direct_writes,__ATOMIC_RELEASE);
+}
+void nx_bus_read(unsigned int *address,unsigned long long *direct_writes) {
+    *address=__atomic_load_n(&nx_last_cpu_address,__ATOMIC_ACQUIRE);
+    *direct_writes=__atomic_load_n(&nx_direct_vdp_writes,__ATOMIC_ACQUIRE);
+}
 unsigned long long nx_get_worker_clock(void) {
     return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
 }
@@ -160,10 +171,10 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.9\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.0\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV1.9: CPU/VDP bus counters visible\n",previous,previous_worker);
+        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.0: direct CPU address bus and VDP writes\n",previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;

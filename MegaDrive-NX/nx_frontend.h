@@ -14,3 +14,5 @@ unsigned long long nx_get_worker_clock(void);
 void nx_video_show_boot(unsigned long long clocks);
 void nx_diag_capture(unsigned long long reads,unsigned long long writes,int display,int reset);
 void nx_diag_read(unsigned long long *reads,unsigned long long *writes,int *display,int *reset);
+void nx_bus_publish(unsigned int address,unsigned long long direct_writes);
+void nx_bus_read(unsigned int *address,unsigned long long *direct_writes);
