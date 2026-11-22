@@ -1,0 +1,47 @@
+name: Symbolicate MegaDrive NX V1.4 crash
+on:
+  push:
+    paths:
+      - '.github/workflows/megadrive-crash-symbols.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  trace:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64:20260219
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: megadrive-nx-v1.4
+          persist-credentials: false
+      - name: Rebuild exactly from V1.4 release source
+        run: bash MegaDrive-NX/build.sh
+      - name: Identify firmware crash site
+        run: |
+          set -euo pipefail
+          ELF="MegaDrive-NX/build/Umbrella-MegaDrive-NX.elf"
+          NRO="MegaDrive-NX/dist/Umbrella-MegaDrive-NX.nro"
+          BIN="/opt/devkitpro/devkitA64/bin/aarch64-none-elf"
+          echo "=== REPRODUCIBILITY ==="
+          sha256sum "$NRO"
+          curl -fsSL --retry 3 'https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v1.4/Umbrella-MegaDrive-NX.sha256' -o /tmp/release.sha256 || true
+          cat /tmp/release.sha256 || true
+          echo "=== BUILD ID ==="
+          "${BIN}-readelf" -n "$ELF" | head -90 || true
+          echo "=== EXECUTABLE SECTIONS ==="
+          "${BIN}-readelf" -W -S "$ELF" | grep -E 'text|rodata|data|bss' || true
+          echo "=== ADDR2LINE ==="
+          for a in 0x4eb4e0 0x4ea348 0x4ea44c 0x51dfd8 0x50bb70 0x50bc7c 0x508bc8 0x50502c 0x509e14 0x50d04 0x1030 0xd20; do
+            echo ">>> $a"
+            "${BIN}-addr2line" -e "$ELF" -a -f -C -i "$a"
+          done
+          echo "=== DISASSEMBLY AT FAULT ==="
+          "${BIN}-objdump" -d -C --start-address=0x4eb480 --stop-address=0x4eb580 "$ELF" || true
+          echo "=== DISASSEMBLY AT CALLERS ==="
+          "${BIN}-objdump" -d -C --start-address=0x4ea300 --stop-address=0x4ea480 "$ELF" || true
+          echo "=== SYMBOLS NEAREST TO ADDRESS ==="
+          "${BIN}-nm" -nC "$ELF" | awk '$1 ~ /^[0-9a-f]+$/ {if (strtonum("0x"$1)>0x4eb300 && strtonum("0x"$1)<0x4eb900) print}' || true
