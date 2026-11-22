@@ -614,9 +614,9 @@ s=replace(s,'        nx_diag_text(vid_renderer,"ACK",263,74,2);',
 
 # V3.4: best-effort CPU frequency request via official libnx clkrst API.
 # Request only after ROM chosen, restore original rate on normal exit.
-s=replace(s,'    nx_stage("09 Single-thread video test");',
+s=replace(s,'    nx_stage("09 Ready: runtime SD I/O disabled");',
 '''    nx_cpu_boost_start();
-    nx_stage("09 Single-thread video test");''')
+    nx_stage("09 Ready: runtime SD I/O disabled");''')
 s=replace(s,'    nx_stage("12 Controlled shutdown");',
 '''    nx_stage("12 Controlled shutdown");''')
 s=replace(s,'    SDL_WaitThread(thread, 0);',
