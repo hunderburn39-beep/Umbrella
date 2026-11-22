@@ -23,3 +23,6 @@ Never inject an unconditional DTACK or skip ROM instructions to make the game ad
 
 ## Next deliverable
 Implement low-overhead ring-buffer capture, then obtain on-device screenshot and saved trace. Only then change chip timing or compiler optimizations.
+
+## Diagnostic ROM interpretation (2026-11-22)
+The generated `diagnostic.py` ROM writes VDP registers and CRAM, but does not populate VRAM with tile patterns or a plane name table. Thus a blank picture or PIXELS=0 alone is **not** proof that the FC1004 or VDP is stuck. Check the control-port write counters and DTACK first. A separate ROM must write a tile, plane entry and palette before treating the absence of a visible pattern as a rendering failure.
