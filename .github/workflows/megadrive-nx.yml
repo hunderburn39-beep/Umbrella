@@ -52,13 +52,21 @@ jobs:
           name: Umbrella-MegaDrive-NX
           path: MegaDrive-NX/dist/
           if-no-files-found: error
+  release:
+    needs: nro
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Umbrella-MegaDrive-NX
+          path: dist
       - name: Publish V0.3
-        if: github.ref == 'refs/heads/main'
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
-          cd MegaDrive-NX/dist
+          cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
           tag=megadrive-nx-v0.3
