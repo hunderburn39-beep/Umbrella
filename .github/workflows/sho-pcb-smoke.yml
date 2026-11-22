@@ -1,0 +1,109 @@
+name: Super Hang-On PCB WASM smoke
+on:
+  push:
+    branches: [super-hang-on-pcb-native-v2]
+    paths:
+      - 'Super-Hang-On/native/**'
+      - '.github/workflows/sho-pcb-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  wasm-fibers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: Super-Hang-On/native
+      - uses: mymindstorm/setup-emsdk@v14
+        with:
+          version: '3.1.74'
+      - name: Check browser fiber API across separate frame calls
+        shell: bash
+        run: |
+          emcc Super-Hang-On/native/fiber-smoke.c -O2 -sASYNCIFY=1 -sMODULARIZE=1 -sENVIRONMENT=node --no-entry -o /tmp/fiber-smoke.cjs
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const load = require('/tmp/fiber-smoke.cjs');
+          (async () => {
+            const m = await load();
+            assert.equal(m._init_test(), 1);
+            const expected = [0x12345678,0x12345679];
+            const frames=120, lines=262;
+            for(let f=0; f<frames; f++){
+              m._step_test(lines); // Asyncify's fiber trampoline need not preserve the export return value.
+              for(let i=0;i<2;i++){
+                for(let n=0;n<lines;n++) expected[i]=(Math.imul(expected[i],1664525)+1013904223)>>>0;
+                assert.equal(m._count_test(i), (f+1)*lines);
+                assert.equal(m._hash_test(i)>>>0, expected[i]);
+              }
+            }
+            console.log('PASS: 62,880 processor slices, 125,760 context switches, independent local state preserved.');
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
+      - name: Compile actual patched scheduler source (ROM-free)
+        shell: bash
+        run: |
+          git clone https://github.com/chaotix359/Super-Hang-On-Ultimate.git /tmp/sho-upstream
+          git -C /tmp/sho-upstream checkout --detach 4f5f25f1c680c53946323e0bf9a1cf8bfb4f72c2
+          python3 Super-Hang-On/native/patch-wasm-fibers.py /tmp/sho-upstream/source/src/rc_runtime.c
+          emcc -O2 -sASYNCIFY=1 -I/tmp/sho-upstream/source/src -c /tmp/sho-upstream/source/src/rc_runtime.c -o /tmp/rc_runtime.o
+          emcc -O2 -I/tmp/sho-upstream/source/src -c Super-Hang-On/native/bridge.c -o /tmp/bridge.o
+          test -s /tmp/rc_runtime.o
+          test -s /tmp/bridge.o
+      - name: Link complete board and boot synthetic diagnostic ROM
+        shell: bash
+        run: |
+          HERE="$GITHUB_WORKSPACE/Super-Hang-On/native"
+          cd /tmp/sho-upstream/source
+          M=src/third_party/musashi
+          emcc -O2 -fno-strict-aliasing -ffp-contract=off -Isrc \
+            "$HERE/board-smoke.c" "$HERE/bridge.c" \
+            src/rc_runtime.c src/sho_core.c src/sho_video.c src/sho_music.c \
+            src/sho_md.c src/sho_mdgfx.c src/sho_mdcourse.c src/sho_mdsnd.c \
+            "$M/m68kcpu.c" "$M/m68kops.c" "$M/m68kdasm.c" "$M/softfloat/softfloat.c" \
+            src/third_party/z80/z80.c src/third_party/nukedopn2/ym3438.c \
+            src/third_party/nukedopm/opm.c src/third_party/puff/puff.c \
+            -sASYNCIFY=1 -sASYNCIFY_STACK_SIZE=8388608 -sSTACK_SIZE=8388608 \
+            -sINITIAL_MEMORY=100663296 -sALLOW_MEMORY_GROWTH=1 -sMODULARIZE=1 \
+            -sENVIRONMENT=node -sFORCE_FILESYSTEM=1 -sEXPORTED_RUNTIME_METHODS=FS,ccall --no-entry -o /tmp/board-smoke.cjs
+          node <<'NODE'
+          const assert=require('node:assert/strict');
+          (async()=>{
+            const m=await require('/tmp/board-smoke.cjs')();
+            assert.equal(m._browser_is_recompiled(),0);
+            m.FS.writeFile('/invalid.zip',new Uint8Array([80,75,5,6,...new Array(18).fill(0)]));
+            assert.notEqual(m.ccall('browser_load','number',['string'],['/invalid.zip']),0);
+            // Invalid ROM allocates board state; use a fresh module for the diagnostic.
+            const d=await require('/tmp/board-smoke.cjs')();
+            assert.equal(d._diagnostic_boot(),1);
+            assert.equal(d._diagnostic_width(),320);
+            assert.equal(d._diagnostic_height(),224);
+            for(let f=0;f<120;f++){
+              d._diagnostic_step();
+              assert.equal(d._diagnostic_frames(),f+1);
+            }
+            assert.ok(d._diagnostic_ticks(0)>100000);
+            assert.ok(d._diagnostic_ticks(1)>100000);
+            assert.equal(d._diagnostic_pixels(),1);
+            console.log('PASS: full linked board, 120 synthetic frames, both CPU dispatch tables active, video/audio pipeline invoked; original ROM not tested.');
+          })().catch(e=>{console.error(e);process.exitCode=1});
+          NODE
+      - name: Package pinned source for local owner-ROM build
+        if: always()
+        shell: bash
+        run: |
+          test -d /tmp/sho-upstream/.git
+          mkdir -p /tmp/sho-local-kit
+          git -C /tmp/sho-upstream archive --format=tar.gz --prefix=upstream/ HEAD > /tmp/sho-local-kit/upstream.tar.gz
+          tar -C "$GITHUB_WORKSPACE/Super-Hang-On" -czf /tmp/sho-local-kit/native.tar.gz native
+          sha256sum /tmp/sho-local-kit/*.tar.gz
+      - name: Upload source-only local kit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sho-pcb-local-source-kit
+          path: /tmp/sho-local-kit/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7
