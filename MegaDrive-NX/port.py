@@ -375,8 +375,10 @@ s=replace(s,"    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_re
 '''    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;
     unsigned long long nx_cpu_write_seen=0,nx_board_write_seen=0,nx_chip_select_seen=0;''')
 s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
-'''            /* Observe three independent layers before FC1004 advances.
-               Counters are samples, not completed write transactions. */
+'''            FC1004_Clock(&ym, mcycles & 1, mcycles);
+            /* Sample all three layers after the same FC1004 tick,
+               matching the V2.4 SEL/STB/RDY sampling phase.
+               Observational counters only: no signals are driven. */
             if (!m68k.o_address_z && !m68k.o_as && !m68k.o_rw &&
                 ((m68k.o_address & 0x700000u)==0x600000u))
                 nx_cpu_write_seen++;
@@ -384,8 +386,7 @@ s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
                 ((md.vaddress & 0x700000u)==0x600000u))
                 nx_board_write_seen++;
             if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as)
-                nx_chip_select_seen++;
-            FC1004_Clock(&ym, mcycles & 1, mcycles);''')
+                nx_chip_select_seen++;''')
 s=replace(s,"            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);",
 '''            nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);''')
 if "nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);" not in s:
