@@ -368,6 +368,25 @@ if "if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {" not in s:
     raise RuntimeError("Raw VDP selection probe missing after patching")
 if "nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);" not in s:
     raise RuntimeError("VDP handshake counters not published")
+# V4.3: sample internal VDP pipeline signals independently of the
+# board-side decoder. Previously PIPE CMD/GATE/REQ could all show zero
+# merely because md.as/rw/address failed the outer condition.
+s=replace(s,
+'''            if (!md.as && !md.rw && ((md.vaddress & 0x700000u)==0x600000u)) {
+                if (ym.vdp.nx_probe_w139) nx_pipe_cmd_cycles++;
+                if (ym.vdp.nx_probe_w146) nx_pipe_gate_cycles++;
+                if (ym.vdp.nx_probe_w125) nx_pipe_req_cycles++;
+            }''',
+'''            /* Read-only samples of internal VDP combinational nodes. */
+            if (ym.vdp.nx_probe_w139) nx_pipe_cmd_cycles++;
+            if (ym.vdp.nx_probe_w146) nx_pipe_gate_cycles++;
+            if (ym.vdp.nx_probe_w125) nx_pipe_req_cycles++;''')
+if s.count("if (ym.vdp.nx_probe_w139) nx_pipe_cmd_cycles++;") != 1:
+    raise RuntimeError("Raw VDP command pipeline probe missing")
+if s.count("if (ym.vdp.nx_probe_w146) nx_pipe_gate_cycles++;") != 1:
+    raise RuntimeError("Raw VDP gate pipeline probe missing")
+if s.count("if (ym.vdp.nx_probe_w125) nx_pipe_req_cycles++;") != 1:
+    raise RuntimeError("Raw VDP request pipeline probe missing")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
