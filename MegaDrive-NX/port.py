@@ -282,6 +282,45 @@ s=replace(s,'            // VRAM\n            update_vram();',
 '''            } /* end optional VDP diagnostic probes */
             // VRAM
             update_vram();''')
+
+# V3.6 sampled stage timings: 1/2048 master cycles, both half-cycles.
+# Timing covers chip calls only, without changing their clock sequence.
+# Profiler results are nanoseconds per invocation, not percentage of a frame.
+s=replace(s,'    while (work_thread_run)\n    {',
+'''    while (work_thread_run)
+    {
+        const int nx_profile_sample=((mcycles & 2047ULL)==0);
+        unsigned long long nx_prof_tick=0;''')
+s=replace(s,'            // 68k\n',
+'''            // 68k
+            if(nx_profile_sample) nx_prof_tick=nx_prof_begin();
+''')
+s=replace(s,'            // z80\n',
+'''            if(nx_profile_sample) nx_prof_end(0,nx_prof_tick);
+            // z80
+            if(nx_profile_sample) nx_prof_tick=nx_prof_begin();
+''')
+s=replace(s,'            // fc1004\n',
+'''            if(nx_profile_sample) nx_prof_end(1,nx_prof_tick);
+            // fc1004
+            if(nx_profile_sample) nx_prof_tick=nx_prof_begin();
+''')
+s=replace(s,'            // VRAM\n',
+'''            if(nx_profile_sample) nx_prof_end(2,nx_prof_tick);
+            // VRAM
+            if(nx_profile_sample) nx_prof_tick=nx_prof_begin();
+''')
+s=replace(s,'            // busses\n',
+'''            if(nx_profile_sample) nx_prof_end(3,nx_prof_tick);
+            // busses
+''')
+s=replace(s,'        if (ym.vdp.input.i_clk1 && !md.odclk)\n',
+'''        if(nx_profile_sample) nx_prof_tick=nx_prof_begin();
+        if (ym.vdp.input.i_clk1 && !md.odclk)
+''')
+s=replace(s,'        md.odclk = ym.vdp.input.i_clk1;',
+'''        if(nx_profile_sample) nx_prof_end(4,nx_prof_tick);
+        md.odclk = ym.vdp.input.i_clk1;''')
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
@@ -631,6 +670,20 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
         nx_cpu_status==1?222:100,112,255);
     SDL_Rect nx_clock_lamp={891,587,16,16};
     SDL_RenderFillRect(vid_renderer,&nx_clock_lamp);
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# Show 5 sampled average nanosecond timings on the first diagnostic line.
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    const char *nx_profile_labels[5]={"68K","Z80","FC","VRAM","VIDEO"};
+    SDL_SetRenderDrawColor(vid_renderer,171,233,245,255);
+    for(int p=0;p<5;p++) {
+        int xx=12+p*190;
+        nx_diag_text(vid_renderer,nx_profile_labels[p],xx,9,1);
+        char profbuf[16];
+        SDL_snprintf(profbuf,sizeof(profbuf),"%u",nx_prof_avg_ns(p));
+        for(int k=0;profbuf[k] && k<7;k++)
+            nx_draw_digit(vid_renderer,profbuf[k]-'0',xx+53+15*k,7,1);
+    }
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
