@@ -321,6 +321,22 @@ s=replace(s,'        if (ym.vdp.input.i_clk1 && !md.odclk)\n',
 s=replace(s,'        md.odclk = ym.vdp.input.i_clk1;',
 '''        if(nx_profile_sample) nx_prof_end(4,nx_prof_tick);
         md.odclk = ym.vdp.input.i_clk1;''')
+
+# V3.8: record distinct active 68000 bus states, no hardware changes.
+s=replace(s,'    unsigned int nx_previous_addr=0xffffffffu;',
+'''    unsigned int nx_previous_addr=0xffffffffu;
+    unsigned int nx_trace_previous=0xffffffffu;''')
+s=replace(s,'                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;',
+'''                nx_latest_addr=nx_addr;
+                nx_cpu_bus_cycles++;
+                unsigned int nx_trace_flags=((!!m68k.o_rw)<<0)
+                    | ((!!m68k.o_as)<<1) | ((!!md.dtack)<<2)
+                    | ((!!m68k.o_data_z)<<3);
+                unsigned int nx_trace_key=(nx_addr<<4)|nx_trace_flags;
+                if(nx_trace_key!=nx_trace_previous) {
+                    nx_trace_previous=nx_trace_key;
+                    nx_trace_push(nx_addr,(unsigned int)m68k.o_data,nx_trace_flags);
+                }''')
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
@@ -683,6 +699,26 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
         SDL_snprintf(profbuf,sizeof(profbuf),"%u",nx_prof_avg_ns(p));
         for(int k=0;profbuf[k] && k<7;k++)
             nx_draw_digit(vid_renderer,profbuf[k]-'0',xx+53+15*k,7,1);
+    }
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# Show newest four CPU bus states: word address / data / flags.
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    SDL_SetRenderDrawColor(vid_renderer,176,226,245,255);
+    for(int t=0;t<4;t++) {
+        unsigned int ta=0,td=0,tf=0;
+        nx_trace_read((unsigned int)t,&ta,&td,&tf);
+        int yy=118+t*40;
+        char tb[24];
+        SDL_snprintf(tb,sizeof(tb),"%u",ta);
+        for(int k=0;tb[k] && k<8;k++)
+            nx_draw_digit(vid_renderer,tb[k]-'0',16+k*18,yy,1);
+        SDL_snprintf(tb,sizeof(tb),"%u",td);
+        for(int k=0;tb[k] && k<6;k++)
+            nx_draw_digit(vid_renderer,tb[k]-'0',174+k*18,yy,1);
+        SDL_snprintf(tb,sizeof(tb),"%u",tf);
+        for(int k=0;tb[k] && k<3;k++)
+            nx_draw_digit(vid_renderer,tb[k]-'0',300+k*18,yy,1);
     }
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)

@@ -43,3 +43,6 @@ Primary hardware references:
 
 ## Important limitations
 This is a **source-to-hardware inventory**, not proof of transistor-level equivalence or completeness. Model 1 and Model 2 board revisions differ. Analog circuitry is not needed as discrete simulated components to present a digital video signal on Switch, but a fully faithful physical motherboard reconstruction would require much more. A Switch NRO running Nuked-MD is **software gate-level simulation**, not an FPGA or a literal hardware motherboard.
+
+## Correction (2026-11-22)
+Nuked-MD's own README explicitly states that its NMOS 68000 + NMOS Z80 + FC1004 combination never shipped together in a production Mega Drive. **Model 1 VA7** is the closest actual revision, not Model 2 VA0/VA1 as the original audit implied. The inventory above is an approximate functional mapping, not a literal Model 2 BOM. Reference: https://github.com/nukeykt/Nuked-MD/blob/main/README.md

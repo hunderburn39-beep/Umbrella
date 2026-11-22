@@ -44,3 +44,6 @@ void nx_skip_read(unsigned int *tries,int *status);
 unsigned long long nx_prof_begin(void);
 void nx_prof_end(int id,unsigned long long start);
 unsigned int nx_prof_avg_ns(int id);
+
+void nx_trace_push(unsigned int addr,unsigned int data,unsigned int flags);
+void nx_trace_read(unsigned int back,unsigned int *addr,unsigned int *data,unsigned int *flags);

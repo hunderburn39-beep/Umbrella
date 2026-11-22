@@ -114,6 +114,24 @@ void nx_worker_progress(unsigned long long clock, const char *phase) {
     __atomic_store_n(&worker_progress_mode, 1, __ATOMIC_RELEASE);
 }
 /* Read-only shared snapshots, published every 32768 master clocks. */
+/* Read-only last 4 distinct CPU bus states. One atomic packed word per slot. */
+static unsigned long long nx_trace_slots[4]={0};
+static unsigned int nx_trace_head=0;
+void nx_trace_push(unsigned int addr,unsigned int data,unsigned int flags) {
+    unsigned int pos=__atomic_load_n(&nx_trace_head,__ATOMIC_RELAXED);
+    unsigned long long packed=((unsigned long long)(addr&0x7fffffu)<<24)
+        | ((unsigned long long)(data&0xffffu)<<8) | (flags&255u);
+    __atomic_store_n(&nx_trace_slots[pos&3u],packed,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_trace_head,pos+1,__ATOMIC_RELEASE);
+}
+void nx_trace_read(unsigned int back,unsigned int *addr,unsigned int *data,unsigned int *flags) {
+    unsigned int head=__atomic_load_n(&nx_trace_head,__ATOMIC_ACQUIRE);
+    if(!head || back>=4 || back>=head) {*addr=0;*data=0;*flags=0;return;}
+    unsigned long long packed=__atomic_load_n(&nx_trace_slots[(head-1-back)&3u],__ATOMIC_ACQUIRE);
+    *addr=(unsigned int)((packed>>24)&0x7fffffu);
+    *data=(unsigned int)((packed>>8)&0xffffu);
+    *flags=(unsigned int)(packed&255u);
+}
 static unsigned long long nx_bus_reads = 0, nx_vdp_write_cycles = 0;
 static int nx_vdp_disp = 0;
 static int nx_chip_reset = 0;
