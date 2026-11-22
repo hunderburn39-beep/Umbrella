@@ -1,5 +1,6 @@
 /* Umbrella NX frontend, GPL-2.0-or-later. */
 #include <switch.h>
+#include <switch/services/clkrst.h>
 #include <SDL.h>
 #include <stdio.h>
 #include <string.h>
@@ -20,6 +21,50 @@ int nx_region_setting = 0;
 int nx_show_hud = 1;
 /* ZL: omit optional high-frequency VDP diagnostic probes, not chip clocks. */
 int nx_light_probes = 0;
+/* V3.4: best-effort official clock service; never assume elevated rights. */
+static ClkrstSession nx_cpu_session;
+static int nx_cpu_clock_open = 0;
+static u32 nx_cpu_original_hz = 0;
+static u32 nx_cpu_observed_hz = 0;
+static int nx_cpu_clock_status = 0;
+void nx_cpu_boost_start(void) {
+    nx_cpu_clock_status=0;
+    if (R_FAILED(clkrstInitialize())) { nx_cpu_clock_status=-1; return; }
+    if (R_FAILED(clkrstOpenSession(&nx_cpu_session,PcvModuleId_CpuBus,3))) {
+        nx_cpu_clock_status=-2;
+        clkrstExit();
+        return;
+    }
+    nx_cpu_clock_open=1;
+    if (R_FAILED(clkrstGetClockRate(&nx_cpu_session,&nx_cpu_original_hz))) {
+        nx_cpu_clock_status=-3;
+        return;
+    }
+    nx_cpu_observed_hz=nx_cpu_original_hz;
+    /* Conservative request: 1.224 GHz. May be denied by firmware/CFW.
+       No voltage control, no GPU or memory overclock, no repeated retries. */
+    if (R_FAILED(clkrstSetClockRate(&nx_cpu_session,1224000000u))) {
+        nx_cpu_clock_status=-4;
+        return;
+    }
+    if (R_FAILED(clkrstGetClockRate(&nx_cpu_session,&nx_cpu_observed_hz))) {
+        nx_cpu_clock_status=-5;
+        return;
+    }
+    nx_cpu_clock_status=(nx_cpu_observed_hz>=1224000000u)?1:2;
+}
+void nx_cpu_boost_stop(void) {
+    if (nx_cpu_clock_open) {
+        if (nx_cpu_original_hz) clkrstSetClockRate(&nx_cpu_session,nx_cpu_original_hz);
+        clkrstCloseSession(&nx_cpu_session);
+        nx_cpu_clock_open=0;
+        clkrstExit();
+    }
+}
+void nx_cpu_boost_info(unsigned int *hz,int *status) {
+    *hz=nx_cpu_observed_hz;
+    *status=nx_cpu_clock_status;
+}
 static const char *nx_region_names[] = {
     "Japan (NTSC 60Hz)", "USA (NTSC 60Hz)", "Europe (PAL 50Hz)"
 };
@@ -281,7 +326,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V3.3\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V3.4\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nRegion [L/R]: %s\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.8: select chip jumpers before launch\n",nx_region_names[nx_region_setting],previous,previous_worker);

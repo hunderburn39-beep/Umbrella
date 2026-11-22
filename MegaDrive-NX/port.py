@@ -611,6 +611,33 @@ s=replace(s,'        nx_diag_text(vid_renderer,"ACK",263,74,2);',
         SDL_snprintf(v,sizeof(v),"%u",nx_clock_rate(nx_get_worker_clock()));
         for(int k=0;v[k] && k<7;k++)
             nx_draw_digit(vid_renderer,v[k]-'0',673+21*k,72,1);''')
+
+# V3.4: best-effort CPU frequency request via official libnx clkrst API.
+# Request only after ROM chosen, restore original rate on normal exit.
+s=replace(s,'    nx_stage("09 Single-thread video test");',
+'''    nx_cpu_boost_start();
+    nx_stage("09 Single-thread video test");''')
+s=replace(s,'    nx_stage("12 Controlled shutdown");',
+'''    nx_stage("12 Controlled shutdown");''')
+s=replace(s,'    SDL_WaitThread(thread, 0);',
+'''    SDL_WaitThread(thread, 0);
+    nx_cpu_boost_stop();''')
+# Show observed CPU clock / service result on the normal boot diagnostic
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    unsigned int nx_cpu_hz=0;
+    int nx_cpu_status=0;
+    nx_cpu_boost_info(&nx_cpu_hz,&nx_cpu_status);
+    SDL_SetRenderDrawColor(vid_renderer,188,229,165,255);
+    nx_diag_text(vid_renderer,"CPU MHZ",575,585,2);
+    char nx_mhz[20];
+    SDL_snprintf(nx_mhz,sizeof(nx_mhz),"%u",nx_cpu_hz/1000000u);
+    for(int k=0;nx_mhz[k] && k<5;k++)
+        nx_draw_digit(vid_renderer,nx_mhz[k]-'0',737+24*k,581,1);
+    SDL_SetRenderDrawColor(vid_renderer,nx_cpu_status==1?61:235,
+        nx_cpu_status==1?222:100,112,255);
+    SDL_Rect nx_clock_lamp={891,587,16,16};
+    SDL_RenderFillRect(vid_renderer,&nx_clock_lamp);
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")
