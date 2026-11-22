@@ -10,6 +10,8 @@ from va4_reset import ResetRC
 PAL_MASTER_HZ = 53_203_424
 CPU_DIVIDER = 7
 VRES_LOW_VCLKS = 128
+# VRES low pulse is approximately 16.8 microseconds, NOT milliseconds.
+# The separate 12.8 ms figure is a reported cold-boot release delay.
 
 
 @dataclass(frozen=True)
@@ -25,7 +27,7 @@ class VA4ResetSequence:
         self.rc = rc or ResetRC()
         if vres_release_delay_s < 0:
             raise ValueError("VRES release delay must be nonnegative")
-        # 12.8 ms is a reported measurement, NOT a verified ASIC cycle count.
+        # 12.8 ms is a reported cold-boot measurement, NOT the 128-cycle pulse.
         self.vres_release_delay_s = vres_release_delay_s
 
     @property
