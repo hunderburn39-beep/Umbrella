@@ -29,7 +29,11 @@ emit(0x46fc,0x2700) # mask interrupts
 move_l(0x53454741,0xa14000) # TMSS
 for reg,val in enumerate([0x04,0x04,0x30,0x3c,0x07,0x6c,0,0,0,0,0xff,0,0x81,0x3f,0,2,1,0,0,0,0,0,0,0]):
     move_w(0x8000|(reg<<8)|val,0xc00004)
-move_l(0xc0000000,0xc00004)
+# Diagnostic V2.3: probe the 68000->VDP handshake by avoiding a
+# 32-bit MOVEL access across 0xC00004 and its 0xC00006 alias.
+# Two standalone 16-bit control-port writes encode the same VDP command.
+move_w(0xc000,0xc00004)
+move_w(0x0000,0xc00004)
 move_w(0x0800,0xc00000)
 move_w(0x8144,0xc00004)
 move_b(0x40,0xa10009) # TH output
@@ -39,7 +43,9 @@ emit(0x7000) # moveq #0,d0
 emit(0x1039,0x00a1,0x0003) # move.b pad,d0
 emit(0x4600,0x0240,0x003f) # invert bits, mask six inputs
 emit(0xd040,0x0040,0x0800) # double bits, combine blue component
-move_l(0xc0000000,0xc00004)
+# Repeat the same split in the colour-update loop.
+move_w(0xc000,0xc00004)
+move_w(0x0000,0xc00004)
 emit(0x33c0,0x00c0,0x0000) # move.w d0,VDP data
 disp=loop-(pc+2)
 assert -128<=disp<0
