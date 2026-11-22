@@ -340,26 +340,8 @@ s=replace(s,'                nx_latest_addr=nx_addr;\n                nx_cpu_bus
                     nx_trace_previous=nx_trace_key;
                     nx_trace_push(nx_addr,(unsigned int)m68k.o_data,nx_trace_flags);
                 }''')
-# V4.1: remove the board-address gate only after all older text patches ran.
-# The chip-pin counters now report raw pin activity even when the FC1004
-# address decode is wrong. This is observational only.
-s=replace(s,
-'''            if (!md.as && !md.rw && ((md.vaddress & 0x700000u) == 0x600000u)) {
-                if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {
-                    nx_sel_samples++;
-                    if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)
-                        nx_strobe_samples++;
-                }
-                if (!ym.vdp.w117)
-                    nx_ready_samples++;
-            }''',
-'''            if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {
-                nx_sel_samples++;
-                if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)
-                    nx_strobe_samples++;
-            }
-            if (!ym.vdp.w117)
-                nx_ready_samples++;''')
+# V4.1: superseded by the direct ungated probe inserted in V2.4.
+# Do not apply the former second replacement: its gated source no longer exists.
 # V4.2: fail loudly if the raw VDP probe was lost in an earlier
 # transformation. This prevents another successful build with stale counters.
 if s.count("nx_sel_samples++;") != 1:
