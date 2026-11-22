@@ -228,7 +228,7 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
 
 # V2.0: display last 68000 address (decimal 24-bit) and CPU-side VDP writes.
 s=replace(s,"        {'C',{15,16,16,16,16,16,15}}",
-    "        {'C',{15,16,16,16,16,16,15}},\\n        {'D',{30,17,17,17,17,17,30}},\\n        {'T',{31,4,4,4,4,4,4}}")
+    "        {'C',{15,16,16,16,16,16,15}},\n        {'D',{30,17,17,17,17,17,30}},\n        {'T',{31,4,4,4,4,4,4}}")
 s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
 '''    unsigned int nxaddr=0;
     unsigned long long nxwrites=0;
