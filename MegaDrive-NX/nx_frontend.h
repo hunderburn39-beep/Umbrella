@@ -6,3 +6,4 @@ int nx_pad_poll(void);
 int nx_video_init(int ntsc);
 void nx_stage(const char *step);
 void nx_worker_stage(const char *step);
+void nx_worker_progress(unsigned long long clock, const char *phase);

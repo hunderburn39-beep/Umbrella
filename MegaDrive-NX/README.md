@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V0.9
+# Umbrella Mega Drive NX V1.0
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -37,3 +37,6 @@ Before starting the Nuked-MD chip worker, the program now performs a single `Vid
 
 ## V0.9: chip-worker crash isolation
 The video renderer completed a first SDL blit on actual Switch hardware (stage `11a`). This release writes a **separate** `worker-stage.txt`, displayed on the ROM menu as `Worker stage` after an exception. W00: not started; W01: thread entered; W02: loop entered; W03: 68000 clock; W04: Z80 clock; W05: FC1004 ASIC; W06: VRAM; W07: bus cycle; W08: audio/video update; W09: first complete clock; W10: 1000 clocks; W11: 100K; W12: 1M. Both `last-stage.txt` and `worker-stage.txt` are stored under `/switch/Umbrella-MegaDrive-NX/`. Instrumentation runs only on the first clock and at coarse milestones. Host audio remains muted pending validation. No claim of full-speed operation or functional gameplay.
+
+## V1.0: periodic chip-phase crash checkpoints
+After stage `11a` video presentation and `W11` at 100K clocks were observed on the Switch, this diagnostic build adds `Worker stage: C<number> <phase>` snapshots every 32768 master-clock cycles. Phases are 68000, Z80, FC1004, VRAM, BUS, AUDIO VDP. The on-screen marker names the last *checkpoint reached*; it may not be the exact instruction that failed. An exception may still be caused by a graphics, synchronization, or operating-system failure. Device audio remains disabled. After a crash reopen the app and photograph both stage lines. A screenshot of a cycle marker is not proof that gameplay has started.

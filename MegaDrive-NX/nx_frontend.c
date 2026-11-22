@@ -20,6 +20,11 @@ void nx_worker_stage(const char *step) {
     FILE *f = fopen(ROOT "worker-stage.txt", "wb");
     if (f) { fprintf(f, "%s\n", step); fclose(f); }
 }
+void nx_worker_progress(unsigned long long clock, const char *phase) {
+    char buf[112];
+    snprintf(buf, sizeof(buf), "C%llu %s", clock, phase);
+    nx_worker_stage(buf);
+}
 static void nx_previous_worker_stage(char *out, size_t cap) {
     snprintf(out, cap, "%s", "No worker run recorded");
     FILE *f = fopen(ROOT "worker-stage.txt", "rb");
@@ -92,7 +97,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.9\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.0\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nA: launch  X: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);
