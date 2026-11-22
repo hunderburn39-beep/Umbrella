@@ -177,6 +177,11 @@ s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) { nx_diag_capture(
 s=replace(s,"    unsigned int nx_previous_addr=0xffffffffu;","    unsigned int nx_previous_addr=0xffffffffu;\n    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;")
 s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);","            FC1004_Clock(&ym, mcycles & 1, mcycles);\n            /* Count VDP selection, byte lane strobes, and VDP-owned DTACK.\n               Evaluate only while the 68000 requests a VDP write.\n               All are read-only probes, no chip or CPU pins changed. */\n            if (!md.as && !md.rw && ((md.vaddress & 0x700000u) == 0x600000u)) {\n                if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {\n                    nx_sel_samples++;\n                    if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)\n                        nx_strobe_samples++;\n                }\n                if (!ym.vdp.w117)\n                    nx_ready_samples++;\n            }")
 s=replace(s,"            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);","            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);\n            nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);")
+
+# V2.5: probe VDP CPU interface clock, data bus, and M5 register state.
+s=replace(s,"    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;","    unsigned long long nx_sel_samples=0, nx_strobe_samples=0, nx_ready_samples=0;\n    unsigned long long nx_clock_edges=0;\n    int nx_prev_clock0=-1;")
+s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);\n            /* Count VDP selection, byte lane strobes, and VDP-owned DTACK.","            FC1004_Clock(&ym, mcycles & 1, mcycles);\n            int nx_clock0=ym.vdp.input.i_cpu_clk0;\n            if(nx_prev_clock0>=0 && nx_clock0!=nx_prev_clock0) nx_clock_edges++;\n            nx_prev_clock0=nx_clock0;\n            /* Count VDP selection, byte lane strobes, and VDP-owned DTACK.")
+s=replace(s,"            nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);","            nx_handshake_publish(nx_sel_samples,nx_strobe_samples,nx_ready_samples);\n            nx_vdp_state_publish(nx_clock_edges,\n                (unsigned int)(ym.vdp.io_data & 0xffffu),\n                (unsigned int)(ym.vdp.reg_m5 & 1));")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -312,6 +317,9 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
     for(int i=0;pinbuf[i] && i<9;i++) nx_draw_digit(vid_renderer,pinbuf[i]-'0',681+i*28,73,1);
 
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# V2.5: display clock transitions, VDP data bus, and internal M5 register bit.
+s=replace(s,"    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */","    /* V2.5 pin state: actual CPU clock transitions, VDP data bus, M5 mode. */\n    unsigned long long vdpclk=0;\n    unsigned int vdpdata=0, vdpmode=0;\n    nx_vdp_state_read(&vdpclk,&vdpdata,&vdpmode);\n    SDL_SetRenderDrawColor(vid_renderer, 128, 216, 235, 255);\n    nx_diag_text(vid_renderer,\"CLK\",102,102,2);\n    nx_diag_text(vid_renderer,\"DATA\",385,102,2);\n    nx_diag_text(vid_renderer,\"MODE\",688,102,2);\n    char diagbuf[32];\n    SDL_snprintf(diagbuf,sizeof(diagbuf),\"%llu\",vdpclk);\n    for(int i=0;diagbuf[i] && i<8;i++) nx_draw_digit(vid_renderer,diagbuf[i]-'0',102+i*27,119,1);\n    SDL_snprintf(diagbuf,sizeof(diagbuf),\"%u\",vdpdata);\n    for(int i=0;diagbuf[i] && i<6;i++) nx_draw_digit(vid_renderer,diagbuf[i]-'0',385+i*27,119,1);\n    nx_draw_digit(vid_renderer,(int)(vdpmode&1u),688,119,1);\n\n    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */")
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")

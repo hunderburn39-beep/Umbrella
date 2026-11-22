@@ -91,6 +91,20 @@ void nx_handshake_read(unsigned long long *sel,unsigned long long *strobe,unsign
     *strobe=__atomic_load_n(&nx_vdp_strobe_samples,__ATOMIC_ACQUIRE);
     *ready=__atomic_load_n(&nx_vdp_ready_samples,__ATOMIC_ACQUIRE);
 }
+/* V2.5: capture internal VDP CPU-clock transitions and ROM register writes.
+   These are atomic in-memory snapshots, never saved to SD while running. */
+static unsigned long long nx_vdp_clock_edges = 0;
+static unsigned int nx_vdp_last_data = 0, nx_vdp_mode_m5 = 0;
+void nx_vdp_state_publish(unsigned long long edges,unsigned int data,unsigned int mode) {
+    __atomic_store_n(&nx_vdp_clock_edges,edges,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_vdp_last_data,data,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_vdp_mode_m5,mode,__ATOMIC_RELEASE);
+}
+void nx_vdp_state_read(unsigned long long *edges,unsigned int *data,unsigned int *mode) {
+    *edges=__atomic_load_n(&nx_vdp_clock_edges,__ATOMIC_ACQUIRE);
+    *data=__atomic_load_n(&nx_vdp_last_data,__ATOMIC_ACQUIRE);
+    *mode=__atomic_load_n(&nx_vdp_mode_m5,__ATOMIC_ACQUIRE);
+}
 unsigned long long nx_get_worker_clock(void) {
     return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
 }
@@ -196,7 +210,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.4\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.5\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.2: DTACK and stalled write diagnosis\n",previous,previous_worker);

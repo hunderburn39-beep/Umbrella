@@ -20,3 +20,5 @@ void nx_ack_publish(unsigned long long ack,unsigned long long changes,unsigned i
 void nx_ack_read(unsigned long long *ack,unsigned long long *changes,unsigned int *flags);
 void nx_handshake_publish(unsigned long long sel,unsigned long long strobe,unsigned long long ready);
 void nx_handshake_read(unsigned long long *sel,unsigned long long *strobe,unsigned long long *ready);
+void nx_vdp_state_publish(unsigned long long edges,unsigned int data,unsigned int mode);
+void nx_vdp_state_read(unsigned long long *edges,unsigned int *data,unsigned int *mode);
