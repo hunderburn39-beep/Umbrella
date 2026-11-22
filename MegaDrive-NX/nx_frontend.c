@@ -146,6 +146,27 @@ void nx_pipe_read(unsigned long long *cmd,unsigned long long *gate,unsigned long
     *gate=__atomic_load_n(&nx_pipe_gate,__ATOMIC_ACQUIRE);
     *req=__atomic_load_n(&nx_pipe_req,__ATOMIC_ACQUIRE);
 }
+/* V3.0: experimental one-shot VDP DTACK pulse, ZR only.
+ * Requests originate on the main controller thread; the worker decides
+ * if the active CPU cycle qualifies. No file operations. */
+static int nx_skip_requested=0;
+static int nx_skip_status=0; /* 0=idle 1=requested 2=pulsing 3=advanced 4=timeout 5=not eligible */
+static unsigned int nx_skip_tries=0;
+void nx_skip_request(void) {
+    __atomic_store_n(&nx_skip_requested,1,__ATOMIC_RELEASE);
+    __atomic_store_n(&nx_skip_status,1,__ATOMIC_RELEASE);
+}
+int nx_skip_take(void) {
+    return __atomic_exchange_n(&nx_skip_requested,0,__ATOMIC_ACQ_REL);
+}
+void nx_skip_report(int status) {
+    if(status==2) __atomic_add_fetch(&nx_skip_tries,1,__ATOMIC_ACQ_REL);
+    __atomic_store_n(&nx_skip_status,status,__ATOMIC_RELEASE);
+}
+void nx_skip_read(unsigned int *tries,int *status) {
+    *tries=__atomic_load_n(&nx_skip_tries,__ATOMIC_ACQUIRE);
+    *status=__atomic_load_n(&nx_skip_status,__ATOMIC_ACQUIRE);
+}
 unsigned long long nx_get_worker_clock(void) {
     return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
 }
@@ -255,7 +276,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V2.9\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V3.0\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nRegion [L/R]: %s\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.8: select chip jumpers before launch\n",nx_region_names[nx_region_setting],previous,previous_worker);
@@ -267,6 +288,7 @@ int nx_pad_poll(void) {
     padUpdate(&pad);
     u64 held=padGetButtons(&pad);
     u64 down=padGetButtonsDown(&pad);
+    if (down & HidNpadButton_ZR) nx_skip_request();
     static const struct {u64 mask;int key;} map[]={
         {HidNpadButton_Up,SDL_SCANCODE_UP},{HidNpadButton_Down,SDL_SCANCODE_DOWN},
         {HidNpadButton_Left,SDL_SCANCODE_LEFT},{HidNpadButton_Right,SDL_SCANCODE_RIGHT},

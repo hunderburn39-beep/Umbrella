@@ -209,6 +209,45 @@ s=replace(s,'    if (!nx_choose_rom(&rom_filename)) return 0;',
 s=replace(s,"    unsigned long long nx_drive_clocks=0;","    unsigned long long nx_drive_clocks=0;\n    unsigned long long nx_pipe_cmd_cycles=0,nx_pipe_gate_cycles=0,nx_pipe_req_cycles=0;")
 s=replace(s,"            int nx_clock0=ym.vdp.input.i_cpu_clk0;","            if (!md.as && !md.rw && ((md.vaddress & 0x700000u)==0x600000u)) {\n                if (ym.vdp.nx_probe_w139) nx_pipe_cmd_cycles++;\n                if (ym.vdp.nx_probe_w146) nx_pipe_gate_cycles++;\n                if (ym.vdp.nx_probe_w125) nx_pipe_req_cycles++;\n            }\n            int nx_clock0=ym.vdp.input.i_cpu_clk0;")
 s=replace(s,"            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);","            nx_drive_publish(nx_drive_clocks,nx_last_drive_word);\n            nx_pipe_publish(nx_pipe_cmd_cycles,nx_pipe_gate_cycles,nx_pipe_req_cycles);")
+
+# V3.0: optional, explicitly-triggered DTACK pulse for a *stalled* VDP write.
+# This is a debug override of the input to 68000, NOT a chip reconstruction.
+# Never force other bus cycles or disable the VDP's own ACK logic.
+s=replace(s,"    unsigned long long nx_pipe_cmd_cycles=0,nx_pipe_gate_cycles=0,nx_pipe_req_cycles=0;",
+'''    unsigned long long nx_pipe_cmd_cycles=0,nx_pipe_gate_cycles=0,nx_pipe_req_cycles=0;
+    unsigned long long nx_skip_begin=0;
+    unsigned int nx_skip_target=0;
+    int nx_skip_active=0;''')
+s=replace(s,'            m68k.input.i_dtack = md.dtack;',
+'''            m68k.input.i_dtack = md.dtack;
+            /* ZR requests an explicit override on exactly one VDP write transaction.
+             * Hold at most 1024 master clocks, stop as soon as AS rises,
+             * the address changes, a read starts, or the real DTACK arrives.
+             * This must never run automatically. */
+            const int nx_bus_write = (!m68k.o_address_z && !m68k.o_as &&
+                !m68k.o_rw && ((m68k.o_address & 0x700000u) == 0x600000u));
+            if (nx_skip_take()) {
+                if (!nx_skip_active && nx_bus_write && md.dtack) {
+                    nx_skip_active=1;
+                    nx_skip_target=(unsigned int)m68k.o_address;
+                    nx_skip_begin=mcycles;
+                    nx_skip_report(2);
+                } else {
+                    nx_skip_report(5);
+                }
+            }
+            if (nx_skip_active) {
+                if (!nx_bus_write || (unsigned int)m68k.o_address!=nx_skip_target ||
+                    !md.dtack) {
+                    nx_skip_active=0;
+                    nx_skip_report(3);
+                } else if (mcycles-nx_skip_begin>=1024ULL) {
+                    nx_skip_active=0;
+                    nx_skip_report(4);
+                } else {
+                    m68k.input.i_dtack=0; /* active low, only this CPU input */
+                }
+            }''')
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
@@ -389,6 +428,26 @@ s=replace(s,"    nx_diag_text(vid_renderer,\"WORD\",390,158,3);","    nx_diag_te
 s=replace(s,"    nx_diag_text(vid_renderer,\"CTRL\",686,158,3);","    nx_diag_text(vid_renderer,\"ASK\",686,158,3);")
 s=replace(s,"    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",drive);","    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",dec);")
 s=replace(s,"    SDL_snprintf(vbuf,sizeof(vbuf),\"%u\",word);","    SDL_snprintf(vbuf,sizeof(vbuf),\"%llu\",gate);")
+
+# V3.0: show a compact SKIP attempt count and status on the diagnostic screen.
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    unsigned int skip_tries=0;
+    int skip_status=0;
+    nx_skip_read(&skip_tries,&skip_status);
+    SDL_SetRenderDrawColor(vid_renderer, 240, 186, 107, 255);
+    nx_diag_text(vid_renderer,"SKIP",116,544,2);
+    char skipbuf[24];
+    SDL_snprintf(skipbuf,sizeof(skipbuf),"%u",skip_tries);
+    for(int i=0;skipbuf[i] && i<4;i++)
+        nx_draw_digit(vid_renderer,skipbuf[i]-'0',200+i*28,540,1);
+    SDL_SetRenderDrawColor(vid_renderer,
+        skip_status==3?58:(skip_status==2?238:240),
+        skip_status==3?227:(skip_status==2?194:101),
+        skip_status==3?150:(skip_status==2?71:102),255);
+    SDL_Rect skip_lamp={325,542,22,22};
+    SDL_RenderFillRect(vid_renderer,&skip_lamp);
+
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")

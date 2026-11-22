@@ -29,3 +29,8 @@ void nx_drive_publish(unsigned long long clocks,unsigned int word);
 void nx_drive_read(unsigned long long *clocks,unsigned int *word);
 void nx_pipe_publish(unsigned long long cmd,unsigned long long gate,unsigned long long req);
 void nx_pipe_read(unsigned long long *cmd,unsigned long long *gate,unsigned long long *req);
+/* Experimental ZR: acknowledge one stuck VDP write, without patching the ROM. */
+void nx_skip_request(void);
+int nx_skip_take(void);
+void nx_skip_report(int status);
+void nx_skip_read(unsigned int *tries,int *status);
