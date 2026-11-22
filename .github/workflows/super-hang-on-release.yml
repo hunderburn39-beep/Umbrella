@@ -1,0 +1,22 @@
+name: Super Hang-On release
+on:
+  push:
+    paths:
+      - '.github/workflows/super-hang-on-release.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish file
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=super-hang-on-md-beta
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --title 'Super Hang-On Mega Drive Beta' --notes 'Uploaded ROM file.' --target "$GITHUB_SHA"
+          fi
+          gh release upload "$tag" Super-Hang-On-Sega-Channel-Beta.md --clobber
