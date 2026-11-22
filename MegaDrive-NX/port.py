@@ -395,6 +395,43 @@ s=replace(s,"                nx_sel_samples++;",
           "                nx_sel_samples++;\n                nx_chip_select_seen++;")
 if s.count("nx_chip_select_seen++;") != 1:
     raise RuntimeError("Expected one unified VDP selection counter")
+# V4.7: bounded cartridge boot trace. Collect only new 68000 read
+# addresses while cartridge CE0/CAS0 are asserted. Save once after
+# 32 observations, outside the inner clock loop. This distinguishes
+# actual ROM reads from a CPU clock counter that merely advances.
+s=replace(s,"    unsigned long long nx_cpu_write_seen=0,nx_board_write_seen=0,nx_chip_select_seen=0;",
+"""    unsigned long long nx_cpu_write_seen=0,nx_board_write_seen=0,nx_chip_select_seen=0;
+    unsigned int nx_rom_addr[32],nx_rom_word[32];
+    unsigned int nx_rom_n=0,nx_rom_last=0xffffffffu;
+    int nx_rom_trace_saved=0;""")
+s=replace(s,"            if (md.m3)\\n                cart_handle_md();\\n            else\\n                cart_handle_m3();",
+"""            if (md.m3)
+                cart_handle_md();
+            else
+                cart_handle_m3();
+            if (md.m3 && !ym.o_ce0 && !ym.o_cas0 &&
+                !md.as && md.rw && nx_rom_n < 32 &&
+                md.vaddress != nx_rom_last) {
+                nx_rom_last = md.vaddress;
+                nx_rom_addr[nx_rom_n] = md.vaddress;
+                nx_rom_word[nx_rom_n] = md.vdata & 0xffffu;
+                nx_rom_n++;
+            }""")
+s=replace(s,"        mcycles++;\\n        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture",
+"""        mcycles++;
+        if (!nx_rom_trace_saved && nx_rom_n == 32) {
+            FILE *nx_trace = fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt", "w");
+            nx_rom_trace_saved = 1;
+            if (nx_trace) {
+                unsigned int nx_k;
+                fprintf(nx_trace, "Cartridge reads: word address, byte address, ROM data\\n");
+                for (nx_k=0; nx_k<32;nx_k++)
+                    fprintf(nx_trace,"%02u %06X %06X %04X\\n",
+                        nx_k,nx_rom_addr[nx_k],nx_rom_addr[nx_k]*2u,nx_rom_word[nx_k]);
+                fclose(nx_trace);
+            }
+        }
+        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture""")
 # V4.5: check that raw VDP selection is sampled, not suppressed by
 # the board-side address gate. The replacement is applied to the
 # V2.4 source insertion itself, so there is no fragile second pass.
