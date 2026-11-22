@@ -90,3 +90,20 @@ jobs:
             console.log('PASS: full linked board, 120 synthetic frames, both CPU dispatch tables active, video/audio pipeline invoked; original ROM not tested.');
           })().catch(e=>{console.error(e);process.exitCode=1});
           NODE
+      - name: Package pinned source for local owner-ROM build
+        if: always()
+        shell: bash
+        run: |
+          test -d /tmp/sho-upstream/.git
+          mkdir -p /tmp/sho-local-kit
+          git -C /tmp/sho-upstream archive --format=tar.gz --prefix=upstream/ HEAD > /tmp/sho-local-kit/upstream.tar.gz
+          tar -C "$GITHUB_WORKSPACE/Super-Hang-On" -czf /tmp/sho-local-kit/native.tar.gz native
+          sha256sum /tmp/sho-local-kit/*.tar.gz
+      - name: Upload source-only local kit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sho-pcb-local-source-kit
+          path: /tmp/sho-local-kit/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7
