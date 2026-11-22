@@ -1,0 +1,54 @@
+name: Mega Drive NX build
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'MegaDrive-NX/**'
+      - '.github/workflows/megadrive-nx.yml'
+permissions:
+  contents: read
+jobs:
+  nro:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    container: devkitpro/devkita64:20260219
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Toolchain and source checks
+        run: |
+          git --version
+          python3 --version
+          /opt/devkitpro/devkitA64/bin/aarch64-none-elf-gcc --version
+          bash -n MegaDrive-NX/build.sh
+          python3 -m py_compile MegaDrive-NX/port.py
+      - name: Compile and package NRO
+        run: bash MegaDrive-NX/build.sh
+      - name: Verify NRO header and hash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct, hashlib
+          f = Path("MegaDrive-NX/dist/Umbrella-MegaDrive-NX.nro")
+          b = f.read_bytes()
+          assert len(b) >= 0x80 and b[0x10:0x14] == b"NRO0", "Invalid NRO header"
+          size = struct.unpack_from("<I", b, 0x18)[0]
+          assert 0x80 <= size <= len(b), "Invalid NRO image size"
+          print("NRO bytes:", len(b), "SHA256:", hashlib.sha256(b).hexdigest())
+          f.with_suffix(".sha256").write_text(hashlib.sha256(b).hexdigest()+"  "+f.name+"\n")
+          PY
+      - name: Package corresponding source
+        run: |
+          mkdir -p MegaDrive-NX/dist/source
+          cp MegaDrive-NX/{build.sh,port.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
+          tar --exclude='*.elf' --exclude='*.nro' --exclude='*.nacp' -czf MegaDrive-NX/dist/source/patched-source.tar.gz -C MegaDrive-NX/build .
+          rm -rf MegaDrive-NX/dist/source/__pycache__
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Umbrella-MegaDrive-NX
+          path: MegaDrive-NX/dist/
+          if-no-files-found: error
