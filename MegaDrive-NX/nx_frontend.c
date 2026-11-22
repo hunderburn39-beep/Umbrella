@@ -48,8 +48,8 @@ int nx_choose_rom(char **rom) {
     if(!count) {
         FILE *f=fopen(*rom,"rb");
         if(f) { fclose(f); return 1; }
-        nx_error("Copy a raw Mega Drive ROM to /switch/Umbrella-MegaDrive-NX/roms/");
-        return 0;
+        *rom = "builtin:diagnostic";
+        return 1;
     }
     qsort(names,count,sizeof(names[0]),compare);
     consoleInit(NULL); nx_pad_init();
@@ -63,7 +63,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.1\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V0.3\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nA: launch   B: exit\n");

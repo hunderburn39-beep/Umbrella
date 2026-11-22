@@ -89,3 +89,17 @@ static void FeedSampleForPlayback(int l, int r)
 '''+s[end:]
 s=replace(s,'\t\tFeedSampleForDump(suml, sumr);','\t\t/* No diagnostic dump on the SD card. */')
 save("audio.c",s)
+
+# Built-in original diagnostic cartridge, no SD access necessary.
+s=load("cartridge.c")
+s=replace(s,'#include "savestate.h"','#include "savestate.h"\\n#include "diagnostic_rom.h"'.replace('\\n','\n'))
+s=replace(s,'    romfile = fopen(filename, "rb");','''    if (!strcmp(filename, "builtin:diagnostic")) {
+        mapper_enable = 0;
+        m3_mapper_enable = 0;
+        memset(rom, 0, sizeof(rom));
+        memcpy(rom, diagnostic_rom, sizeof(diagnostic_rom));
+        for (i = 0; i < ROM_SIZE * 2; i++) rom[i] = short_swap(rom[i]);
+        return 0;
+    }
+    romfile = fopen(filename, "rb");''')
+save("cartridge.c",s)

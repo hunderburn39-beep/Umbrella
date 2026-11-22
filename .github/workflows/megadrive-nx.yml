@@ -6,7 +6,7 @@ on:
       - 'MegaDrive-NX/**'
       - '.github/workflows/megadrive-nx.yml'
 permissions:
-  contents: read
+  contents: write
 jobs:
   nro:
     runs-on: ubuntu-latest
@@ -44,7 +44,7 @@ jobs:
       - name: Package corresponding source
         run: |
           mkdir -p MegaDrive-NX/dist/source
-          cp MegaDrive-NX/{build.sh,port.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
+          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
           tar --exclude='*.elf' --exclude='*.nro' --exclude='*.nacp' -czf MegaDrive-NX/dist/source/patched-source.tar.gz -C MegaDrive-NX/build .
           rm -rf MegaDrive-NX/dist/source/__pycache__
       - uses: actions/upload-artifact@v4
@@ -52,3 +52,17 @@ jobs:
           name: Umbrella-MegaDrive-NX
           path: MegaDrive-NX/dist/
           if-no-files-found: error
+      - name: Publish V0.3
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          cd MegaDrive-NX/dist
+          sha256sum -c Umbrella-MegaDrive-NX.sha256
+          tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
+          tag=megadrive-nx-v0.3
+          if ! gh release view "$tag" >/dev/null 2>&1; then
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V0.3' --notes 'Built-in original diagnostic ROM. Experimental; physical console validation pending.'
+          fi
+          gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber

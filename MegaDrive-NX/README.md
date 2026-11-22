@@ -1,5 +1,5 @@
-# Umbrella Mega Drive NX V0.1
-Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. No ROMs are included.
+# Umbrella Mega Drive NX V0.3
+Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
 Use devkitPro with switch-dev, switch-sdl2, Git, Bash and Python 3.
