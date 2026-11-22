@@ -20,7 +20,7 @@ int nx_region_setting = 0;
  * Toggle with L during simulation, never changes the chip logic. */
 int nx_show_hud = 1;
 /* ZL: omit optional high-frequency VDP diagnostic probes, not chip clocks. */
-int nx_light_probes = 0;
+int nx_light_probes = 1; /* performance-first: skip auxiliary per-cycle VDP probes by default; ZL re-enables */
 /* V3.4: best-effort official clock service; never assume elevated rights. */
 static ClkrstSession nx_cpu_session;
 static int nx_cpu_clock_open = 0;
