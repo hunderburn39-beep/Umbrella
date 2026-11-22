@@ -23,7 +23,7 @@ test -x "$SDL"
 cd "$OUT"
 sources=(68k.c arbiter.c cartridge.c controller.c fc1004.c fm.c iochip.c md.c tmss.c vdp.c z80.c vram.c audio.c video.c savestate.c nx_frontend.c)
 aarch64-none-elf-gcc -std=gnu11 -O3 -g -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE -ffunction-sections -fdata-sections -D__SWITCH__ -I"$DEVKITPRO/libnx/include" -I"$DEVKITPRO/portlibs/switch/include" $("$SDL" --cflags) "${sources[@]}" -specs="$DEVKITPRO/libnx/switch.specs" -Wl,--gc-sections -L"$DEVKITPRO/libnx/lib" -L"$DEVKITPRO/portlibs/switch/lib" $("$SDL" --static-libs) -lm -lnx -o Umbrella-MegaDrive-NX.elf
-nacptool --create "Umbrella Mega Drive NX" "Umbrella / Nuked-MD contributors" "1.3" Umbrella-MegaDrive-NX.nacp
+nacptool --create "Umbrella Mega Drive NX" "Umbrella / Nuked-MD contributors" "1.4" Umbrella-MegaDrive-NX.nacp
 elf2nro Umbrella-MegaDrive-NX.elf Umbrella-MegaDrive-NX.nro --nacp=Umbrella-MegaDrive-NX.nacp
 mkdir -p "$ROOT/dist"
 cp Umbrella-MegaDrive-NX.nro "$ROOT/dist/"

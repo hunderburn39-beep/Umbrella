@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V1.3
+# Umbrella Mega Drive NX V1.4
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -50,3 +50,6 @@ The Switch crash persisted around `Worker stage C163840 VDP` after bypassing hos
 
 ## V1.3 performance isolation
 On Switch V1.2, Y mode (raster off) reached C393216 VDP NR compared with C163840 in V1.1, without proving that raster is the cause. V1.3 avoids redundant screen texture uploads and presents until the VDP has completed another frame, reduces the host SDL loop from approximately 1000 iterations/sec to 60, and limits SD diagnostic writes to **one per 32768 simulated master clocks** instead of six. 'Worker stage' now includes 'T<number>s' as elapsed time since the first progress marker. The same A normal and Y no-raster comparison remains. The underlying chip emulation logic is unchanged; host sound output and audio sample mixing remain disabled for diagnosis. Chip clock speed, gameplay, and stability are not yet established.
+
+## V1.4: SDL title-call isolation and controlled-shutdown marker
+V1.3 on the Switch displayed `Worker stage C327680 CLOCK T6s` and `Last stage 11a Video blit returned`. This indicates approximately 55K simulated master-clock cycles/s over the observed interval and extremely poor real-time performance compared with the ~1.79M clocks required per frame. V1.4 removes the repeated `Video_UpdateTitle`/`SDL_SetWindowTitle` call from the 16ms main loop, which does not display a usable title on the Switch and could be contributing to platform instability. The two ROM-selector modes, chip logic, video throttling and stage sampling remain as before. If the user exits deliberately through the app, `Last stage 12 Controlled shutdown` is recorded; if the Switch closes the application unexpectedly, the previous stage remains. Performance is not guaranteed, and this version is a diagnostic, not verified playable.

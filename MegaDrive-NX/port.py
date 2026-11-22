@@ -123,6 +123,14 @@ for phase, indent in (
 s=replace(s,'        mcycles++;\n        if (mcycles == 1)',
     '        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)) nx_worker_progress((unsigned long long)mcycles,"CLOCK");\n        if (mcycles == 1)')
 
+
+# V1.4 Switch-native isolation: SDL_SetWindowTitle every 16ms is unnecessary,
+# invisible on Switch, and may cause a platform-specific instability.
+s=replace(s,'            Video_UpdateTitle(ms);',
+  '            (void)ms; /* No repeated SDL_SetWindowTitle on Switch. */')
+# Distinguish a requested clean exit from an unexpected termination.
+s=replace(s,'    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);',
+  '    nx_stage("12 Controlled shutdown");\n    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
