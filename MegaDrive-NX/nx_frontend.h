@@ -22,3 +22,5 @@ void nx_handshake_publish(unsigned long long sel,unsigned long long strobe,unsig
 void nx_handshake_read(unsigned long long *sel,unsigned long long *strobe,unsigned long long *ready);
 void nx_vdp_state_publish(unsigned long long edges,unsigned int data,unsigned int mode);
 void nx_vdp_state_read(unsigned long long *edges,unsigned int *data,unsigned int *mode);
+void nx_decode_publish(unsigned long long decode,unsigned long long gate,unsigned long long ctrl);
+void nx_decode_read(unsigned long long *decode,unsigned long long *gate,unsigned long long *ctrl);

@@ -61,7 +61,7 @@ jobs:
         with:
           name: Umbrella-MegaDrive-NX
           path: dist
-      - name: Publish V2.5
+      - name: Publish V2.6
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -69,8 +69,8 @@ jobs:
           cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
-          tag=megadrive-nx-v2.5
+          tag=megadrive-nx-v2.6
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V2.5' --notes 'Diagnostic VDP CPU-port clock, raw data word and M5 register bit alongside DTACK, with no changes to chip logic or runtime filesystem accesses.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V2.6' --notes 'Counts VDP internal address decode, access window, and control-write command stages without forcing DTACK or touching the ROM.'
           fi
           gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber
