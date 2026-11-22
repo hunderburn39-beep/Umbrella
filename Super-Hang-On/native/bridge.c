@@ -51,6 +51,12 @@ API void browser_input(float steer, float throttle, float brake,
     input.nav_up = !!up; input.nav_down = !!down;
     input.nav_left = !!left; input.nav_right = !!right;
 }
+/* Dedicated active-low cabinet TEST / SERVICE inputs. Kept separate from driving controls.
+ * sho_set_input converts these logical flags to the original input port bits. */
+API void browser_service_switches(int test, int service) {
+    input.test = !!test;
+    input.service = !!service;
+}
 API int browser_frame(void) {
     if (!loaded) return 0;
     sho_set_input(&input);
