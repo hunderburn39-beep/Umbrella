@@ -248,6 +248,25 @@ s=replace(s,'            m68k.input.i_dtack = md.dtack;',
                     m68k.input.i_dtack=0; /* active low, only this CPU input */
                 }
             }''')
+
+# V3.2: avoid presenting a blank SDL frame plus the diagnostic panel twice
+# every 16ms. Scan input at full cadence but present at most ~8Hz: the
+# hardware-level simulation is substantially slower than full-speed video.
+s=replace(s,'    int first_post_blit = 1;',
+  '    int first_post_blit = 1;\n    Uint64 nx_last_present_tick = 0;')
+s=replace(s,'        Video_Blit();\n        if (first_post_blit) { nx_stage("11a Video blit returned"); first_post_blit = 0; }',
+  '''        Uint64 nx_now = SDL_GetTicks64();
+        if (!nx_last_present_tick || nx_now-nx_last_present_tick>=120) {
+            nx_last_present_tick=nx_now;
+            if (nx_video_has_picture()) Video_Blit();
+            else nx_video_show_boot(nx_get_worker_clock());
+            if (first_post_blit) {
+                nx_stage("11a Display tick returned");
+                first_post_blit=0;
+            }
+        }''')
+s=replace(s,'        nx_flush_worker_stage(0);\n        nx_video_show_boot(nx_get_worker_clock());',
+  '        nx_flush_worker_stage(0);')
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
@@ -513,6 +532,70 @@ s=replace(s,'    SDL_RenderCopy(vid_renderer, vid_texture, NULL, NULL);\n    SDL
         SDL_RenderFillRect(vid_renderer,&skiplight);
     }
     SDL_RenderPresent(vid_renderer);''')
+
+# V3.2: detect a completed coloured frame once in the worker, never rescan
+# the 400x300 framebuffer or upload the GPU texture for an unchanged frame.
+s=replace(s,'void Video_Blit(void)\n{',
+'''static unsigned int nx_cached_nonblack = 0;
+int nx_video_has_picture(void) {
+    return __atomic_load_n(&nx_cached_nonblack,__ATOMIC_ACQUIRE) > 0;
+}
+static unsigned int nx_clock_rate(unsigned long long clock) {
+    static Uint64 prev_tick=0;
+    static unsigned long long prev_clock=0;
+    static unsigned int last_rate=0;
+    Uint64 now=SDL_GetTicks64();
+    if (!prev_tick) { prev_tick=now; prev_clock=clock; }
+    if (now-prev_tick >= 2500) {
+        unsigned long long diff=clock>=prev_clock ? clock-prev_clock : 0;
+        last_rate=(unsigned int)(diff*1000ULL/(now-prev_tick));
+        prev_tick=now;
+        prev_clock=clock;
+    }
+    return last_rate;
+}
+void Video_Blit(void)
+{''')
+s=replace(s,'''    if (vid_counter == last_presented) {
+        SDL_UnlockMutex(vid_mutex);
+        return;
+    }
+    last_presented = vid_counter;
+    SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WIDTH * 4);
+    /* Sample actual native framebuffer while the video mutex is held. */
+    unsigned int nx_picture_pixels=0;
+    const uint32_t *nx_pix=&vid_currentbuffer[0][0];
+    for(size_t q=0;q<(size_t)VID_WIDTH*VID_HEIGHT;q+=7)
+        if(nx_pix[q]&0x00ffffffu) nx_picture_pixels++;''',
+'''    if (vid_counter != last_presented) {
+        last_presented = vid_counter;
+        SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WIDTH * 4);
+    }
+    unsigned int nx_picture_pixels=__atomic_load_n(&nx_cached_nonblack,__ATOMIC_ACQUIRE);''')
+s=replace(s,'        vid_counter++;',
+'''        unsigned int nx_nonblack=0;
+        const uint32_t *nx_frame=&vid_currentbuffer[0][0];
+        for(size_t q=0;q<(size_t)VID_WIDTH*VID_HEIGHT;q+=7)
+            if(nx_frame[q]&0x00ffffffu) nx_nonblack++;
+        __atomic_store_n(&nx_cached_nonblack,nx_nonblack,__ATOMIC_RELEASE);
+        vid_counter++;''')
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    /* Measured master-clock throughput, not a claimed emulated FPS. */
+    unsigned int nx_rate=nx_clock_rate(clocks);
+    SDL_SetRenderDrawColor(vid_renderer,166,222,247,255);
+    nx_diag_text(vid_renderer,"RATE",574,545,2);
+    char ratebuf[20];
+    SDL_snprintf(ratebuf,sizeof(ratebuf),"%u",nx_rate);
+    for(int k=0;ratebuf[k] && k<8;k++)
+        nx_draw_digit(vid_renderer,ratebuf[k]-'0',672+24*k,540,1);
+
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+s=replace(s,'        nx_diag_text(vid_renderer,"ACK",263,74,2);',
+'''        nx_diag_text(vid_renderer,"ACK",263,74,2);
+        nx_diag_text(vid_renderer,"RATE",585,74,2);
+        SDL_snprintf(v,sizeof(v),"%u",nx_clock_rate(nx_get_worker_clock()));
+        for(int k=0;v[k] && k<7;k++)
+            nx_draw_digit(vid_renderer,v[k]-'0',673+21*k,72,1);''')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")
