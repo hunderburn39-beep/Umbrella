@@ -74,6 +74,18 @@ for label, snippet in cart_checks.items():
     print(f"{'PASS' if ok else 'FAIL'}: {label}")
     if not ok:
         failures.append(label)
+# Verify the full cartridge-to-CPU read path, including CPU input data.
+cart_cpu_checks = {
+    "Cartridge handler invoked on MD board": "cart_handle_md();",
+    "Motherboard ROM word enters 68000 input": "m68k.input.i_data = md.vdata & 0xffff;",
+    "68000 executes a clock edge": "M68K_Clock2(&m68k, 1, 0);",
+    "68000 executes opposite clock edge": "M68K_Clock2(&m68k, 0, 1);",
+}
+for label, snippet in cart_cpu_checks.items():
+    ok = snippet in a and snippet in b
+    print(f"{'PASS' if ok else 'FAIL'}: {label}")
+    if not ok:
+        failures.append(label)
 # The two HUD counters previously disagreed although they should count
 # the exact same VDP selection event. Verify the generated C, not port.py.
 import re
