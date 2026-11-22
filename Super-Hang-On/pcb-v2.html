@@ -2,29 +2,42 @@
 <html lang="pt-PT">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.1</title>
 <style>
-*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:20px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.1</h1><p>Seleciona o pacote privado V2.1 que recebeste no ChatGPT. O núcleo será executado nesta página HTTPS, sem enviar o ficheiro para o servidor.</p><label>Ficheiro do jogo<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>ABRIR JOGO</button><p id="status" role="status">Seleciona Super-Hang-On-V2.1.txt.</p><small>A ROM já está incluída no pacote V2.1. Autoriza a inclinação no ecrã do jogo. O ficheiro do jogo e a ROM ficam no teu dispositivo.</small></main>
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:18px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}#remove{background:none;color:#a7b6ca;font:13px system-ui;margin-top:8px} [hidden]{display:none!important}
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.1</h1><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
 <script>
-const game=document.getElementById('game'),button=document.getElementById('launch'),status=document.getElementById('status');
-let source='';
-game.addEventListener('change',async()=>{
-button.disabled=true;source='';
-try{
-const f=game.files[0];if(!f)return;
-if(f.size<1000000||f.size>12000000)throw Error('Seleciona o pacote completo V2.1.');
-const bytes=await f.arrayBuffer();
+"use strict";
+const $=id=>document.getElementById(id),game=$('game'),button=$('launch'),status=$('status');
+const expected='0b910a0e7585da7f5228ead8e85e130725c9c215d827acff34fe6cb80171f91a';
+const dbname='umbrella-sho-local-v21',key='private-game-v21';
+let source='',db;
+function openDB(){return new Promise((resolve,reject)=>{const q=indexedDB.open(dbname,1);q.onupgradeneeded=()=>q.result.createObjectStore('games');q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);q.onblocked=()=>reject(new Error('Base de dados bloqueada'));});}
+function read(){return new Promise((resolve,reject)=>{const q=db.transaction('games','readonly').objectStore('games').get(key);q.onsuccess=()=>resolve(q.result);q.onerror=()=>reject(q.error);});}
+function write(value){return new Promise((resolve,reject)=>{const t=db.transaction('games','readwrite');t.objectStore('games').put(value,key);t.oncomplete=resolve;t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error);});}
+function remove(){return new Promise((resolve,reject)=>{const t=db.transaction('games','readwrite');t.objectStore('games').delete(key);t.oncomplete=resolve;t.onerror=()=>reject(t.error);t.onabort=()=>reject(t.error);});}
+async function validated(bytes){
+if(!(bytes instanceof ArrayBuffer)||bytes.byteLength<1000000||bytes.byteLength>12000000)throw Error('Seleciona o pacote completo V2.1.');
 const digest=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
-if(digest!=='0b910a0e7585da7f5228ead8e85e130725c9c215d827acff34fe6cb80171f91a')throw Error('Pacote incorreto ou alterado. Usa o ficheiro privado V2.1 original.');
+if(digest!==expected)throw Error('Pacote incorreto ou alterado. Usa o ficheiro privado V2.1 original.');
 const t=new TextDecoder().decode(bytes);
-if(!t.includes('Super Hang-On | PCB Native V2.0')||!t.includes('createShoModule')||!t.includes('browser_completed_frames'))throw Error('Este ficheiro não corresponde ao jogo V2.1.');
-source=t;status.textContent='Ficheiro pronto. Carrega em ABRIR JOGO.';button.disabled=false;
-}catch(e){status.textContent=e.message;}
-});
-button.onclick=()=>{
-if(!source)return;
-try{
-const gameDocument=source;
-document.open();document.write(gameDocument);document.close();
-}catch(e){status.textContent=e.message;}
+if(!t.includes('Super Hang-On | PCB Native V2.1')||!t.includes('createShoModule')||!t.includes('browser_completed_frames'))throw Error('Formato inválido.');
+return t;
+}
+function ready(saved){
+$('intro').textContent=saved?'Jogo instalado. Roda o iPhone e carrega em JOGAR.':'Pacote pronto nesta sessão. Carrega em JOGAR.';
+status.textContent=saved?'Instalação local concluída. Nas próximas visitas não precisas do ficheiro.':'O Safari não permitiu guardar o jogo; será necessário voltar a selecionar o pacote.';
+$('import').hidden=true;$('remove').hidden=!saved;button.disabled=false;
+}
+function needsFile(message=''){
+source='';button.disabled=true;$('remove').hidden=true;$('import').hidden=false;$('intro').textContent='Na primeira visita, seleciona Super-Hang-On-V2.1.txt. Nas seguintes, basta abrir este endereço.';status.textContent=message;
+}
+async function init(){
+try{db=await openDB();const bytes=await read();if(bytes){source=await validated(bytes);ready(true);return;}}catch(e){console.warn('Local install',e)}needsFile();
+}
+game.onchange=async()=>{
+button.disabled=true;source='';
+try{const f=game.files[0];if(!f){needsFile();return;}status.textContent='A verificar e instalar…';const bytes=await f.arrayBuffer();source=await validated(bytes);let saved=false;try{db=db||await openDB();await write(bytes);saved=true;}catch(e){console.warn('Storage unavailable',e)}ready(saved);}catch(e){needsFile(e.message);}
 };
+$('remove').onclick=async()=>{try{if(db)await remove();game.value='';needsFile('Instalação removida.');}catch(e){status.textContent='Não foi possível remover: '+e.message;}};
+button.onclick=()=>{if(!source)return;const gameDocument=source;try{document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}};
+init();
 </script></body></html>
