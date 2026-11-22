@@ -12,8 +12,14 @@
 #define ROMS ROOT "roms/"
 /* Enable isolated raster test from the ROM selector via Y. */
 int nx_video_bypass = 0;
-/* Crash marker persists after the Switch closes the executable. */
+/* V1.6: disable filesystem IPC once simulation starts. */
+static int nx_runtime_io_blocked = 0;
+void nx_disable_runtime_io(void) {
+    __atomic_store_n(&nx_runtime_io_blocked, 1, __ATOMIC_RELEASE);
+}
+/* Setup marker written before simulation only. */
 void nx_stage(const char *step) {
+    if (__atomic_load_n(&nx_runtime_io_blocked, __ATOMIC_ACQUIRE)) return;
     FILE *f = fopen(ROOT "last-stage.txt", "wb");
     if (f) { fprintf(f, "%s\n", step); fclose(f); }
 }
@@ -33,6 +39,7 @@ void nx_worker_progress(unsigned long long clock, const char *phase) {
 }
 /* Called ONLY from the main SDL loop, never from the chip clock worker. */
 void nx_flush_worker_stage(int force) {
+    if (__atomic_load_n(&nx_runtime_io_blocked, __ATOMIC_ACQUIRE)) return;
     static u64 initial_tick=0, last_flush_tick=0;
     static char last_saved[128] = "";
     u64 now = SDL_GetTicks64();
@@ -132,10 +139,10 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.5\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.6\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\n",previous,previous_worker);
+        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV1.6: SD logging paused during game\n",previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;

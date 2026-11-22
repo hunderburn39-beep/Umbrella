@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V1.5
+# Umbrella Mega Drive NX V1.6
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -56,3 +56,6 @@ V1.3 on the Switch displayed `Worker stage C327680 CLOCK T6s` and `Last stage 11
 
 ## V1.5: filesystem IPC crash fix candidate
 An Atmosphere v1.7 report for the **exact V1.4 NRO** (rebuild SHA256 matched release) identified Data Abort NULL access near `_fsFsOpenCommon` in libnx, associated with filesystem open/session handling, rather than an instruction in the 68000/Z80 simulation. V1.4 `nx_worker_stage()` opened `/switch/Umbrella-MegaDrive-NX/worker-stage.txt` from the chip worker on every 32768-clock progress event. V1.5 removes **all fopen/fclose/formatting** from chip worker stage functions; they publish an atomic in-memory snapshot. `nx_flush_worker_stage()` on the main SDL thread alone persists this to SD, no more often than every 1.2 seconds, and only when the content changes; W00 is written on launch. That should eliminate the observed high-frequency worker-thread FS IPC path. This is a hypothesis supported by symbolication, pending real console confirmation. A normal launch is A; Y remains raster bypass; host audio and sample mixing still disabled for isolation. Stage persistence is intentionally asynchronous: last stage may lag up to ~1.2s. Performance and full gameplay not validated.
+
+## V1.6: no filesystem writes during simulation
+A V1.5 screenshot showed C425984 CLOCK T9s. The earlier Atmosphere crash report matched the V1.4 module ID and mapped to libnx FS IPC. V1.6 writes one marker before the chip worker starts, then blocks all runtime nx_stage and nx_flush_worker_stage filesystem calls. In-memory worker markers still update. The Last stage and Worker stage shown on reboot therefore intentionally remain frozen, and must not be interpreted as the actual moment of failure. If the app still crashes, retrieve a new dated Atmosphere crash report and its Module ID. This is a controlled test of the FS hypothesis; it does not establish playable speed. A normal and Y no-raster modes remain. Host audio disabled.
