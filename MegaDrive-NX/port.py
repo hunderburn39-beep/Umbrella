@@ -42,7 +42,7 @@ s=replace(s,'    if (!nx_video_init(md.ntsc))',
 s=replace(s,'    Audio_Init(audioout_filename, md.ntsc);',
   '    nx_stage("07 Video ready");\n    Audio_Init(audioout_filename, md.ntsc);')
 s=replace(s,'    nx_pad_init();',
-  '    nx_pad_init();\n    nx_cpu_boost_start();\n    nx_stage("08 Audio and controls ready");')
+  '    nx_pad_init();\n    nx_stage("08 Audio and controls ready");')
 s=replace(s,'    thread = SDL_CreateThread(work_thread, "work thread", 0);',
   '    nx_stage("09 Creating worker thread");\n    thread = SDL_CreateThread(work_thread, "work thread", 0);')
 s=replace(s,'    int quit_signal = 0;',
@@ -61,7 +61,7 @@ s=replace(s,'        printf("%s not found\\n", tmss_filename);',
 s=replace(s,'    nx_stage("07 Video ready");\n    Audio_Init(audioout_filename, md.ntsc);',
   '    nx_stage("07 Video ready");\n    nx_stage("07a Host audio bypassed");')
 s=replace(s,'    nx_pad_init();\n    nx_stage("08 Audio and controls ready");',
-  '    nx_stage("07b Controls initializing");\n    nx_pad_init();\n    nx_stage("08 Controls ready");')
+  '    nx_stage("07b Controls initializing");\n    nx_pad_init();\n    nx_cpu_boost_start();\n    nx_stage("08 Controls ready");')
 
 # Distinguish TMSS completion from cartridge loading.
 s=replace(s,'        load_dummy_tmss();\n    }\n    if (cart_load_game_rom',
