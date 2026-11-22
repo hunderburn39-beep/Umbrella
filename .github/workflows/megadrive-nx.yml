@@ -25,7 +25,8 @@ jobs:
           python3 --version
           /opt/devkitpro/devkitA64/bin/aarch64-none-elf-gcc --version
           bash -n MegaDrive-NX/build.sh
-          python3 -m py_compile MegaDrive-NX/port.py
+          python3 -m py_compile MegaDrive-NX/port.py MegaDrive-NX/diagnostic.py MegaDrive-NX/test_diagnostic_rom.py
+          python3 MegaDrive-NX/test_diagnostic_rom.py
       - name: Compile and package NRO
         run: bash MegaDrive-NX/build.sh
       - name: Verify NRO header and hash
@@ -44,7 +45,7 @@ jobs:
       - name: Package corresponding source
         run: |
           mkdir -p MegaDrive-NX/dist/source
-          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
+          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,test_diagnostic_rom.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
           tar --exclude='*.elf' --exclude='*.nro' --exclude='*.nacp' -czf MegaDrive-NX/dist/source/patched-source.tar.gz -C MegaDrive-NX/build .
           rm -rf MegaDrive-NX/dist/source/__pycache__
       - uses: actions/upload-artifact@v4
@@ -61,7 +62,7 @@ jobs:
         with:
           name: Umbrella-MegaDrive-NX
           path: dist
-      - name: Publish V3.8
+      - name: Publish V4.0
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -69,8 +70,8 @@ jobs:
           cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
-          tag=megadrive-nx-v3.8
+          tag=megadrive-nx-v4.0
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V3.8' --notes 'Adds a four-entry read-only 68000 bus trace to diagnose why VDP pixels remain zero.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V4.0' --notes 'Adds a 64-entry 68000 bus trace and a diagnostic ROM with a VRAM tile, plane A name table and CRAM colour. Hardware validation pending.'
           fi
           gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber
