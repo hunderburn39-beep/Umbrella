@@ -28,8 +28,9 @@ s=replace(s,'            printf("frame %lld\\n", (long long)(mcycles / frame_div
 # Persist startup checkpoints to diagnose native Switch exceptions.
 s=replace(s,'    if (!nx_choose_rom(&rom_filename)) return 0;',
   '    if (!nx_choose_rom(&rom_filename)) return 0;\n    nx_stage("01 ROM selected");')
+# On Switch, isolate failure by using the upstream embedded TMSS fallback.
 s=replace(s,'    if (load_tmss_rom(tmss_filename))',
-  '    nx_stage("02 TMSS load");\n    if (load_tmss_rom(tmss_filename))')
+  '    nx_stage("02 Built-in TMSS start");\n    if (1)')
 s=replace(s,'    init_chips();',
   '    nx_stage("03 Cartridge loaded");\n    init_chips();')
 s=replace(s,'    FC1004_Init(&ym);',
@@ -51,10 +52,18 @@ s=replace(s,'        Video_Blit();',
 s=replace(s,'    int quit_signal = 0;',
   '    int first_blit = 1;\n    int quit_signal = 0;')
 
+# Remove stdout use from the TMSS fallback; its selector console is closed.
+s=replace(s,'        printf("%s not found\\n", tmss_filename);',
+  '        /* Using built-in TMSS diagnostic fallback. */')
+
 # Distinguish TMSS completion from cartridge loading.
 s=replace(s,'        load_dummy_tmss();\n    }\n    if (cart_load_game_rom',
   '        load_dummy_tmss();\n    }\n    nx_stage("02a TMSS ready");\n    if (cart_load_game_rom')
 save("md.c",s)
+s=load("tmss.c")
+s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
+  '    /* No console output after the Switch ROM selector closes. */')
+save("tmss.c",s)
 s=load("video.c")
 s=replace(s,'void Video_Init(char* videoout_filename, int ntsc)','int nx_video_init(int ntsc)')
 start=s.index("int nx_video_init")
