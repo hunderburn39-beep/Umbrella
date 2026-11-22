@@ -23,6 +23,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 
@@ -37,6 +38,13 @@ jobs:
     steps:
       - name: Ler ficheiros
         uses: actions/checkout@v4
+      - name: Obter NRO V0.3 compilado
+        uses: actions/download-artifact@v4
+        with:
+          name: Umbrella-MegaDrive-NX
+          run-id: 44989474377
+          github-token: ${{ github.token }}
+          path: nx-build
       - name: Preparar pagina estatica
         run: |
           mkdir -p public
@@ -45,13 +53,10 @@ jobs:
             if [ -d "$game" ]; then cp -R "$game" public/; fi
           done
           test -s public/Fortuna-777-V7/index.html
-          nx_base=https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v0.3
-          if ! curl --fail --location --retry 3 --output public/nx.nro "$nx_base/Umbrella-MegaDrive-NX.nro"; then
-            nx_base=https://github.com/hunderburn39-beep/Umbrella/releases/download/megadrive-nx-v0.2
-            curl --fail --location --retry 3 --output public/nx.nro "$nx_base/Umbrella-MegaDrive-NX.nro"
-          fi
-          curl --fail --location --retry 3 --output /tmp/nx.sha256 "$nx_base/Umbrella-MegaDrive-NX.sha256"
-          echo "$(cut -d ' ' -f1 /tmp/nx.sha256)  public/nx.nro" | sha256sum -c -
+          (cd nx-build && sha256sum -c Umbrella-MegaDrive-NX.sha256)
+          cp nx-build/Umbrella-MegaDrive-NX.nro public/nx.nro
+          cp nx-build/Umbrella-MegaDrive-NX.sha256 public/nx.sha256
+          tar -czf public/nx-source.tar.gz -C nx-build source
           touch public/.nojekyll
       - name: Bundle Babylon.js locally for Fortuna V8
         run: |
