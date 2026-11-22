@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V3.5
+# Umbrella Mega Drive NX V3.6
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -131,3 +131,6 @@ On launch, after ROM selection and before worker creation, the native Switch fro
 
 ## V3.5 graphical launcher
 Native sky-blue 1280x720 GPU-backed SDL2 frontend. Green EXECUTAR button, green region selection (Japan/USA/Europe), scrollable ROM list, blue DIAGNOSTICO button, controller D-pad + A/X/Y/L/R/B and touchscreen support. The UI is separate from the chip-level 68000/VDP/FC1004 implementation and is destroyed before the simulation begins. Touch uses SDL logical 1280x720 coordinates. The launcher uses SDL_RENDERER_ACCELERATED with a software fallback; GPU availability depends on the console environment. V3.4 CPU clock request remains best-effort and requires runtime verification. No guarantee yet of Super Hang-On graphics or full-speed gameplay.
+
+## V3.6 sampled chip-stage profiler
+Samples every 2048 simulated master cycles, both chip half-cycles. Displays average nanoseconds for 68K (including input preparation), Z80, FC (FC1004 including VDP), VRAM, and VIDEO (conditional Video_PlotVDP) in a thin diagnostic line at the top. These timings are per sampled invocation, not percentage of total frame or a complete profile of bus and RAM overhead. RATE still measures simulated clocks per real second. Default auxiliary VDP probes disabled to reduce overhead; press ZL to toggle. The timing profiler has small nonzero overhead and does not change simulated chip clocks. No claim of full-speed performance; run on Switch and compare to find the expensive stage.
