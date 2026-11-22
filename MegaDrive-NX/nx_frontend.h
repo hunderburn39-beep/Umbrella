@@ -16,3 +16,5 @@ void nx_diag_capture(unsigned long long reads,unsigned long long writes,int disp
 void nx_diag_read(unsigned long long *reads,unsigned long long *writes,int *display,int *reset);
 void nx_bus_publish(unsigned int address,unsigned long long direct_writes);
 void nx_bus_read(unsigned int *address,unsigned long long *direct_writes);
+void nx_ack_publish(unsigned long long ack,unsigned long long changes,unsigned int flags);
+void nx_ack_read(unsigned long long *ack,unsigned long long *changes,unsigned int *flags);

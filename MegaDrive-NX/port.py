@@ -166,6 +166,12 @@ s=replace(s,'((md.vaddress & 0xe00000) == 0xc00000)',
   '((md.vaddress & 0x700000) == 0x600000)')
 s=replace(s,'((nx_addr & 0xe00000u) == 0xc00000u)',
   '((nx_addr & 0x700000u) == 0x600000u)')
+
+# V2.2: verify VDP write acknowledge and count unique CPU bus address changes.
+s=replace(s,"    unsigned int nx_latest_addr=0;","    unsigned int nx_latest_addr=0;\n    unsigned long long nx_vdp_ack_clocks=0, nx_bus_changes=0;\n    unsigned int nx_previous_addr=0xffffffffu;")
+s=replace(s,"            m68k.input.i_dtack = md.dtack;","            m68k.input.i_dtack = md.dtack;\n            /* Count actual active-low acknowledge while the VDP address bus is selected. */\n            if (!md.as && !md.rw && ((md.vaddress & 0x700000)==0x600000) && !md.dtack)\n                nx_vdp_ack_clocks++;")
+s=replace(s,"                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;","                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;\n                if (nx_addr!=nx_previous_addr) {\n                    nx_bus_changes++;\n                    nx_previous_addr=nx_addr;\n                }")
+s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) { nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset); nx_bus_publish(nx_latest_addr,nx_vdp_cpu_writes); }","        if (mcycles && ((mcycles & 32767) == 0)) {\n            nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset);\n            nx_bus_publish(nx_latest_addr,nx_vdp_cpu_writes);\n            /* flags: bit0 TMSS unlocked; bit1 board DTACK asserted;\n               bit2 VDP internal acknowledge; bit3 CPU bus active;\n               bit4 CPU write; bit5 CPU reset deasserted. */\n            unsigned int nxflags = (!!ym.tmss.w3)\n                | ((!md.dtack)<<1) | ((!ym.vdp.w117)<<2)\n                | ((!md.as)<<3) | ((!md.rw)<<4) | ((!!md.reset)<<5);\n            nx_ack_publish(nx_vdp_ack_clocks,nx_bus_changes,nxflags);\n        }")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -251,6 +257,36 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
     SDL_snprintf(addrbuf,sizeof(addrbuf),"%llu",nxwrites);
     for(int i=0;addrbuf[i] && i<9;i++)
         nx_draw_digit(vid_renderer,addrbuf[i]-'0',560+i*30,688,1);
+
+    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# V2.2: display ACK and address-transition counters and status indicators.
+s=replace(s,"        {'C',{15,16,16,16,16,16,15}}",
+  "        {'C',{15,16,16,16,16,16,15}},\\n        {'K',{17,18,20,24,20,18,17}},\\n        {'O',{14,17,17,17,17,17,14}},\\n        {'N',{17,25,21,19,17,17,17}}")
+s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
+'''    unsigned long long ack_clocks=0, bus_changes=0;
+    unsigned int ack_flags=0;
+    nx_ack_read(&ack_clocks,&bus_changes,&ack_flags);
+    SDL_SetRenderDrawColor(vid_renderer, 158, 210, 237, 255);
+    nx_diag_text(vid_renderer,"ACK",115,217,3);
+    nx_diag_text(vid_renderer,"MOVES",390,217,3);
+    nx_diag_text(vid_renderer,"TMSS",732,217,3);
+    char ckbuf[32];
+    SDL_snprintf(ckbuf,sizeof(ckbuf),"%llu",ack_clocks);
+    for(int i=0;ckbuf[i] && i<8;i++)
+        nx_draw_digit(vid_renderer,ckbuf[i]-'0',115+i*30,248,1);
+    SDL_snprintf(ckbuf,sizeof(ckbuf),"%llu",bus_changes);
+    for(int i=0;ckbuf[i] && i<8;i++)
+        nx_draw_digit(vid_renderer,ckbuf[i]-'0',390+i*30,248,1);
+    SDL_SetRenderDrawColor(vid_renderer,(ack_flags&1)?62:228,(ack_flags&1)?224:94,105,255);
+    SDL_Rect tmsslamp={746,252,22,21};
+    SDL_RenderFillRect(vid_renderer,&tmsslamp);
+    SDL_SetRenderDrawColor(vid_renderer,(ack_flags&2)?62:228,(ack_flags&2)?224:94,105,255);
+    SDL_Rect acklamp={781,252,22,21};
+    SDL_RenderFillRect(vid_renderer,&acklamp);
+    SDL_SetRenderDrawColor(vid_renderer,(ack_flags&4)?62:228,(ack_flags&4)?224:94,105,255);
+    SDL_Rect vdpacklamp={816,252,22,21};
+    SDL_RenderFillRect(vid_renderer,&vdpacklamp);
 
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
 save("video.c",s)
