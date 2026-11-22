@@ -404,11 +404,9 @@ s=replace(s,"    unsigned long long nx_cpu_write_seen=0,nx_board_write_seen=0,nx
     unsigned int nx_rom_addr[32],nx_rom_word[32];
     unsigned int nx_rom_n=0,nx_rom_last=0xffffffffu;
     int nx_rom_trace_saved=0;""")
-s=replace(s,"            if (md.m3)\\n                cart_handle_md();\\n            else\\n                cart_handle_m3();",
+s=replace(s,"            if (!m68k.o_as && !m68k.o_address_z) nx_cpu_bus_cycles++;",
 """            if (md.m3)
-                cart_handle_md();
-            else
-                cart_handle_m3();
+                /* 68000 bus probe */
             if (md.m3 && !ym.o_ce0 && !ym.o_cas0 &&
                 !md.as && md.rw && nx_rom_n < 32 &&
                 md.vaddress != nx_rom_last) {
@@ -417,9 +415,8 @@ s=replace(s,"            if (md.m3)\\n                cart_handle_md();\\n      
                 nx_rom_word[nx_rom_n] = md.vdata & 0xffffu;
                 nx_rom_n++;
             }""")
-s=replace(s,"        mcycles++;\\n        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture",
-"""        mcycles++;
-        if (!nx_rom_trace_saved && nx_rom_n == 32) {
+s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture
+"""        if (!nx_rom_trace_saved && nx_rom_n == 32) {
             FILE *nx_trace = fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt", "w");
             nx_rom_trace_saved = 1;
             if (nx_trace) {
