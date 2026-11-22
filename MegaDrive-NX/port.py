@@ -325,14 +325,17 @@ s=replace(s,'        md.odclk = ym.vdp.input.i_clk1;',
 # V3.8: record distinct active 68000 bus states, no hardware changes.
 s=replace(s,'    unsigned int nx_previous_addr=0xffffffffu;',
 '''    unsigned int nx_previous_addr=0xffffffffu;
-    unsigned int nx_trace_previous=0xffffffffu;''')
+    unsigned long long nx_trace_previous=~0ull;''')
 s=replace(s,'                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;',
 '''                nx_latest_addr=nx_addr;
                 nx_cpu_bus_cycles++;
                 unsigned int nx_trace_flags=((!!m68k.o_rw)<<0)
                     | ((!!m68k.o_as)<<1) | ((!!md.dtack)<<2)
                     | ((!!m68k.o_data_z)<<3);
-                unsigned int nx_trace_key=(nx_addr<<4)|nx_trace_flags;
+                /* Include bus data: repeated writes to the same VDP port must remain visible. */
+                unsigned long long nx_trace_key=((unsigned long long)nx_addr<<20)
+                    | ((unsigned long long)((unsigned int)m68k.o_data & 0xffffu)<<4)
+                    | nx_trace_flags;
                 if(nx_trace_key!=nx_trace_previous) {
                     nx_trace_previous=nx_trace_key;
                     nx_trace_push(nx_addr,(unsigned int)m68k.o_data,nx_trace_flags);
