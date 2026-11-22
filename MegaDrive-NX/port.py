@@ -141,7 +141,7 @@ s=replace(s,'        if (first_post_blit) { nx_stage("11a Video blit returned");
 
 # V1.6 diagnostic: no writes to SD once the worker starts.
 s=replace(s,'    nx_stage("09 Creating worker thread");',
-  '    nx_stage("09 Ready: runtime SD I/O disabled");\\n    nx_disable_runtime_io();')
+  '    nx_stage("09 Ready: runtime SD I/O disabled");\n    nx_disable_runtime_io();')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
