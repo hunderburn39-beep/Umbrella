@@ -282,6 +282,102 @@ void nx_error(const char *message) {
     }
     consoleExit(NULL);
 }
+
+/* V3.5 native 1280x720 sky-blue graphical launcher. GPU-backed SDL2 renderer.
+   Pure frontend: the chip simulation is not modified. */
+static const unsigned char nx_font[37][7]={
+{14,17,17,31,17,17,17},{30,17,17,30,17,17,30},{15,16,16,16,16,16,15},
+{30,17,17,17,17,17,30},{31,16,16,30,16,16,31},{31,16,16,30,16,16,16},
+{15,16,16,19,17,17,15},{17,17,17,31,17,17,17},{31,4,4,4,4,4,31},
+{7,2,2,2,18,18,12},{17,18,20,24,20,18,17},{16,16,16,16,16,16,31},
+{17,27,21,21,17,17,17},{17,25,21,19,17,17,17},{14,17,17,17,17,17,14},
+{30,17,17,30,16,16,16},{14,17,17,17,21,18,13},{30,17,17,30,20,18,17},
+{15,16,16,14,1,1,30},{31,4,4,4,4,4,4},{17,17,17,17,17,17,14},
+{17,17,17,17,17,10,4},{17,17,17,21,21,21,10},{17,17,10,4,10,17,17},
+{17,17,10,4,4,4,4},{31,1,2,4,8,16,31},
+{14,17,19,21,25,17,14},{4,12,4,4,4,4,14},{14,17,1,2,4,8,31},
+{30,1,1,14,1,1,30},{2,6,10,18,31,2,2},{31,16,16,30,1,1,30},
+{14,16,16,30,17,17,14},{31,1,2,4,8,8,8},
+{14,17,17,14,17,17,14},{14,17,17,15,1,1,14},
+{0,0,0,0,0,0,0}
+};
+static void nx_ui_text(SDL_Renderer *r,const char *str,int x,int y,int scale,
+                       Uint8 red,Uint8 green,Uint8 blue) {
+    SDL_SetRenderDrawColor(r,red,green,blue,255);
+    for(int i=0;str[i] && i<64;i++) {
+        unsigned char c=(unsigned char)str[i];
+        if(c>='a' && c<='z') c-=32;
+        int idx=c>='A'&&c<='Z'?c-'A':c>='0'&&c<='9'?26+c-'0':36;
+        for(int row=0;row<7;row++)
+            for(int col=0;col<5;col++) if(nx_font[idx][row]&(16>>col)) {
+                SDL_Rect px={x+i*6*scale+col*scale,y+row*scale,scale,scale};
+                SDL_RenderFillRect(r,&px);
+            }
+    }
+}
+static void nx_ui_box(SDL_Renderer *r,int x,int y,int w,int h,
+                      Uint8 red,Uint8 green,Uint8 blue) {
+    SDL_SetRenderDrawColor(r,red,green,blue,255);
+    SDL_Rect rect={x,y,w,h};
+    SDL_RenderFillRect(r,&rect);
+}
+static void nx_ui_draw(SDL_Renderer *r,int count,int selected) {
+    /* Sky-blue gradient rendered with GPU fill commands. */
+    for(int y=0;y<720;y+=8) {
+        int t=y/8;
+        nx_ui_box(r,0,y,1280,8,(Uint8)(94+t/3),(Uint8)(188+t/5),
+                  (Uint8)(245-t/7));
+    }
+    nx_ui_box(r,0,0,1280,102,25,105,180);
+    nx_ui_text(r,"UMBRELLA MEGA DRIVE NX",75,24,5,255,255,255);
+    nx_ui_text(r,"CHIP LEVEL ENGINE",80,73,2,183,235,255);
+    nx_ui_box(r,70,135,740,475,233,248,255);
+    nx_ui_text(r,"SELECIONAR JOGO",105,160,3,25,97,157);
+    int first=(selected/8)*8;
+    for(int i=first;i<count && i<first+8;i++) {
+        int y=210+(i-first)*46;
+        nx_ui_box(r,95,y,690,41,i==selected?31:205,
+                  i==selected?149:233,i==selected?105:246);
+        char title[50];
+        snprintf(title,sizeof(title),"%.37s",names[i]);
+        nx_ui_text(r,title,112,y+10,2,i==selected?255:32,
+                   i==selected?255:88,i==selected?255:129);
+    }
+    nx_ui_box(r,845,135,360,475,233,248,255);
+    nx_ui_text(r,"REGIAO",882,163,3,25,97,157);
+    const char *regions[]={"JAPAO 60HZ","EUA 60HZ","EUROPA 50HZ"};
+    for(int i=0;i<3;i++) {
+        int y=215+i*65;
+        nx_ui_box(r,869,y,313,52,i==nx_region_setting?32:167,
+                  i==nx_region_setting?167:208,i==nx_region_setting?99:229);
+        nx_ui_text(r,regions[i],890,y+15,2,i==nx_region_setting?255:27,
+                   i==nx_region_setting?255:97,i==nx_region_setting?255:142);
+    }
+    nx_ui_box(r,870,440,312,76,21,164,84);
+    nx_ui_text(r,"EXECUTAR  A",896,462,3,255,255,255);
+    nx_ui_box(r,870,531,312,55,31,136,182);
+    nx_ui_text(r,"DIAGNOSTICO X",893,550,2,255,255,255);
+    nx_ui_box(r,0,636,1280,84,25,105,180);
+    nx_ui_text(r,"CIMA BAIXO JOGO    L R REGIAO    B SAIR",65,660,2,255,255,255);
+    nx_ui_text(r,"V3 5",1100,660,2,255,255,255);
+    SDL_RenderPresent(r);
+}
+static int nx_ui_touch(int x,int y,int count,int *selected,int *launch) {
+    if(x>=95 && x<=785 && y>=210 && y<578) {
+        int index=(*selected/8)*8+(y-210)/46;
+        if(index>=0 && index<count) *selected=index;
+        return 1;
+    }
+    if(x>=869 && x<=1182 && y>=215 && y<397) {
+        int region=(y-215)/65;
+        if(region>=0 && region<3) nx_region_setting=region;
+        return 1;
+    }
+    if(x>=870 && x<=1182 && y>=440 && y<516) {*launch=1;return 1;}
+    if(x>=870 && x<=1182 && y>=531 && y<586) {*launch=2;return 1;}
+    return 0;
+}
+
 int nx_choose_rom(char **rom) {
     /* A command-line path takes priority; otherwise present a native ROM list. */
     if(strcmp(*rom,ROOT "rom.bin")!=0) return 1;
@@ -309,7 +405,26 @@ int nx_choose_rom(char **rom) {
         return 1;
     }
     qsort(names,count,sizeof(names[0]),compare);
-    consoleInit(NULL); nx_pad_init();
+    nx_pad_init();
+    SDL_SetMainReady();
+    if(SDL_Init(SDL_INIT_VIDEO)!=0) {
+        nx_error("Launcher video initialization failed");
+        return 0;
+    }
+    SDL_Window *window=SDL_CreateWindow("Umbrella Mega Drive NX",
+        SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,1280,720,
+        SDL_WINDOW_SHOWN|SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_Renderer *renderer=window?SDL_CreateRenderer(window,-1,
+        SDL_RENDERER_ACCELERATED|SDL_RENDERER_PRESENTVSYNC):NULL;
+    if(!renderer && window) renderer=SDL_CreateRenderer(window,-1,SDL_RENDERER_SOFTWARE);
+    if(!renderer) {
+        if(window) SDL_DestroyWindow(window);
+        SDL_Quit();
+        nx_error("Launcher renderer unavailable");
+        return 0;
+    }
+    SDL_RenderSetLogicalSize(renderer,1280,720);
+    int launch=0;
     while(appletMainLoop()) {
         padUpdate(&pad);
         u64 b=padGetButtonsDown(&pad);
@@ -320,19 +435,39 @@ int nx_choose_rom(char **rom) {
         if(b&(HidNpadButton_R|HidNpadButton_Right))
             nx_region_setting=(nx_region_setting+1)%3;
         if(b&HidNpadButton_B) break;
-        if(b&HidNpadButton_X) { *rom="builtin:diagnostic"; ok=1; break; }
-        if(b&(HidNpadButton_A|HidNpadButton_Y)) {
-            nx_video_bypass = !!(b&HidNpadButton_Y);
-            snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
-            *rom=chosen;ok=1;break;
+        if(b&HidNpadButton_X) launch=2;
+        if(b&HidNpadButton_A) launch=1;
+        if(b&HidNpadButton_Y) launch=3;
+        SDL_Event ev;
+        while(SDL_PollEvent(&ev)) {
+            if(ev.type==SDL_QUIT) { launch=-1; break; }
+            if(ev.type==SDL_FINGERDOWN) {
+                nx_ui_touch((int)(ev.tfinger.x*1280),(int)(ev.tfinger.y*720),
+                            count,&selected,&launch);
+            }
+            if(ev.type==SDL_MOUSEBUTTONDOWN) {
+                nx_ui_touch(ev.button.x,ev.button.y,count,&selected,&launch);
+            }
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V3.4\nChip-level simulation\n\n");
-        int first=(selected/12)*12;
-        for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nRegion [L/R]: %s\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.8: select chip jumpers before launch\n",nx_region_names[nx_region_setting],previous,previous_worker);
-        consoleUpdate(NULL);
+        nx_ui_draw(renderer,count,selected);
+        if(launch) {
+            if(launch>0) {
+                if(launch==2) *rom="builtin:diagnostic";
+                else {
+                    nx_video_bypass=(launch==3);
+                    snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
+                    *rom=chosen;
+                }
+                ok=1;
+            }
+            break;
+        }
+        SDL_Delay(16);
     }
-    consoleExit(NULL);return ok;
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+return ok;
 }
 int nx_pad_poll(void) {
     padUpdate(&pad);
