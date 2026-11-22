@@ -385,12 +385,16 @@ s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
             if (!md.as && !md.rw &&
                 ((md.vaddress & 0x700000u)==0x600000u))
                 nx_board_write_seen++;
-            if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as)
-                nx_chip_select_seen++;''')
+            /* CHIP uses the identical event as SEL below. */''')
 s=replace(s,"            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen);",
 '''            nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);''')
 if "nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);" not in s:
     raise RuntimeError("Independent bus-layer diagnostic not published")
+# V4.6: CHIP and SEL must sample the identical VDP selection event.
+s=replace(s,"                nx_sel_samples++;",
+          "                nx_sel_samples++;\n                nx_chip_select_seen++;")
+if s.count("nx_chip_select_seen++;") != 1:
+    raise RuntimeError("Expected one unified VDP selection counter")
 # V4.5: check that raw VDP selection is sampled, not suppressed by
 # the board-side address gate. The replacement is applied to the
 # V2.4 source insertion itself, so there is no fragile second pass.
