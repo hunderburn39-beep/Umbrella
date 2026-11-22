@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-PT">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.5</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.6</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:18px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}#remove{background:none;color:#a7b6ca;font:13px system-ui;margin-top:8px} [hidden]{display:none!important}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.5</h1><small>Consola horizontal · A B C · Cristal verde</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.6</h1><small>Consola horizontal · A acelera e turbo · B trava</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
 <script>
 (()=>{
 "use strict";
@@ -68,7 +68,17 @@ function consolePatch(source){
  replace('if(document.hidden){if(last)','if(innerWidth<innerHeight||document.hidden){if(last)');
  return source;
 }
-function launch(){if(!source)return;try{const gameDocument=consolePatch(patchedGame(source));document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
+function twoButtonPatch(source){
+ const replace=(a,b)=>{if(!source.includes(a))throw Error("V2.6: "+a.slice(0,70));source=source.replace(a,b)};
+ source=source.replaceAll("PCB Native V2.5","PCB Native V2.6");
+ replace('<button data-key="throttle" aria-label="Acelerar"><b>A</b><small>ACELERAR</small></button>','<button data-key="throttle" aria-label="Acelerar e turbo"><b>A</b><small>ACELERAR + TURBO</small></button>');
+ replace('<button data-key="turbo" aria-label="Turbo"><b>C</b><small>TURBO</small></button>','');
+ replace('m._browser_input(steer,+keys.has("throttle"),+keys.has("brake"),+keys.has("turbo"),','const braking=keys.has("brake"),accelerating=keys.has("throttle")&&!braking;m._browser_input(steer,+accelerating,+braking,+accelerating,');
+ replace('const keyboard={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"throttle",ArrowDown:"brake",Space:"turbo",KeyA:"throttle",KeyB:"brake",KeyC:"turbo"};','const keyboard={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"throttle",ArrowDown:"brake",Space:"throttle",KeyA:"throttle",KeyB:"brake"};');
+ replace('</style>',`#controls #right button{width:min(9vw,18dvh);height:min(9vw,18dvh);flex-shrink:0;font-size:clamp(17px,2.8vw,30px)}#controls #right button small{font-size:clamp(6px,.8vw,9px);line-height:1.05;text-align:center;max-width:90%}.actions{gap:clamp(5px,1vw,12px)}</style>`);
+ return source;
+}
+function launch(){if(!source)return;try{const gameDocument=twoButtonPatch(consolePatch(patchedGame(source)));document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
 button.onclick=launch;
 init();
 })();
