@@ -42,7 +42,7 @@ s=replace(s,'    if (!nx_video_init(md.ntsc))',
 s=replace(s,'    Audio_Init(audioout_filename, md.ntsc);',
   '    nx_stage("07 Video ready");\n    Audio_Init(audioout_filename, md.ntsc);')
 s=replace(s,'    nx_pad_init();',
-  '    nx_pad_init();\n    nx_stage("08 Audio and controls ready");')
+  '    nx_pad_init();\n    nx_cpu_boost_start();\n    nx_stage("08 Audio and controls ready");')
 s=replace(s,'    thread = SDL_CreateThread(work_thread, "work thread", 0);',
   '    nx_stage("09 Creating worker thread");\n    thread = SDL_CreateThread(work_thread, "work thread", 0);')
 s=replace(s,'    int quit_signal = 0;',
@@ -130,7 +130,7 @@ s=replace(s,'            Video_UpdateTitle(ms);',
   '            (void)ms; /* No repeated SDL_SetWindowTitle on Switch. */')
 # Distinguish a requested clean exit from an unexpected termination.
 s=replace(s,'    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);',
-  '    nx_stage("12 Controlled shutdown");\n    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);')
+  '    nx_stage("12 Controlled shutdown");\n    work_thread_run = 0;\n    SDL_WaitThread(thread, 0);\n    nx_cpu_boost_stop();')
 
 # V1.5: resolve confirmed fs IPC crash. Never open worker-stage.txt on the
 # chip-worker thread. All SD I/O is delegated to the main thread (max 1/1.2s).
@@ -615,12 +615,7 @@ s=replace(s,'        nx_diag_text(vid_renderer,"ACK",263,74,2);',
 # V3.4: best-effort CPU frequency request via official libnx clkrst API.
 # Request only after ROM chosen, restore original rate on normal exit.
 # Insert boost at a known earlier patched frontend startup checkpoint.
-s=replace(s,'    nx_stage("08 Audio and controls ready");',
-'''    nx_cpu_boost_start();
-    nx_stage("08 Audio and controls ready");''')
-s=replace(s,'    SDL_WaitThread(thread, 0);',
-'''    SDL_WaitThread(thread, 0);
-    nx_cpu_boost_stop();''')
+
 # Show observed CPU clock / service result on the normal boot diagnostic
 s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */',
 '''    unsigned int nx_cpu_hz=0;
