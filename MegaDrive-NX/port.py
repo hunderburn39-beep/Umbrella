@@ -142,6 +142,9 @@ s=replace(s,'        if (first_post_blit) { nx_stage("11a Video blit returned");
 # V1.6 diagnostic: no writes to SD once the worker starts.
 s=replace(s,'    nx_stage("09 Creating worker thread");',
   '    nx_stage("09 Ready: runtime SD I/O disabled");\n    nx_disable_runtime_io();')
+
+# Main-thread read-only UI. No runtime filesystem access.
+s=replace(s,"        nx_flush_worker_stage(0);","        nx_flush_worker_stage(0);\n        nx_video_show_boot(nx_get_worker_clock());")
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
@@ -170,6 +173,9 @@ s=replace(s,'    if (!vid_mutex || !vid_texture || !vid_renderer) return;\n    S
         return;
     }
     last_presented = vid_counter;''')
+
+# V1.7: visible boot progress while video output remains black.
+s=replace(s,"void Video_PlotVDP(void)","\n/* V1.7 boot display: no disk operations, no fonts, SDL primitives only.\n * Show progress while a genuine coloured VDP frame has not been produced. */\nstatic void nx_draw_digit(SDL_Renderer *r, int d, int x, int y, int s) {\n    static const unsigned char digit_mask[10] = {\n        0x3f,0x06,0x5b,0x4f,0x66,0x6d,0x7d,0x07,0x7f,0x6f\n    };\n    if (d < 0 || d > 9) return;\n    unsigned char mask = digit_mask[d];\n    SDL_Rect lines[7] = {\n        {x+3*s,y,12*s,2*s}, {x+15*s,y+2*s,2*s,10*s},\n        {x+15*s,y+14*s,2*s,10*s}, {x+3*s,y+24*s,12*s,2*s},\n        {x+s,y+14*s,2*s,10*s}, {x+s,y+2*s,2*s,10*s},\n        {x+3*s,y+12*s,12*s,2*s}\n    };\n    for (int i=0; i<7; i++) if (mask & (1u<<i)) SDL_RenderFillRect(r,&lines[i]);\n}\nvoid nx_video_show_boot(unsigned long long clocks) {\n    static Uint64 last_draw = 0;\n    if (!vid_renderer || !vid_mutex) return;\n    Uint64 now=SDL_GetTicks64();\n    if (last_draw && now-last_draw < 250) return;\n    last_draw=now;\n    /* Detect a non-black native VDP frame, not just a vsync counter change. */\n    int has_picture=0;\n    SDL_LockMutex(vid_mutex);\n    if (vid_counter) {\n        const uint32_t *pixels = &vid_currentbuffer[0][0];\n        for (size_t i=0; i<(size_t)VID_WIDTH*VID_HEIGHT; i+=7) {\n            if (pixels[i] & 0x00ffffffu) { has_picture=1; break; }\n        }\n    }\n    SDL_UnlockMutex(vid_mutex);\n    if (has_picture) return;\n\n    SDL_SetRenderDrawColor(vid_renderer, 7, 15, 31, 255);\n    SDL_RenderClear(vid_renderer);\n    SDL_SetRenderDrawColor(vid_renderer, 50, 125, 184, 255);\n    SDL_Rect top={74,150,812,5}, bottom={74,576,812,3};\n    SDL_RenderFillRect(vid_renderer,&top);\n    SDL_RenderFillRect(vid_renderer,&bottom);\n    SDL_SetRenderDrawColor(vid_renderer, 150, 227, 252, 255);\n    SDL_Rect bars[3]={{100,190,60,8},{170,190,60,8},{240,190,60,8}};\n    for(int i=0;i<3;i++) SDL_RenderFillRect(vid_renderer,&bars[i]);\n\n    /* Live master clock read from in-memory worker milestones. */\n    char digits[32];\n    SDL_snprintf(digits,sizeof(digits),\"%llu\",clocks);\n    int n=(int)strlen(digits), scale=3, span=n*20*scale;\n    int x=(960-span)/2;\n    if(x<18) {scale=2;span=n*20*scale;x=(960-span)/2;}\n    SDL_SetRenderDrawColor(vid_renderer, 234, 242, 250, 255);\n    for(int i=0;i<n;i++) nx_draw_digit(vid_renderer,digits[i]-'0',x+i*20*scale,300,scale);\n\n    /* A complete upstream chip-level frame is ~1,789,772 master clocks. */\n    const unsigned long long frame_clocks=1789772ULL;\n    unsigned int prog=(unsigned int)(((clocks%frame_clocks)*800ULL)/frame_clocks);\n    SDL_SetRenderDrawColor(vid_renderer, 35, 53, 71, 255);\n    SDL_Rect track={80,500,800,34};\n    SDL_RenderFillRect(vid_renderer,&track);\n    SDL_SetRenderDrawColor(vid_renderer, 77, 229, 180, 255);\n    SDL_Rect fill={80,500,(int)prog,34};\n    SDL_RenderFillRect(vid_renderer,&fill);\n    SDL_RenderPresent(vid_renderer);\n}\n\nvoid Video_PlotVDP(void)")
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")

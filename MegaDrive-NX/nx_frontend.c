@@ -37,6 +37,9 @@ void nx_worker_progress(unsigned long long clock, const char *phase) {
     __atomic_store_n(&worker_phase, phase, __ATOMIC_RELEASE);
     __atomic_store_n(&worker_progress_mode, 1, __ATOMIC_RELEASE);
 }
+unsigned long long nx_get_worker_clock(void) {
+    return __atomic_load_n(&worker_clock, __ATOMIC_ACQUIRE);
+}
 /* Called ONLY from the main SDL loop, never from the chip clock worker. */
 void nx_flush_worker_stage(int force) {
     if (__atomic_load_n(&nx_runtime_io_blocked, __ATOMIC_ACQUIRE)) return;
@@ -139,10 +142,10 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.6\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V1.7\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
-        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV1.6: SD logging paused during game\n",previous,previous_worker);
+        printf("\nA: normal  Y: no raster\nX: diagnostic  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV1.7: live clock shown on screen\n",previous,previous_worker);
         consoleUpdate(NULL);
     }
     consoleExit(NULL);return ok;

@@ -1,4 +1,4 @@
-# Umbrella Mega Drive NX V1.6
+# Umbrella Mega Drive NX V1.7
 Experimental Nintendo Switch homebrew port of Nuked-MD. No FPGA board required. It is a software simulation of the reconstructed chip logic rather than physical FPGA execution. Full speed is not established; upstream explicitly notes its simulation is very slow. Includes an original CC0 diagnostic ROM. Without a user ROM, it boots the diagnostic automatically. The screen backdrop should change with controller directions/B/C. This is a diagnostic, not a full game.
 
 ## Build
@@ -59,3 +59,6 @@ An Atmosphere v1.7 report for the **exact V1.4 NRO** (rebuild SHA256 matched rel
 
 ## V1.6: no filesystem writes during simulation
 A V1.5 screenshot showed C425984 CLOCK T9s. The earlier Atmosphere crash report matched the V1.4 module ID and mapped to libnx FS IPC. V1.6 writes one marker before the chip worker starts, then blocks all runtime nx_stage and nx_flush_worker_stage filesystem calls. In-memory worker markers still update. The Last stage and Worker stage shown on reboot therefore intentionally remain frozen, and must not be interpreted as the actual moment of failure. If the app still crashes, retrieve a new dated Atmosphere crash report and its Module ID. This is a controlled test of the FS hypothesis; it does not establish playable speed. A normal and Y no-raster modes remain. Host audio disabled.
+
+## V1.7 diagnostic boot display
+On real Switch hardware V1.6 now stays open when the Super Hang-On ROM launches but remains black. To distinguish no picture from a hung chip clock, V1.7 draws a clearly visible blue diagnostic boot screen with white seven-segment **live master-clock count** and a green progress bar for the current ~1,789,772-clock simulated frame. It reads the in-memory atomic clock milestone every 250 ms and **does not write to SD while the worker is active**. Once a nonblack native VDP frame exists, the overlay stops so the actual ROM graphics become visible. Values update every 32,768 clock cycles because the worker deliberately limits diagnostic overhead. The homebrew menu still shows frozen pre-boot stage markers by design. Host audio remains disabled. This is a visibility diagnostic, **not** a performance or cycle-accuracy breakthrough. A 60 FPS chip-level software simulation would require far more processing than the currently observed ~50K master clocks/s. If the counter remains static, identify the visible count and whether A normal or Y no-raster was used.
