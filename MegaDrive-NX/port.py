@@ -160,7 +160,7 @@ s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
   '    /* No console output after the Switch ROM selector closes. */')
 save("tmss.c",s)
 s=load("video.c")
-s=replace(s,'#include "video.h"','#include "video.h"\\n#include "nx_frontend.h"')
+s=replace(s,'#include "video.h"','#include "video.h"\n#include "nx_frontend.h"')
 s=replace(s,'void Video_Init(char* videoout_filename, int ntsc)','int nx_video_init(int ntsc)')
 start=s.index("int nx_video_init")
 end=s.index("void Video_Shutdown",start)
