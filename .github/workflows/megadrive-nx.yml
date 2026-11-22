@@ -61,7 +61,7 @@ jobs:
         with:
           name: Umbrella-MegaDrive-NX
           path: dist
-      - name: Publish V3.0
+      - name: Publish V3.1
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -69,8 +69,8 @@ jobs:
           cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
-          tag=megadrive-nx-v3.0
+          tag=megadrive-nx-v3.1
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V3.0' --notes 'Adds optional ZR manual one-transaction DTACK diagnostic override; original chip signals untouched unless ZR explicitly pressed, max 1024 master clocks.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V3.1' --notes 'Preserves CPU/VDP diagnostics over the first coloured raster after ZR SKIP, with L to toggle HUD; no new chip-level overrides.'
           fi
           gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber

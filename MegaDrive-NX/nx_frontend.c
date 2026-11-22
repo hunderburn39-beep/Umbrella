@@ -15,6 +15,9 @@ int nx_video_bypass = 0;
 /* Hardware jumpers: 0 JP/NTSC, 1 export/NTSC, 2 export/PAL.
  * The original Nuked-MD i_jap signal is active low. */
 int nx_region_setting = 0;
+/* Keeps bus telemetry visible even after the VDP produces a coloured image.
+ * Toggle with L during simulation, never changes the chip logic. */
+int nx_show_hud = 1;
 static const char *nx_region_names[] = {
     "Japan (NTSC 60Hz)", "USA (NTSC 60Hz)", "Europe (PAL 50Hz)"
 };
@@ -276,7 +279,7 @@ int nx_choose_rom(char **rom) {
             snprintf(chosen,sizeof(chosen),"%s%s",ROMS,names[selected]);
             *rom=chosen;ok=1;break;
         }
-        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V3.0\nChip-level simulation\n\n");
+        printf("\x1b[2J\x1b[HUmbrella Mega Drive NX V3.1\nChip-level simulation\n\n");
         int first=(selected/12)*12;
         for(int i=first;i<count && i<first+12;i++) printf("%c %.60s\n",i==selected?'>':' ',names[i]);
         printf("\nRegion [L/R]: %s\nA: normal  Y: no raster\nX: diag 16bit  B: exit\nLast stage: %.80s\nWorker stage: %.80s\nV2.8: select chip jumpers before launch\n",nx_region_names[nx_region_setting],previous,previous_worker);
@@ -289,6 +292,7 @@ int nx_pad_poll(void) {
     u64 held=padGetButtons(&pad);
     u64 down=padGetButtonsDown(&pad);
     if (down & HidNpadButton_ZR) nx_skip_request();
+    if (down & HidNpadButton_L) nx_show_hud = !nx_show_hud;
     static const struct {u64 mask;int key;} map[]={
         {HidNpadButton_Up,SDL_SCANCODE_UP},{HidNpadButton_Down,SDL_SCANCODE_DOWN},
         {HidNpadButton_Left,SDL_SCANCODE_LEFT},{HidNpadButton_Right,SDL_SCANCODE_RIGHT},

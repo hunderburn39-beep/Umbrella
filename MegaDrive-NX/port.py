@@ -448,6 +448,71 @@ s=replace(s,'    /* A complete upstream chip-level frame is ~1,789,772 master cl
     SDL_RenderFillRect(vid_renderer,&skip_lamp);
 
     /* A complete upstream chip-level frame is ~1,789,772 master clocks. */''')
+
+# V3.1: preserve the chip-created picture AND show live bus telemetry over it.
+# V3.0's nx_video_show_boot returns as soon as any non-black pixel exists,
+# which hid every debug value exactly when the user saw the first blue rectangle.
+# Draw the HUD in Video_Blit *before* SDL_RenderPresent, on the main/UI thread.
+# Avoid rendering after SDL_RenderPresent: the backbuffer contents are undefined.
+s=replace(s,'void Video_Blit(void)\\n{',
+'''static void nx_draw_digit(SDL_Renderer *r,int d,int x,int y,int scale);
+static void nx_diag_text(SDL_Renderer *r,const char *msg,int x,int y,int sz);
+void Video_Blit(void)
+{''')
+s=replace(s,'    SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WIDTH * 4);',
+'''    SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WIDTH * 4);
+    /* Sample actual native framebuffer while the video mutex is held. */
+    unsigned int nx_picture_pixels=0;
+    const uint32_t *nx_pix=&vid_currentbuffer[0][0];
+    for(size_t q=0;q<(size_t)VID_WIDTH*VID_HEIGHT;q+=7)
+        if(nx_pix[q]&0x00ffffffu) nx_picture_pixels++;''')
+s=replace(s,'    SDL_RenderCopy(vid_renderer, vid_texture, NULL, NULL);\\n    SDL_RenderPresent(vid_renderer);',
+'''    SDL_SetRenderDrawColor(vid_renderer,0,0,0,255);
+    SDL_RenderClear(vid_renderer);
+    SDL_RenderCopy(vid_renderer, vid_texture, NULL, NULL);
+    if(nx_picture_pixels && nx_show_hud) {
+        /* Read-only HUD: use current pixel frame + atomic worker counters. */
+        unsigned long long nx_ack=0,nx_moves=0;
+        unsigned int nx_flags=0,nx_addr=0;
+        unsigned long long nx_writes=0;
+        unsigned int nx_skips=0;
+        int nx_status=0;
+        nx_ack_read(&nx_ack,&nx_moves,&nx_flags);
+        nx_bus_read(&nx_addr,&nx_writes);
+        nx_skip_read(&nx_skips,&nx_status);
+        SDL_SetRenderDrawBlendMode(vid_renderer,SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(vid_renderer,5,10,26,224);
+        SDL_Rect panel={0,0,960,110};
+        SDL_RenderFillRect(vid_renderer,&panel);
+        SDL_SetRenderDrawBlendMode(vid_renderer,SDL_BLENDMODE_NONE);
+        SDL_SetRenderDrawColor(vid_renderer,166,225,249,255);
+        nx_diag_text(vid_renderer,"MOVES",20,10,2);
+        nx_diag_text(vid_renderer,"ADDR",223,10,2);
+        nx_diag_text(vid_renderer,"FRAMES",450,10,2);
+        nx_diag_text(vid_renderer,"PIXELS",672,10,2);
+        char v[32];
+        SDL_snprintf(v,sizeof(v),"%llu",nx_moves);
+        for(int k=0;v[k] && k<9;k++) nx_draw_digit(vid_renderer,v[k]-'0',20+21*k,30,1);
+        SDL_snprintf(v,sizeof(v),"%u",nx_addr);
+        for(int k=0;v[k] && k<9;k++) nx_draw_digit(vid_renderer,v[k]-'0',223+21*k,30,1);
+        SDL_snprintf(v,sizeof(v),"%u",vid_counter);
+        for(int k=0;v[k] && k<9;k++) nx_draw_digit(vid_renderer,v[k]-'0',450+21*k,30,1);
+        SDL_snprintf(v,sizeof(v),"%u",nx_picture_pixels);
+        for(int k=0;v[k] && k<9;k++) nx_draw_digit(vid_renderer,v[k]-'0',672+21*k,30,1);
+        SDL_SetRenderDrawColor(vid_renderer,255,193,102,255);
+        nx_diag_text(vid_renderer,"SKIP",20,74,2);
+        SDL_snprintf(v,sizeof(v),"%u",nx_skips);
+        for(int k=0;v[k] && k<4;k++) nx_draw_digit(vid_renderer,v[k]-'0',101+21*k,72,1);
+        SDL_SetRenderDrawColor(vid_renderer,155,230,188,255);
+        nx_diag_text(vid_renderer,"ACK",263,74,2);
+        SDL_snprintf(v,sizeof(v),"%llu",nx_ack);
+        for(int k=0;v[k] && k<9;k++) nx_draw_digit(vid_renderer,v[k]-'0',330+21*k,72,1);
+        SDL_SetRenderDrawColor(vid_renderer,
+            nx_status==3?57:245,nx_status==3?223:115,112,255);
+        SDL_Rect skiplight={910,76,18,18};
+        SDL_RenderFillRect(vid_renderer,&skiplight);
+    }
+    SDL_RenderPresent(vid_renderer);''')
 save("video.c",s)
 # Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")
