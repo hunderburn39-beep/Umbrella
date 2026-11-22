@@ -408,6 +408,31 @@ s=replace(s,"            nx_decode_publish(nx_dec_seen,nx_gate_seen,nx_ctrl_seen
 '''            nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);''')
 if "nx_decode_publish(nx_cpu_write_seen,nx_board_write_seen,nx_chip_select_seen);" not in s:
     raise RuntimeError("Independent bus-layer diagnostic not published")
+# V4.5: the SEL/STB/RDY display was gated by the board-side VDP
+# address test. The screenshot has BOARD=0 and CHIP>0, so the old
+# display could show SEL=0 even when the VDP selection pin was active.
+# Sample these VDP input pins directly. This changes telemetry only.
+s=replace(s,
+'''            if (!md.as && !md.rw && ((md.vaddress & 0x700000u) == 0x600000u)) {
+                if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {
+                    nx_sel_samples++;
+                    if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)
+                        nx_strobe_samples++;
+                }
+                if (!ym.vdp.w117)
+                    nx_ready_samples++;
+            }''',
+'''            if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {
+                nx_sel_samples++;
+                if (!ym.vdp.input.i_uds || !ym.vdp.input.i_lds)
+                    nx_strobe_samples++;
+                if (!ym.vdp.w117)
+                    nx_ready_samples++;
+            }''')
+if s.count("nx_sel_samples++;") != 1:
+    raise RuntimeError("Unexpected VDP selection probe after ungating")
+if "if (!md.as && !md.rw && ((md.vaddress & 0x700000u) == 0x600000u)) {" in s:
+    raise RuntimeError("Old board-gated VDP input probe remains")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
