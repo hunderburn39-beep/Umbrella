@@ -78,7 +78,7 @@ for label, snippet in cart_checks.items():
 # the exact same VDP selection event. Verify the generated C, not port.py.
 import re
 sel_blocks = re.findall(
-    r"if\\s*\\(ym\\.vdp\\.input\\.i_sel0\\s*&&\\s*!ym\\.vdp\\.input\\.i_as\\)\\s*\\{([^}]*)\\}",
+    r"if\s*\(ym\.vdp\.input\.i_sel0\s*&&\s*!ym\.vdp\.input\.i_as\)\s*\{([^}]*)\}",
     b, re.S,
 )
 shared = len(sel_blocks) == 1 and all(
