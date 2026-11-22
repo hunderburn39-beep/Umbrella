@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-PT">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.1</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.2</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:18px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}#remove{background:none;color:#a7b6ca;font:13px system-ui;margin-top:8px} [hidden]{display:none!important}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.1</h1><small>Lançador corrigido V2.1.1</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.2</h1><small>Modo arcade original · COIN e START · Inclinação corrigida</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
 <script>
 (()=>{
 "use strict";
@@ -39,7 +39,8 @@ button.disabled=true;source='';
 try{const f=game.files[0];if(!f){needsFile();return;}status.textContent='A verificar e instalar…';const bytes=await f.arrayBuffer();source=await validated(bytes);let saved=false;try{db=db||await openDB();await write(bytes);saved=true;}catch(e){console.warn('Storage unavailable',e)}ready(saved);launch();}catch(e){needsFile(e.message);}
 };
 $('remove').onclick=async()=>{try{if(db)await remove();game.value='';needsFile('Instalação removida.');}catch(e){status.textContent='Não foi possível remover: '+e.message;}};
-function launch(){if(!source)return;const gameDocument=source;try{document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
+function patchedGame(source){for(const [from,to] of [["Super Hang-On | PCB Native V2.1","Super Hang-On | PCB Native V2.2"],["<h2>Super Hang-On | PCB Native V2.1</h2>","<h2>Super Hang-On | PCB Native V2.2</h2>"],["<button id=\"credit\">START</button>","<button id=\"coin\">COIN</button><button id=\"credit\">START</button>"],["$(\"credit\").onclick=()=>{start=5};","$(\"coin\").onclick=()=>{if(coin===0)coin=10};$(\"credit\").onclick=()=>{if(coin===0)start=5};"],["if(e.code===\"Enter\"){","if(e.code===\"Digit5\"){e.preventDefault();if(!e.repeat&&coin===0)coin=10;return}if(e.code===\"Enter\"){"],["neutral=null;running=true;","m._browser_dips(255,255);neutral=null;running=true;"],["(Math.abs(delta)<2?0:delta)/30","(Math.abs(delta)<2?0:-delta)/30"],["Iniciar e autorizar inclinação","Ligar máquina e autorizar inclinação"]]){if(!source.includes(from))throw Error('Não foi possível aplicar a atualização V2.2.');source=source.replace(from,to);}return source;}
+function launch(){if(!source)return;try{const gameDocument=patchedGame(source);document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
 button.onclick=launch;
 init();
 })();
