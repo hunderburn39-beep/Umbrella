@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="pt-PT">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.3</title>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Super Hang-On | PCB Native V2.4</title>
 <style>
 *{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b1018;color:#fff;font:16px system-ui;padding:18px}main{width:min(100%,480px);background:#151d29;border:1px solid #354255;border-radius:20px;padding:24px}h1{font-size:25px;margin:8px 0}p{line-height:1.5;color:#cbd5e1}label{display:block;background:#223043;padding:14px;border:1px solid #50637e;border-radius:10px;margin:16px 0}input{display:block;max-width:100%;margin-top:10px;color:#fff}button{width:100%;padding:14px;border:0;background:#d7ed44;color:#131800;font:bold 17px system-ui;border-radius:10px}button:disabled{opacity:.4}small{color:#b8c7db}#status{min-height:24px;color:#ffd88a}#remove{background:none;color:#a7b6ca;font:13px system-ui;margin-top:8px} [hidden]{display:none!important}
-</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.3</h1><small>Arcade vertical 9:16 · Controlos táteis</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
+</style></head><body><main><small>SEGA ARCADE • PCB NATIVE</small><h1>Super Hang-On V2.4</h1><small>9:16 · Aceleração e turbo automáticos</small><p id="intro">A verificar a instalação neste dispositivo…</p><label id="import" hidden>Instalar pacote privado<input type="file" id="game" accept=".txt,.sho,.html,text/plain,text/html"></label><button id="launch" disabled>JOGAR</button><p id="status" role="status"></p><button id="remove" hidden>Remover instalação local</button><small>O jogo é guardado no Safari deste dispositivo. Não é enviado ao servidor.</small></main>
 <script>
 (()=>{
 "use strict";
@@ -58,7 +58,16 @@ function patchedGame(source){
   replace('const landscape=()=>innerWidth>innerHeight;','');
   return source;
 }
-function launch(){if(!source)return;try{const gameDocument=patchedGame(source);document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
+function autoPatch(source){
+ const replace=(a,b)=>{if(!source.includes(a))throw Error('V2.4: '+a.slice(0,70));source=source.replace(a,b)};
+ source=source.replaceAll('PCB Native V2.3','PCB Native V2.4');
+ replace('<div id="left"><button data-key="left">◀</button><button data-key="right">▶</button></div><div id="right"><button data-key="brake">TRAVÃO</button><button data-key="turbo">TURBO</button><button data-key="throttle">ACELERAR</button></div>','<div id="left"><button data-key="left" aria-label="Esquerda">◀</button></div><div id="pedal"><button data-key="brake">TRAVÃO</button></div><div id="right"><button data-key="right" aria-label="Direita">▶</button></div>');
+ replace('</style>',`#left,#right,#pedal{position:absolute;bottom:7%;width:30%;display:flex;align-items:center;justify-content:center}#left{left:3%;right:auto}#right{right:3%;left:auto}#pedal{left:35%;width:30%}#left button,#right button,#pedal button{width:100%;height:clamp(52px,20vw,96px);padding:0;font-size:30px}#pedal button{height:clamp(42px,14vw,68px);font-size:12px}</style>`);
+ replace('m._browser_input(steer,+keys.has("throttle"),+keys.has("brake"),+keys.has("turbo"),','const braking=keys.has("brake");m._browser_input(steer,+!braking,+braking,+!braking,');
+ replace('const keyboard={ArrowLeft:"left",ArrowRight:"right",ArrowUp:"throttle",ArrowDown:"brake",Space:"turbo"};','const keyboard={ArrowLeft:"left",ArrowRight:"right",ArrowDown:"brake",Space:"brake"};');
+ return source;
+}
+function launch(){if(!source)return;try{const gameDocument=autoPatch(patchedGame(source));document.open();document.write(gameDocument);document.close();}catch(e){status.textContent=e.message;}}
 button.onclick=launch;
 init();
 })();
