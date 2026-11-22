@@ -56,6 +56,13 @@ s=replace(s,'    int quit_signal = 0;',
 s=replace(s,'        printf("%s not found\\n", tmss_filename);',
   '        /* Using built-in TMSS diagnostic fallback. */')
 
+# Mute host audio output to isolate the crash after video initialized.
+# The FM and PSG chip logic still runs in the motherboard simulation.
+s=replace(s,'    nx_stage("07 Video ready");\n    Audio_Init(audioout_filename, md.ntsc);',
+  '    nx_stage("07 Video ready");\n    nx_stage("07a Host audio bypassed");')
+s=replace(s,'    nx_pad_init();\n    nx_stage("08 Audio and controls ready");',
+  '    nx_stage("07b Controls initializing");\n    nx_pad_init();\n    nx_stage("08 Controls ready");')
+
 # Distinguish TMSS completion from cartridge loading.
 s=replace(s,'        load_dummy_tmss();\n    }\n    if (cart_load_game_rom',
   '        load_dummy_tmss();\n    }\n    nx_stage("02a TMSS ready");\n    if (cart_load_game_rom')
@@ -77,7 +84,10 @@ s=s[:start]+part+s[end:]
 s=replace(s,'    SDL_LockMutex(vid_mutex);\n    SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WIDTH * 4);','    if (!vid_mutex || !vid_texture || !vid_renderer) return;\n    SDL_LockMutex(vid_mutex);\n    SDL_UpdateTexture(vid_texture, NULL, vid_currentbuffer, VID_WIDTH * 4);')
 s=replace(s,'    fclose(vid_dump_file);','    if (vid_dump_file) fclose(vid_dump_file);\n    if (vid_texture) SDL_DestroyTexture(vid_texture);\n    if (vid_renderer) SDL_DestroyRenderer(vid_renderer);\n    if (vid_window) SDL_DestroyWindow(vid_window);\n    if (vid_mutex) SDL_DestroyMutex(vid_mutex);')
 save("video.c",s)
+# Redecimate() logs to stdout, which can be detached on Switch; silence the log.
 s=load("audio.c")
+s=replace(s,'\tprintf("Audio sample rate: %d, SoundCard sample rate: %d, decimate factor: %d\\n", SampleRate, OutputSampleRate, DecimateEach);',
+  '\t/* Avoid writes to stdout after closing the Switch ROM selector console. */')
 start=s.index("static void SoundOutput_Mixer")
 end=s.index("static void FeedSampleForDump",start)
 s=s[:start]+'''/* Host audio adapter: preserves FM/PSG mixer below, eliminates disk dumps. */
