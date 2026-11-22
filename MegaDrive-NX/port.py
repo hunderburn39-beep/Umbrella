@@ -159,6 +159,13 @@ s=replace(s,'        mcycles++;\n        if (mcycles && ((mcycles & 32767) == 0)
 s=replace(s,"    unsigned long long nx_cpu_bus_cycles=0, nx_vdp_wr_cycles=0;","    unsigned long long nx_cpu_bus_cycles=0, nx_vdp_wr_cycles=0, nx_vdp_cpu_writes=0;\n    unsigned int nx_latest_addr=0;")
 s=replace(s,"            if (!m68k.o_as && !m68k.o_address_z) nx_cpu_bus_cycles++;","            if (!m68k.o_as && !m68k.o_address_z) {\n                unsigned int nx_addr=(unsigned int)m68k.o_address & 0xffffffu;\n                nx_latest_addr=nx_addr;\n                nx_cpu_bus_cycles++;\n                if (!m68k.o_rw && ((nx_addr & 0xe00000u) == 0xc00000u)) nx_vdp_cpu_writes++;\n            }")
 s=replace(s,"        if (mcycles && ((mcycles & 32767) == 0)) nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset);","        if (mcycles && ((mcycles & 32767) == 0)) { nx_diag_capture(nx_cpu_bus_cycles,nx_vdp_wr_cycles,ym.vdp.reg_disp,md.reset); nx_bus_publish(nx_latest_addr,nx_vdp_cpu_writes); }")
+# V2.1: IMPORTANT - Nuked-MD 68000 has a 23-bit *word* address bus
+# (physical CPU A1..A23), so VDP C00000 in bytes is 600000 in this bus.
+# Previous 0xe00000==0xc00000 comparisons were impossible for 23-bit values.
+s=replace(s,'((md.vaddress & 0xe00000) == 0xc00000)',
+  '((md.vaddress & 0x700000) == 0x600000)')
+s=replace(s,'((nx_addr & 0xe00000u) == 0xc00000u)',
+  '((nx_addr & 0x700000u) == 0x600000u)')
 save("md.c",s)
 s=load("tmss.c")
 s=replace(s,'    printf("loading dummy TMSS ROM\\n");',
