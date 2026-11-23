@@ -77,3 +77,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Diagnostic sprite attribute table
 `sprites.py` decodes conventional 8-byte SAT entries (9-bit X/Y with 128-pixel bias), tile dimensions, palette, H/V flip, priority, pattern index and linked-list traversal. It samples individual sprite pixels with column-major pattern ordering and transparent color index 0. `test_sprites.py` contains reference tests for attributes, links, positions and pattern layout. **Not yet integrated into the A/B compositor.** Hardware sprite-per-line limits, collision/masking, priority interactions, sprite cache and VA2 timing remain unimplemented. GitHub Actions execution remains unverified.
+
+## Diagnostic sprite and plane composition
+`DiagnosticCompositor` now optionally accepts `sprite_table_base` and samples the SAT-linked sprites alongside scrolled planes A/B. The reference ordering is high sprite > high A > high B > low sprite > low A > low B > backdrop. Sprite pixel index zero is transparent, and earlier SAT entries win equal-priority overlaps. `test_sprite_compositor.py` covers these cases. **This remains a simplified diagnostic**, not a verified hardware pixel pipeline: sprite per-line limits, collision flags, masking, window plane, shadow/highlight, VDP timing and Switch NRO are not implemented. GitHub Actions results are not verified.
