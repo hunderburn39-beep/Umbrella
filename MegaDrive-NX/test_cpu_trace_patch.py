@@ -16,7 +16,9 @@ class CpuTracePatchTests(unittest.TestCase):
 
     def test_partial_trace_flushed_on_timeout(self):
         self.assertIn("mcycles >= 2000000ULL",self.code)
-        self.assertIn("nx_cpu_trace_n > 0",self.code)
+        self.assertIn("nx_cpu_trace_n == 64 || mcycles >= 2000000ULL",self.code)
+        self.assertNotIn("nx_cpu_trace_n > 0 &&",self.code)
+        self.assertIn("NO ACTIVE CPU ADDRESS OBSERVED",self.code)
         self.assertIn("nx_k<nx_cpu_trace_n",self.code)
 
     def test_no_instruction_pc_claim(self):
