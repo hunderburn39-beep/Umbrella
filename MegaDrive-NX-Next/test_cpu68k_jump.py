@@ -23,9 +23,9 @@ class JumpTests(unittest.TestCase):
         self.assertEqual(cpu.d[0], 0)
 
     def test_indirect_jmp_uses_address_register(self):
-        cpu = cpu_for("207c 0000 010a 4ed0 7001 4e71 7207")
+        cpu = cpu_for("207c 0000 010c 4ed0 7001 4e71 7207")
         cpu.run(2)
-        self.assertEqual(cpu.pc, 0x10a)
+        self.assertEqual(cpu.pc, 0x10c)
         cpu.step()
         self.assertEqual(cpu.d[1], 7)
         self.assertEqual(cpu.d[0], 0)
