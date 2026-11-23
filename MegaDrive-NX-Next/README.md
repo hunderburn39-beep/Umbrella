@@ -65,3 +65,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## CRAM palette and tile diagnostics
 `cram.py` stores 64 conventional Mega Drive 9-bit RGB palette entries (word mask `0x0EEE`) and maps each 3-bit channel to 8-bit RGB by a simple linear approximation. This is **not** a calibrated Genesis 3 VA2 analog output model. `VDPPorts` owns a CRAM instance with diagnostic-only palette injection. `tile_preview.py` maps 4bpp tile indices through one of four 16-color palettes and exports an 8x8 PPM image. Transparency, shadow/highlight, CRAM VDP port commands, plane composition and timing are not implemented. Tests: `test_cram.py`, `test_tile_preview.py`. GitHub Actions execution remains unverified.
+
+## Diagnostic name-table planes
+`planes.py` decodes conventional 16-bit plane name-table attributes: 11-bit pattern index, H/V flip, palette bank and priority. `DiagnosticPlane` samples a specified VRAM name-table base using 32/64/128-tile plane dimensions and resolves a pixel through the tile decoder and CRAM. It is a **direct diagnostic sampler**, not an implemented Plane A/B compositor or an ASIC renderer. Scrolling, window plane, sprite overlays, priority mixing, transparency, VDP register-controlled table addresses and scanline timing remain pending. Tests: `test_planes.py`; CI execution not yet confirmed.
