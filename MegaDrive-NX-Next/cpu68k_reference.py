@@ -262,6 +262,21 @@ class CPU68KReference:
             source = opcode & 7
             self._compare_word(self.d[destination], self.d[source])
             mnemonic = "CMP.W Dn,Dm"
+        elif opcode & 0xff00 == 0x6100:
+            # BSR.s / BSR.w (68000). Displacement is relative to PC
+            # after opcode/extension fetch; push return PC as a longword.
+            displacement = opcode & 0xff
+            if displacement == 0:
+                extension = self.fetch_word()
+                displacement = extension - 65536 if extension & 0x8000 else extension
+            elif displacement & 0x80:
+                displacement -= 256
+            target = (self.pc + displacement) & 0xffffffff
+            if target & 1:
+                raise ValueError("odd BSR target")
+            self.push_long(self.pc)
+            self.pc = target
+            mnemonic = "BSR"
         elif opcode & 0xf0f8 == 0x50c8:
             # DBcc Dn,disp16. Decrement only if condition is false.
             # Branch displacement is relative to extension-word address.
