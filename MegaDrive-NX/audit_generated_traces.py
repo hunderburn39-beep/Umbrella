@@ -18,6 +18,9 @@ def main(path):
             if needle in worker:
                 errors.append("SD trace write remains after worker entry: "+needle)
     for name in ("nx_trace_flush_main","nx_rom_trace_flush_main"):
+        declaration="static void "+name+"(void);"
+        if declaration not in source or source.index(declaration)>source.index(name+"();"):
+            errors.append("Missing early C prototype: "+name)
         if source.count(name+"();")<1:
             errors.append("Missing main-thread call: "+name)
     for token in ("__atomic_store_n(&nx_cpu_trace_ready,1,__ATOMIC_RELEASE)",
