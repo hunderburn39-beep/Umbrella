@@ -26,6 +26,7 @@ class CPU68KReference:
         self.stopped = False
         self.vdp_ready = False  # Explicit test-only peripheral readiness.
         self.ccr = 0  # X N Z V C; only N/Z/V/C updates for modeled operations.
+        self.sr_upper = 0x2700  # Reset supervisor mode, interrupt mask 7.
 
     def reset(self):
         vectors = reset_vectors(self.bus.memory.rom)
@@ -38,6 +39,24 @@ class CPU68KReference:
         self.a[7] = self.ssp
         self.stopped = False
         self.ccr = 0
+        self.sr_upper = 0x2700
+
+    @property
+    def sr(self) -> int:
+        return self.sr_upper | self.ccr
+
+    def set_sr_reference(self, value: int):
+        """Limited supervisor SR write; no user/supervisor stack switching yet."""
+        if not 0 <= value <= 0xffff:
+            raise ValueError("SR must be 16-bit")
+        if not (self.sr_upper & 0x2000):
+            raise NotImplementedError("privilege exception entry not modeled")
+        if not (value & 0x2000):
+            raise NotImplementedError("user-mode stack switching not modeled")
+        if value & 0x08e0:
+            raise NotImplementedError("unmodeled SR control bits")
+        self.sr_upper = value & 0xff00
+        self.ccr = value & 0x1f
 
     def fetch_word(self):
         if self.pc & 1:
@@ -195,7 +214,13 @@ class CPU68KReference:
             self.pc = target
             mnemonic = "JSR"
         elif opcode == 0x4e72:
-            raise NotImplementedError("STOP requires supervisor/status-register model")
+            # STOP #SR: reference-only halt; interrupts and exceptions absent.
+            if not (self.sr_upper & 0x2000):
+                raise NotImplementedError("privilege exception entry not modeled")
+            value = self.fetch_word()
+            self.set_sr_reference(value)
+            self.stopped = True
+            mnemonic = "STOP"
         elif opcode & 0xf100 == 0x7000:
             register = (opcode >> 9) & 7
             immediate = opcode & 0xff
