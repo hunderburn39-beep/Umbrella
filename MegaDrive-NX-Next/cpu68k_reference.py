@@ -473,6 +473,22 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 == 0x4880:
+            # EXT.W Dn: sign-extend low byte into low word.
+            register = opcode & 7
+            byte = self.d[register] & 0xff
+            result = byte | (0xff00 if byte & 0x80 else 0)
+            self.d[register] = (self.d[register] & 0xffff0000) | result
+            self._logic_flags(result, 16)
+            mnemonic = "EXT.W Dn"
+        elif opcode & 0xfff8 == 0x48c0:
+            # EXT.L Dn: sign-extend low word into full longword.
+            register = opcode & 7
+            word = self.d[register] & 0xffff
+            result = word | (0xffff0000 if word & 0x8000 else 0)
+            self.d[register] = result
+            self._logic_flags(result, 32)
+            mnemonic = "EXT.L Dn"
         elif opcode & 0xfff8 == 0x4840:
             # SWAP Dn exchanges high and low 16-bit halves of Dn.
             register = opcode & 7
