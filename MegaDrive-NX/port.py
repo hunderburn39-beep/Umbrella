@@ -408,6 +408,44 @@ if "if (ym.vdp.input.i_sel0 && !ym.vdp.input.i_as) {" not in s:
     raise RuntimeError("VDP input selection probe missing")
 if s.count("nx_sel_samples++;") != 1:
     raise RuntimeError("Unexpected VDP SEL probe count")
+# V4.8: capture the first distinct CPU-side bus addresses in RAM, then
+# persist once. This is a bus-address trace, NOT a decoded instruction PC.
+s=replace(s,"    int nx_rom_trace_saved=0;",
+'''    int nx_rom_trace_saved=0;
+    unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];
+    unsigned int nx_cpu_trace_n=0,nx_cpu_trace_last=0xffffffffu;
+    int nx_cpu_trace_saved=0;''')
+s=replace(s,"                nx_latest_addr=nx_addr;",
+'''                nx_latest_addr=nx_addr;
+                if (nx_cpu_trace_n < 64 && nx_addr != nx_cpu_trace_last) {
+                    unsigned int nx_flags = (!m68k.o_rw ? 1u : 0u)
+                        | (!m68k.o_data_z ? 2u : 0u);
+                    nx_cpu_addr_trace[nx_cpu_trace_n] = nx_addr;
+                    nx_cpu_data_trace[nx_cpu_trace_n] =
+                        !m68k.o_data_z ? ((unsigned int)m68k.o_data & 0xffffu) : 0u;
+                    nx_cpu_flags_trace[nx_cpu_trace_n] = nx_flags;
+                    nx_cpu_trace_last = nx_addr;
+                    nx_cpu_trace_n++;
+                }''')
+s=replace(s,"        mcycles++;\n        if (!nx_rom_trace_saved && nx_rom_n == 32) {",
+'''        mcycles++;
+        if (!nx_cpu_trace_saved && nx_cpu_trace_n == 64) {
+            nx_cpu_trace_saved = 1;
+            FILE *nx_cpu_file = fopen(
+                "sdmc:/switch/Umbrella-MegaDrive-NX/cpu-bus-trace.txt","w");
+            if (nx_cpu_file) {
+                fprintf(nx_cpu_file,
+                    "CPU bus address transitions (word-addressed); flags: bit0 write, bit1 CPU data driven\\n");
+                for (unsigned int nx_k=0; nx_k<64; nx_k++)
+                    fprintf(nx_cpu_file,"%02u %06X %06X %04X %02X\\n",
+                        nx_k,nx_cpu_addr_trace[nx_k],
+                        nx_cpu_addr_trace[nx_k]*2u,
+                        nx_cpu_data_trace[nx_k],nx_cpu_flags_trace[nx_k]);
+                fclose(nx_cpu_file);
+            }
+        }
+        if (!nx_rom_trace_saved && nx_rom_n == 32) {''')
+if "cpu-bus-trace.txt" not in s: raise RuntimeError("CPU trace patch missing")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
 s=load("vdp.h")
