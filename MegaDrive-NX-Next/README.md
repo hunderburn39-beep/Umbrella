@@ -131,3 +131,6 @@ The CPU reference supports `MOVE.L #imm,Dn`, `MOVE.L (abs.l),Dn` and `MOVE.L #im
 
 ## Address-indirect 32-bit transfers
 `MOVE.L (An),Dn` and `MOVE.L Dn,(An)` now use two big-endian 16-bit reference bus cycles while preserving the address register. `test_cpu68k_long.py` covers RAM roundtrip, flags, alignment, and boundary rejection. These operations are not cycle accurate and do not imply verified Switch boot or VDP hardware timing.
+
+## MOVEA.L pointer loads
+The reference CPU supports `MOVEA.L (abs.l),An` and `MOVEA.L (An),Am` with ordered 16-bit memory reads, preserved CCR, and source-address capture before a same-register destination update. Four tests were added to `test_cpu68k_long.py`. CI execution remains unverified because this runtime cannot resolve github.com; the GitHub connector did confirm the commits.
