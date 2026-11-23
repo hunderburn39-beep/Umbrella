@@ -31,7 +31,10 @@ The previous implementation, including its unresolved VDP behavior, is NOT copie
 6. Test diagnostic ROM on Switch, then user-supplied Super Hang-On ROM.
 
 ## Status
-Reference 68000 reset-vector decoder, ROM/RAM word bus, and explicit active-low DTACK bus-cycle state machine implemented in Python, with unit tests. The bus deliberately refuses unimplemented VDP, IO and Z80 accesses. This is not a CPU executor, verified ASIC, Switch NRO or playable console. CI execution remains unverified.
+Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTACK bus-cycle state machine and an integrated ROM/RAM reference bus controller implemented in Python, with unit tests. The bus deliberately refuses unimplemented VDP, IO and Z80 accesses. This is not a CPU executor, verified ASIC, Switch NRO or playable console. CI execution remains unverified.
 
 ## Bus handshake research
 `bus_cycle.py` records requests and waits for an externally sampled DTACK low. VDP select alone never completes a transfer. The module does not generate ASIC timing or connect to a real CPU executor; it is a protocol regression harness.
+
+## Reference bus integration
+`bus_controller.py` links word-aligned ROM/RAM accesses to the DTACK state machine. ROM/RAM replies are immediate only by reference-test convention, not measured VA2 timing. VDP, Z80 and IO transactions deliberately remain unimplemented; even a supplied external ACK cannot be treated as a completed chip transaction until a responder exists. Byte-lane operations are not yet supported.
