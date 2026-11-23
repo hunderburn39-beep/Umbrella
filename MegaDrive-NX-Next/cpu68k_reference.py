@@ -153,7 +153,7 @@ class CPU68KReference:
         sp = self.a[7]
         if sp & 1:
             raise ValueError("unaligned stack pointer")
-        if sp > 0xfffffb:
+        if not 0 <= sp <= 0xfffffc:
             raise NotImplementedError("stack read outside reference bus")
         value = (self.read_word(sp) << 16) | self.read_word(sp + 2)
         self.a[7] = (sp + 4) & 0xffffffff
