@@ -427,6 +427,17 @@ class CPU68KReference:
             value = self.read_word(self.a[opcode & 7])
             self._logic_flags(value, 16)
             mnemonic = "TST.W (An)"
+        elif opcode & 0xfff8 == 0x4a90:
+            # TST.L (An): read both big-endian words via the bus.
+            # A real 68000 also requires an even address for long operands.
+            address = self.a[opcode & 7]
+            if address & 1:
+                raise ValueError("unaligned 68000 long read")
+            if not 0 <= address <= 0xfffffc:
+                raise ValueError("long operand outside 24-bit reference bus")
+            value = (self.read_word(address) << 16) | self.read_word(address + 2)
+            self._logic_flags(value, 32)
+            mnemonic = "TST.L (An)"
         elif opcode == 0x4a79:
             # TST.W (abs.l): fetch the address, read through the bus,
             # and update CCR without changing the memory word.
