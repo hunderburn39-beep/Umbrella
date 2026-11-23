@@ -59,3 +59,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## VDP VRAM command transfer reference
 `vdp_address.py` decodes conventional two-word VDP control commands into VRAM addresses and operation codes. `VDPPorts` now supports **reference** VRAM read/write via an active command and register 15 address auto-increment, with wraparound. These are direct Python method calls, not timed VDP FIFO operations or acknowledged 68000 bus cycles. CRAM/VSRAM, DMA, read buffering, hardware byte-swapping, rendering and VA2-specific behavior are unimplemented. Tests: `test_vdp_address.py` and `test_vdp_transfer.py`.
+
+## 8x8 graphics patterns
+`tiles.py` decodes and encodes conventional 8x8, 4bpp packed Mega Drive pattern data (32 bytes each, 2048 addressable patterns in 64 KiB). This produces palette indices 0..15, **not** RGB pixels or a rendered frame. `test_tiles.py` validates packing and bounds; `test_tile_vdp_integration.py` validates that reference VDP VRAM transfers populate patterns. Plane A/B, window, sprites, CRAM palettes, scroll, priorities, raster timing and VA2 ASIC-specific behavior remain unimplemented. Test execution in GitHub Actions is not yet confirmed.
