@@ -37,7 +37,7 @@ class SubroutineTests(unittest.TestCase):
         self.assertEqual(c.pc, 0x10e)
 
     def test_nested_calls(self):
-        c = cpu("4eb9 0000 010c 4e71 4e71 4e71 4eb9 0000 0114 4e75 4e71 4e75")
+        c = cpu("4eb9 0000 010c 4e71 4e71 4e71 4eb9 0000 0116 4e75 4e71 4e75")
         c.step()
         self.assertEqual(c.a[7], 0xfefffc)
         c.step()
