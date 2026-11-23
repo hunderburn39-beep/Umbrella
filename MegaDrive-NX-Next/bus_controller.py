@@ -62,6 +62,8 @@ class ReferenceBusController:
             raise ValueError("not a supported canonical VDP port")
         if not isinstance(ready, bool):
             raise ValueError("ready must be boolean")
+        if as_n != 0:
+            raise RuntimeError("address strobe inactive during cycle")
         if self.cycle.phase is Phase.ACKNOWLEDGED:
             return self.cycle.sample(as_n=as_n, dtack_n=0, vdp_selected=1)
         if not ready:
