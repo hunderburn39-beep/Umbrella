@@ -15,8 +15,17 @@ class ROMBootDiagnosticTests(unittest.TestCase):
         self.assertEqual(len(result["steps"]), 1)
         self.assertEqual(result["steps"][0]["mnemonic"], "NOP")
         self.assertEqual(result["halt"]["pc"], 0x102)
+        self.assertEqual(result["halt"]["opcode"], 0xffff)
+        self.assertEqual(result["halt"]["cpu_pc_after_failure"], 0x102)
         self.assertEqual(result["halt"]["type"], "NotImplementedError")
         self.assertFalse(result["limit_reached"])
+
+    def test_failed_instruction_does_not_trigger_another_bus_read(self):
+        rom = rom_for(bytes.fromhex("ffff"))
+        result = inspect_rom(rom, 3)
+        self.assertEqual(result["halt"]["opcode"], 0xffff)
+        self.assertEqual(result["halt"]["pc"], 0x100)
+        self.assertEqual(result["steps"], [])
 
     def test_bounded_trace_does_not_overrun(self):
         result = inspect_rom(rom_for(bytes.fromhex("4e71 4e71")), 2)
