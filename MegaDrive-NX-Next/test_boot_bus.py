@@ -36,6 +36,16 @@ class BootBusTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "odd initial PC"):
             boot_probe(rom)
 
+    def test_odd_initial_ssp_rejected(self):
+        rom = bytes.fromhex("00 ff 00 01 00 00 01 00") + bytes(0xf8) + bytes.fromhex("4e 71")
+        with self.assertRaisesRegex(ValueError, "odd initial SSP"):
+            boot_probe(rom)
+
+    def test_initial_ssp_outside_24bit_bus_rejected(self):
+        rom = bytes.fromhex("01 00 00 00 00 00 01 00") + bytes(0xf8) + bytes.fromhex("4e 71")
+        with self.assertRaisesRegex(ValueError, "outside 24-bit"):
+            boot_probe(rom)
+
     def test_outside_rom_pc_rejected(self):
         rom = bytes.fromhex("00 ff 00 00 00 40 00 00")
         with self.assertRaisesRegex(ValueError, "outside"):
