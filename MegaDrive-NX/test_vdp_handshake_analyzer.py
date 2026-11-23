@@ -34,5 +34,31 @@ class HandshakeTest(unittest.TestCase):
             self.assertIn("Board DTACK falling edges: 3", result)
             self.assertIn("Display signal ever enabled: False", result)
 
+    def test_real_capture_shape_and_register_sequence(self):
+        # Representative state changes from the Switch capture, not completed writes.
+        rows = [
+            "1389582 600002 4741 0 0 1 1 1 0 0",
+            "1389590 600002 8004 0 0 1 1 1 0 0",
+            "1389596 600002 8004 0 0 1 1 0 0 0",
+            "1389870 600002 8104 0 0 1 1 1 0 0",
+            "1389876 600002 8104 0 0 1 1 0 0 1",
+            "1396093 600002 9700 0 0 0 1 0 0 1",
+        ]
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "capture.txt"
+            path.write_text(
+                "Samples: 6; last master clock: 1396093\\n"
+                + "clock addr data cpu_as cpu_rw board_dtack vdp_sel vdp_ack reg_disp reg_m5\\n"
+                + "\\n".join(rows) + "\\n",
+                encoding="utf-8",
+            )
+            out = io.StringIO()
+            with contextlib.redirect_stdout(out):
+                analyze(path)
+            result = out.getvalue()
+            self.assertIn("Display-enable command observed: False", result)
+            self.assertIn("Display signal ever enabled: False", result)
+            self.assertIn("Last candidate: 0x9700", result)
+
 if __name__ == "__main__":
     unittest.main()
