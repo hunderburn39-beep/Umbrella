@@ -429,14 +429,15 @@ s=replace(s,"                nx_latest_addr=nx_addr;",
                 }''')
 s=replace(s,"        mcycles++;\n        if (!nx_rom_trace_saved && nx_rom_n == 32) {",
 '''        mcycles++;
-        if (!nx_cpu_trace_saved && nx_cpu_trace_n == 64) {
+        if (!nx_cpu_trace_saved && nx_cpu_trace_n > 0 && (nx_cpu_trace_n == 64 || mcycles >= 2000000ULL)) {
             nx_cpu_trace_saved = 1;
             FILE *nx_cpu_file = fopen(
                 "sdmc:/switch/Umbrella-MegaDrive-NX/cpu-bus-trace.txt","w");
             if (nx_cpu_file) {
+                fprintf(nx_cpu_file,"Captured entries: %u; master clocks: %llu\\n",nx_cpu_trace_n,(unsigned long long)mcycles);
                 fprintf(nx_cpu_file,
                     "CPU bus address transitions (word-addressed); flags: bit0 write, bit1 CPU data driven\\n");
-                for (unsigned int nx_k=0; nx_k<64; nx_k++)
+                for (unsigned int nx_k=0; nx_k<nx_cpu_trace_n; nx_k++)
                     fprintf(nx_cpu_file,"%02u %06X %06X %04X %02X\\n",
                         nx_k,nx_cpu_addr_trace[nx_k],
                         nx_cpu_addr_trace[nx_k]*2u,
