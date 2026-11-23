@@ -52,7 +52,7 @@ class CPU68KMoveTests(unittest.TestCase):
 
     def test_unaligned_address_rejected(self):
         cpu = cpu_with_program("33fc 1234 00ff 0001")
-        with self.assertRaises(NotImplementedError):
+        with self.assertRaises(ValueError):
             cpu.step()
         self.assertIs(cpu.bus.cycle.phase, Phase.IDLE)
 
