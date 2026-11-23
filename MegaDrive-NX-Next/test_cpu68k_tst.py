@@ -49,9 +49,9 @@ class TestRegisterTests(unittest.TestCase):
         cpu = make_cpu("4a40 6704 7201 4e71 7207")
         cpu.step()
         cpu.step()
-        self.assertEqual(cpu.pc, 0x106)
+        self.assertEqual(cpu.pc, 0x108)
         cpu.step()
-        self.assertEqual(cpu.d[1], 0)
+        self.assertEqual(cpu.d[1], 7)
 
 if __name__ == "__main__":
     unittest.main()
