@@ -494,9 +494,11 @@ s=replace(s,'''            FILE *nx_cpu_file = fopen(
 '''            nx_cpu_published_count=nx_cpu_trace_n;
             nx_cpu_published_clocks=(unsigned long long)mcycles;
             __atomic_store_n(&nx_cpu_trace_ready,1,__ATOMIC_RELEASE);''')
-s=replace(s,"        nx_video_show_boot(nx_get_worker_clock());",
-'''        nx_trace_flush_main();
-        nx_video_show_boot(nx_get_worker_clock());''')
+s=replace(s,"            else nx_video_show_boot(nx_get_worker_clock());",
+'''            else {
+                nx_trace_flush_main();
+                nx_video_show_boot(nx_get_worker_clock());
+            }''')
 # V5.0: ROM trace also uses the immutable main-thread handoff.
 s=replace(s,'''            FILE *nx_trace = fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt", "w");
             nx_rom_trace_saved = 1;
@@ -529,10 +531,10 @@ static void nx_rom_trace_flush_main(void) {
     fclose(out);
 }
 static unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];''')
-s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_worker_clock());",
-'''        nx_trace_flush_main();
-        nx_rom_trace_flush_main();
-        nx_video_show_boot(nx_get_worker_clock());''')
+s=replace(s,"                nx_trace_flush_main();\n                nx_video_show_boot(nx_get_worker_clock());",
+'''                nx_trace_flush_main();
+                nx_rom_trace_flush_main();
+                nx_video_show_boot(nx_get_worker_clock());''')
 # V5.4: make an empty or partial cartridge trace explicit on Switch.
 # Without a count the 2M-cycle timeout can look like a complete ROM trace.
 s=replace(s,'fprintf(out,"Cartridge reads: word address, byte address, ROM data\\n");',
