@@ -198,7 +198,7 @@ class CPU68KReference:
             source = opcode & 7
             self._compare_word(self.d[destination], self.d[source])
             mnemonic = "CMP.W Dn,Dm"
-        elif opcode & 0xf000 == 0x6000 and (opcode >> 8 & 15) != 1:
+        elif opcode & 0xf000 == 0x6000 and ((opcode >> 8) & 15) != 1:
             condition = (opcode >> 8) & 15
             displacement = opcode & 0xff
             if displacement == 0:
@@ -212,27 +212,7 @@ class CPU68KReference:
                     raise ValueError("odd branch target")
                 self.pc = target
             mnemonic = "BRA" if condition == 0 else "Bcc"
-
-            displacement = opcode & 0xff
-            if displacement == 0:
-                extension = self.fetch_word()
-                displacement = extension - 65536 if extension & 0x8000 else extension
-            else:
-                displacement = displacement - 256 if displacement & 0x80 else displacement
-            target = (self.pc + displacement) & 0xffffffff
-            if target & 1:
-                raise ValueError("odd BRA target")
-            self.pc = target
-            mnemonic = "BRA"
         else:
-            self.pc = before
-            raise NotImplementedError(f"68000 opcode 0x{opcode:04x} not implemented")
-        return StepResult(before, opcode, self.pc, mnemonic)
-
-    def run(self, max_steps: int = 100):
-        if not 1 <= max_steps <= 100000:
-            raise ValueError("max_steps must be 1..100000")
-        return tuple(self.step() for _ in range(max_steps))        else:
             self.pc = before
             raise NotImplementedError(f"68000 opcode 0x{opcode:04x} not implemented")
         return StepResult(before, opcode, self.pc, mnemonic)
