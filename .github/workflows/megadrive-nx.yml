@@ -45,6 +45,8 @@ jobs:
           name: Umbrella-MegaDrive-NX-build-failure
           path: |
             MegaDrive-NX/dist/build-log.txt
+            MegaDrive-NX/build/md.c
+            MegaDrive-NX/build/md.h
             MegaDrive-NX/SD_IO_AUDIT.md
           if-no-files-found: warn
       - name: Verify NRO header and hash
