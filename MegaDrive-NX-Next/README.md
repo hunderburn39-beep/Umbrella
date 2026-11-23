@@ -143,3 +143,6 @@ The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a si
 
 ## Explicit autovector interrupt reference
 `service_autovector_irq_reference(level)` accepts externally supplied levels 1..6, compares them with the SR interrupt mask, uses vectors 25..30, and stacks a short SR/PC frame. A serviced interrupt updates the mask, releases `STOP`, and `RTE` restores the prior state. The test-only method does **not** model IRQ signal generation, pending IRQ queues, interrupt acknowledge cycles, level-7 edge behavior, VDP VBlank/HBlank wiring, or ASIC timing. Five tests cover reset masking, STOP wake-up, nesting, mask rejection, and invalid levels. Tests have been committed but not independently run in this environment.
+
+## Explicit VDP-to-68000 interrupt bridge
+`vdp_irq_bridge.py` maps caller-supplied HBlank to autovector level 4 and VBlank to level 6, using the existing CPU reference IRQ service. The caller explicitly supplies whether the event is enabled. The bridge respects the CPU mask and can wake STOP through an accepted interrupt; masked events are not queued. Five regression cases cover reset mask, STOP wake/RTE, nested priority, disabled events, and invalid arguments. **No VDP scanline clocks, hardware IRQ generation, VDP register enable decoding, or measured ASIC timing are implemented.** CI results are not independently verified.
