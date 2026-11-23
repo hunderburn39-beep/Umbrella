@@ -6,6 +6,7 @@ video output, or command-to-VRAM transfers.
 """
 from dataclasses import dataclass, field
 from vram import VRAM
+from vdp_address import VDPCommand, decode_command, increment_address
 
 CONTROL_PORT = 0xC00004
 DATA_PORT = 0xC00000
@@ -16,12 +17,14 @@ class VDPPorts:
     vram: VRAM = field(default_factory=VRAM)
     pending_command: int | None = None
     last_command: int | None = None
+    active_command: VDPCommand | None = None
 
     def write_control(self, value: int) -> str:
         if not 0 <= value <= 0xffff:
             raise ValueError("VDP control word must be 16-bit")
         if self.pending_command is not None:
             self.last_command = (self.pending_command << 16) | value
+            self.active_command = decode_command(self.pending_command, value)
             self.pending_command = None
             return "command-staged"
         if (value & 0xC000) == 0x8000:
@@ -36,7 +39,23 @@ class VDPPorts:
     def write_data(self, value: int) -> None:
         if not 0 <= value <= 0xffff:
             raise ValueError("VDP data word must be 16-bit")
-        raise NotImplementedError("VDP data port, VRAM and FIFO not implemented")
+        command = self.active_command
+        if command is None or command.operation != "vram-write":
+            raise NotImplementedError("no supported VRAM write command active")
+        self.vram.write_word(command.address, value)
+        self.active_command = VDPCommand(
+            increment_address(command.address, self.registers[15]), command.code
+        )
+
+    def read_data(self) -> int:
+        command = self.active_command
+        if command is None or command.operation != "vram-read":
+            raise NotImplementedError("no supported VRAM read command active")
+        value = self.vram.read_word(command.address)
+        self.active_command = VDPCommand(
+            increment_address(command.address, self.registers[15]), command.code
+        )
+        return value
 
     def read_status(self) -> int:
         raise NotImplementedError("VDP status requires timing and FIFO model")
@@ -45,6 +64,7 @@ class VDPPorts:
         self.registers[:] = [0] * len(self.registers)
         self.pending_command = None
         self.last_command = None
+        self.active_command = None
 
     def diagnostic_vram_read(self, address: int) -> int:
         """Direct VRAM inspection, intentionally bypassing the VDP data port."""
