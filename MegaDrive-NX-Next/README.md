@@ -113,3 +113,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## 68000 subroutine stack reference
 `CPU68KReference` supports `JSR (abs.l)` (`0x4EB9`), `JSR (An)` (`0x4E90..0x4E97`) and `RTS` (`0x4E75`). Return addresses are pushed to A7 in big-endian 16-bit bus words and popped on return. `test_cpu68k_subroutines.py` adds seven regression cases for stack values, nested calls, alignment and unmodeled stack access. This remains an untimed reference subset without exceptions, supervisor transitions, stack guard semantics or full 68000 execution. Test execution has not been confirmed.
+
+## JMP control flow
+`CPU68KReference.step()` supports `JMP (abs.l)` (`4EF9`) and `JMP (An)` (`4ED0..4ED7`), rejects odd jump destinations and leaves A7 unchanged. `test_cpu68k_jump.py` provides five regression cases. This is a partial 68000 instruction reference, not an operational commercial-ROM boot or cycle-accurate Genesis 3 VA2 hardware reconstruction. Test execution is not yet confirmed.
