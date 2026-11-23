@@ -425,6 +425,10 @@ class CPU68KReference:
             self.write_word(address, self.d[opcode & 7] & 0xffff)
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
+        elif opcode & 0xfff8 == 0x4a00:
+            # TST.B Dn: only the low byte affects N/Z; preserve X and Dn.
+            self._logic_flags(self.d[opcode & 7], 8)
+            mnemonic = "TST.B Dn"
         elif opcode & 0xfff8 == 0x4a40:
             # TST.W Dn: update N/Z, clear V/C, preserve X; no data change.
             self._logic_flags(self.d[opcode & 7], 16)
