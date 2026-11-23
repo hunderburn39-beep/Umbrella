@@ -446,6 +446,16 @@ class CPU68KReference:
             value = self.read_word(address)
             self._logic_flags(value, 16)
             mnemonic = "TST.W (abs.l)"
+        elif opcode == 0x4aB9:
+            # TST.L (abs.l): two big-endian 16-bit reads; preserve memory.
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            if not 0 <= address <= 0xfffffc:
+                raise ValueError("long operand outside 24-bit reference bus")
+            if address & 1:
+                raise ValueError("unaligned 68000 long read")
+            value = (self.read_word(address) << 16) | self.read_word(address + 2)
+            self._logic_flags(value, 32)
+            mnemonic = "TST.L (abs.l)"
         elif opcode & 0xfff8 == 0x4a80:
             # TST.L Dn: full 32-bit signed/zero test.
             self._logic_flags(self.d[opcode & 7], 32)
