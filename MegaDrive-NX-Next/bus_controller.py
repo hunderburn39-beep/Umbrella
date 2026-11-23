@@ -49,9 +49,10 @@ class ReferenceBusController:
                 raise NotImplementedError(
                     f"{region} responder not implemented; cannot complete transfer"
                 )
+        was_acknowledged = self.cycle.phase is Phase.ACKNOWLEDGED
         acknowledged = self.cycle.sample(as_n=as_n, dtack_n=dtack_n,
                                          vdp_selected=int(region == "vdp-candidate"))
-        if acknowledged:
+        if acknowledged and not was_acknowledged:
             if req.read:
                 self.response = self.memory.read_word(req.address)
                 self.completed_reads += 1
