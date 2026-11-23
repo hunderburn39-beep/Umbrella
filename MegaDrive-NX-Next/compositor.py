@@ -38,7 +38,7 @@ class DiagnosticCompositor:
         ]
         if self.sprite_table_base is not None:
             sprites = linked_sprites(self.plane_a.vram, self.sprite_table_base)
-            for sprite in reversed(sprites):
+            for sprite in sprites:
                 pixel = sprite_pixel(self.plane_a.vram, sprite, x, y)
                 if pixel is not None:
                     index, palette, priority = pixel
