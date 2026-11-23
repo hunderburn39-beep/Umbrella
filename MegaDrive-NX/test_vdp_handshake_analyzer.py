@@ -47,9 +47,9 @@ class HandshakeTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "capture.txt"
             path.write_text(
-                "Samples: 6; last master clock: 1396093\\n"
-                + "clock addr data cpu_as cpu_rw board_dtack vdp_sel vdp_ack reg_disp reg_m5\\n"
-                + "\\n".join(rows) + "\\n",
+                "Samples: 6; last master clock: 1396093\n"
+                + "clock addr data cpu_as cpu_rw board_dtack vdp_sel vdp_ack reg_disp reg_m5\n"
+                + "\n".join(rows) + "\n",
                 encoding="utf-8",
             )
             out = io.StringIO()
