@@ -122,3 +122,6 @@ Run `python MegaDrive-NX-Next/diagnostic_cpu_smoke.py` from the repository root.
 
 ## DBcc loops and CI smoke coverage
 The 68000 reference harness now supports DBcc (`0x50C8` pattern, including DBF and DBEQ) with a 16-bit decrement of the low data-register word when its condition is false. The branch base is the extension-word address and CCR is unchanged. Five regression cases are in `test_cpu68k_dbcc.py`. The GitHub Actions workflow now runs Python compileall, the complete unittest discovery suite, and `diagnostic_cpu_smoke.py`. This is synthetic diagnostic coverage only. CI success has not been verified; external ROM boot and chip-level timing remain unimplemented.
+
+## 68000 32-bit MOVE reference operations
+The CPU reference supports `MOVE.L #imm,Dn`, `MOVE.L (abs.l),Dn` and `MOVE.L #imm,(abs.l)` with big-endian two-word transfers and 32-bit N/Z flags (X preserved, V/C cleared). Eight cases in `test_cpu68k_long.py` cover ROM/RAM, flags and rejected addresses. BSR.s/BSR.w relative calls are also supported with six dedicated tests in `test_cpu68k_bsr.py`. CI remains unverified; this is not a cycle-accurate CPU or full game-boot implementation.
