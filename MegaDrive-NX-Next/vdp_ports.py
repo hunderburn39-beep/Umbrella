@@ -7,6 +7,8 @@ video output, or command-to-VRAM transfers.
 from dataclasses import dataclass, field
 from vram import VRAM
 from cram import CRAM
+from vdp_status import DiagnosticVDPStatus
+from sprite_scanline import ScanlineResult
 from vdp_address import VDPCommand, decode_command, increment_address
 
 CONTROL_PORT = 0xC00004
@@ -17,6 +19,7 @@ class VDPPorts:
     registers: list[int] = field(default_factory=lambda: [0] * 24)
     vram: VRAM = field(default_factory=VRAM)
     cram: CRAM = field(default_factory=CRAM)
+    diagnostic_status: DiagnosticVDPStatus = field(default_factory=DiagnosticVDPStatus)
     pending_command: int | None = None
     last_command: int | None = None
     active_command: VDPCommand | None = None
@@ -62,7 +65,17 @@ class VDPPorts:
     def read_status(self) -> int:
         raise NotImplementedError("VDP status requires timing and FIFO model")
 
+    def diagnostic_observe_scanline(self, result: ScanlineResult) -> None:
+        self.diagnostic_status.observe(result)
+
+    def diagnostic_status_word(self) -> int:
+        return self.diagnostic_status.word()
+
+    def diagnostic_begin_frame(self) -> None:
+        self.diagnostic_status.begin_frame()
+
     def reset(self) -> None:
+        self.diagnostic_status.begin_frame()
         self.registers[:] = [0] * len(self.registers)
         self.pending_command = None
         self.last_command = None
