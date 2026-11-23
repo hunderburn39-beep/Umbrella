@@ -27,12 +27,12 @@ class HandshakeTest(unittest.TestCase):
             with contextlib.redirect_stdout(out):
                 analyze(path)
             result = out.getvalue()
-            self.assertIn("samples: 8", result)
-            self.assertIn("register 1 values: ['0x4', '0x44']", result)
-            self.assertIn("display bit in register 1: [False, True]", result)
-            self.assertIn("vdp_ack falling edges: 3", result)
-            self.assertIn("board_dtack falling edges: 3", result)
-            self.assertIn("reg_disp ever enabled: False", result)
+            self.assertIn("Samples: 8", result)
+            self.assertIn("Register 1 commands: [(30, '0x4'), (70, '0x44')]", result)
+            self.assertIn("Display-enable command observed: True", result)
+            self.assertIn("VDP ACK falling edges: 3", result)
+            self.assertIn("Board DTACK falling edges: 3", result)
+            self.assertIn("Display signal ever enabled: False", result)
 
 if __name__ == "__main__":
     unittest.main()
