@@ -37,7 +37,7 @@ class TileTests(unittest.TestCase):
 
     def test_invalid_dimensions(self):
         with self.assertRaises(ValueError):
-            encode_tile(self.vram, 0, [[1] * 8 for _ in range(7))
+            encode_tile(self.vram, 0, [[1] * 8 for _ in range(7)])
 
 if __name__ == "__main__":
     unittest.main()
