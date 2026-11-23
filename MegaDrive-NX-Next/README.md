@@ -68,3 +68,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Diagnostic name-table planes
 `planes.py` decodes conventional 16-bit plane name-table attributes: 11-bit pattern index, H/V flip, palette bank and priority. `DiagnosticPlane` samples a specified VRAM name-table base using 32/64/128-tile plane dimensions and resolves a pixel through the tile decoder and CRAM. It is a **direct diagnostic sampler**, not an implemented Plane A/B compositor or an ASIC renderer. Scrolling, window plane, sprite overlays, priority mixing, transparency, VDP register-controlled table addresses and scanline timing remain pending. Tests: `test_planes.py`; CI execution not yet confirmed.
+
+## Plane A/B diagnostic composition
+`compositor.py` combines two `DiagnosticPlane` samplers using a simplified conventional priority order (A high, B high, A low, B low, backdrop) and treats color index 0 as transparent. It produces RGB rows and PPM bytes, **not** a hardware-timed frame. `demo_frame.py` creates a synthetic 64x64 PPM diagnostic frame from patterns and name tables; it is not ROM-driven. `test_compositor.py` covers transparency, ordering, backdrop and PPM size. Scroll, sprites, window plane, backdrop register wiring, shadow/highlight and 315-6123 timing remain unimplemented. Test execution not yet verified.
