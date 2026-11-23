@@ -53,3 +53,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## VDP command-port reference
 `vdp_ports.py` recognizes conventional VDP register-write control words and stages two-word control commands. The reference controller exposes `stage_vdp_control_word()` for isolated untimed tests only; its real 68000 bus-cycle path continues to wait for external DTACK and never automatically writes VDP registers. Data port, VRAM, FIFO, DMA, status bits, rasterization and VA2-specific chip behavior are not implemented. Regression tests: `test_vdp_ports.py` and `test_controller_vdp.py`.
+
+## VRAM reference storage
+`vram.py` provides a 64 KiB byte-array reference with byte/word access, address-boundary wrapping and clearing. `VDPPorts` now owns an isolated VRAM instance with explicit **diagnostic-only** read/write methods. No control-command address decoding into VRAM operations, data-port transfer, FIFO, DMA, VDP memory layout, rendering, or VA2 timing is claimed. `test_vram.py` and `test_vdp_vram.py` cover storage and verify that unacknowledged 68000 writes cannot mutate VRAM. CI execution not yet confirmed.
