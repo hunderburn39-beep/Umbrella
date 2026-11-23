@@ -245,6 +245,29 @@ class CPU68KReference:
             register = (opcode >> 9) & 7
             self.a[register] = (self.fetch_word() << 16) | self.fetch_word()
             mnemonic = "MOVEA.L #imm,An"
+        elif opcode & 0xf1f8 == 0x2010:
+            # MOVE.L (An),Dn. Preserve An; two big-endian word reads.
+            destination = (opcode >> 9) & 7
+            source = opcode & 7
+            address = self.a[source]
+            if not 0 <= address <= 0xfffffd:
+                raise ValueError("longword crosses reference bus boundary")
+            value = (self.read_word(address) << 16) | self.read_word(address + 2)
+            self.d[destination] = value
+            self._logic_flags(value, 32)
+            mnemonic = "MOVE.L (An),Dn"
+        elif opcode & 0xf1f8 == 0x2080:
+            # MOVE.L Dn,(An). Preserve An; high word before low word.
+            destination = (opcode >> 9) & 7
+            source = opcode & 7
+            address = self.a[destination]
+            if not 0 <= address <= 0xfffffd:
+                raise ValueError("longword crosses reference bus boundary")
+            value = self.d[source] & 0xffffffff
+            self.write_word(address, (value >> 16) & 0xffff)
+            self.write_word(address + 2, value & 0xffff)
+            self._logic_flags(value, 32)
+            mnemonic = "MOVE.L Dn,(An)"
         elif opcode & 0xf1f8 == 0x3010:
             # MOVE.W (An),Dn, preserving upper 16 bits.
             dst = (opcode >> 9) & 7
