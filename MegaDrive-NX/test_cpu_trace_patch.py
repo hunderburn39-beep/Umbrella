@@ -38,6 +38,10 @@ class CpuTracePatchTests(unittest.TestCase):
         self.assertIn("static void nx_trace_flush_main(void);",self.code)
         self.assertIn("static void nx_rom_trace_flush_main(void);",self.code)
 
+    def test_cpu_trace_snapshot_is_immutable_after_publication(self):
+        self.assertIn("if (!nx_cpu_trace_saved && nx_cpu_trace_n < 64 &&",self.code)
+        self.assertIn("nx_cpu_trace_saved = 1;",self.code)
+
     def test_no_instruction_pc_claim(self):
         self.assertIn("NOT a decoded instruction PC",self.code)
 
