@@ -421,6 +421,12 @@ class CPU68KReference:
             # TST.W Dn: update N/Z, clear V/C, preserve X; no data change.
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "TST.W Dn"
+        elif opcode & 0xfff8 == 0x4a50:
+            # TST.W (An): read through the reference bus, update CCR.
+            # The address register and memory remain unchanged.
+            value = self.read_word(self.a[opcode & 7])
+            self._logic_flags(value, 16)
+            mnemonic = "TST.W (An)"
         elif opcode & 0xfff8 == 0x4a80:
             # TST.L Dn: full 32-bit signed/zero test.
             self._logic_flags(self.d[opcode & 7], 32)
