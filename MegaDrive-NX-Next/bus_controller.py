@@ -6,10 +6,13 @@ Z80 and IO require independent hardware models. Not a VA2 ASIC simulation.
 from bus import ReferenceBus
 from bus_cycle import BusCycle, Phase, Request
 from boot_bus import decode_region
+from z80_bridge import Z80Bridge
+from z80_control import BUSREQ_ADDR, RESET_ADDR
 
 class ReferenceBusController:
     def __init__(self, rom: bytes):
         self.memory = ReferenceBus(rom)
+        self.z80 = Z80Bridge()
         self.cycle = BusCycle()
         self.response = None
 
@@ -49,3 +52,26 @@ class ReferenceBusController:
         result = self.response
         self.response = None
         return acknowledged, result
+
+    def write_z80_control(self, address: int, value: int):
+        """Reference register operation, not a timed 68000 bus transaction."""
+        if self.cycle.phase is not Phase.IDLE:
+            raise RuntimeError("cannot bypass an active bus cycle")
+        if address not in (BUSREQ_ADDR, RESET_ADDR):
+            raise ValueError("not a Z80 control register")
+        self.z80.write_control_word(address, value)
+
+    def observe_z80_grant(self, granted: bool):
+        """Record an externally supplied bus grant; never infer one."""
+        self.z80.observe_grant(granted)
+
+    def read_z80_byte(self, address: int) -> int:
+        """Explicit byte path until physical 68000 lane wiring is verified."""
+        if self.cycle.phase is not Phase.IDLE:
+            raise RuntimeError("cannot bypass an active bus cycle")
+        return self.z80.read_byte(address)
+
+    def write_z80_byte(self, address: int, value: int):
+        if self.cycle.phase is not Phase.IDLE:
+            raise RuntimeError("cannot bypass an active bus cycle")
+        self.z80.write_byte(address, value)
