@@ -335,6 +335,20 @@ class CPU68KReference:
             self.write_word(address + 2, value & 0xffff)
             self._logic_flags(value, 32)
             mnemonic = "MOVE.L Dn,(abs.l)"
+        elif opcode & 0xf1f8 == 0x3050:
+            # MOVEA.W (An),Am reads a signed word through the reference bus.
+            destination = (opcode >> 9) & 7
+            source = opcode & 7
+            value = self.read_word(self.a[source])
+            self.a[destination] = value | 0xffff0000 if value & 0x8000 else value
+            mnemonic = "MOVEA.W (An),Am"
+        elif opcode & 0xf1ff == 0x3079:
+            # MOVEA.W (abs.l),An sign-extends memory word, CCR unchanged.
+            destination = (opcode >> 9) & 7
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            value = self.read_word(address)
+            self.a[destination] = value | 0xffff0000 if value & 0x8000 else value
+            mnemonic = "MOVEA.W (abs.l),An"
         elif opcode & 0xf1ff == 0x307c:
             # MOVEA.W #imm,An sign-extends 16-bit immediate; CCR unchanged.
             register = (opcode >> 9) & 7
