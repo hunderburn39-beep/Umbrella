@@ -1,6 +1,6 @@
 """Minimal instruction-level 68000 reference harness for boot research.
 
-Supports NOP, MOVEQ, BRA.s/BRA.w, and selected MOVE.W forms.
+Supports selected MOVE, MOVEQ, CMP, branch, call, and return forms.
 All instruction fetches use ReferenceBusController's ROM/RAM handshake.
 Not a full 68000 emulator, ASIC core, or ROM-compatible execution engine.
 """
@@ -229,6 +229,17 @@ class CPU68KReference:
             self.write_word(address + 2, value & 0xffff)
             self._logic_flags(value, 32)
             mnemonic = "MOVE.L #imm,(abs.l)"
+        elif opcode & 0xfff8 == 0x23c0:
+            # MOVE.L Dn,(abs.l), two ordered big-endian word transfers.
+            register = opcode & 7
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            if address > 0xfffffd:
+                raise ValueError("longword crosses reference bus boundary")
+            value = self.d[register] & 0xffffffff
+            self.write_word(address, (value >> 16) & 0xffff)
+            self.write_word(address + 2, value & 0xffff)
+            self._logic_flags(value, 32)
+            mnemonic = "MOVE.L Dn,(abs.l)"
         elif opcode & 0xf1ff == 0x207c:
             # MOVEA.L #immediate,An; no condition codes modeled.
             register = (opcode >> 9) & 7
