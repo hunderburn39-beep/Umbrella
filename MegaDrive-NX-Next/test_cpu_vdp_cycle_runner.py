@@ -54,6 +54,18 @@ class CycleRunnerTests(unittest.TestCase):
             r.tick_line()
         self.assertEqual(c.pc, 0x100)
 
+    def test_opcode_pricing_peek_does_not_create_bus_read(self):
+        c, v = setup("4e75")
+        r = CPUVDPCycleReferenceRunner(c, v, cycles_per_line=4)
+        self.assertFalse(r.tick_line().instructions)
+        self.assertEqual(c.bus.diagnostic_bus_counts(), (0, 0, 0, 0))
+
+    def test_nop_fetch_counts_one_actual_bus_read(self):
+        c, v = setup("4e71 4e71")
+        r = CPUVDPCycleReferenceRunner(c, v, cycles_per_line=4)
+        self.assertEqual(len(r.tick_line().instructions), 1)
+        self.assertEqual(c.bus.diagnostic_bus_counts(), (1, 0, 0, 0))
+
     def test_invalid_cycle_budgets(self):
         c, v = setup("4e71")
         for n in (0, -1, True, 100001):
