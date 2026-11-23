@@ -31,4 +31,4 @@ The previous implementation, including its unresolved VDP behavior, is NOT copie
 6. Test diagnostic ROM on Switch, then user-supplied Super Hang-On ROM.
 
 ## Status
-Research scaffold created. No executable console core, no NRO, no validated gameplay.
+Reference 68000 reset-vector decoder and ROM/RAM word bus implemented in Python, with unit tests. The bus deliberately refuses unimplemented VDP, IO and Z80 accesses. This is not a CPU executor, verified ASIC, Switch NRO or playable console. CI execution remains unverified.
