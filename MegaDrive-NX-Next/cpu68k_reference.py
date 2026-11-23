@@ -473,6 +473,16 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 in (0x4600, 0x4640, 0x4680):
+            # NOT.B/W/L Dn: complement selected operand, preserving upper bits.
+            register = opcode & 7
+            size_code = (opcode >> 6) & 3
+            bits = (8, 16, 32)[size_code]
+            mask = (1 << bits) - 1
+            result = (~self.d[register]) & mask
+            self.d[register] = (self.d[register] & ~mask) | result
+            self._logic_flags(result, bits)
+            mnemonic = ("NOT.B Dn", "NOT.W Dn", "NOT.L Dn")[size_code]
         elif opcode & 0xfff8 in (0x4400, 0x4440, 0x4480):
             # NEG.B/W/L Dn: 0 - operand, with X=C and V on min negative.
             register = opcode & 7
