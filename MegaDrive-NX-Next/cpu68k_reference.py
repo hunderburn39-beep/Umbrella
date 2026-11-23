@@ -425,6 +425,24 @@ class CPU68KReference:
             self.write_word(address, self.d[opcode & 7] & 0xffff)
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
+        elif opcode & 0xf1f8 in (0x5080, 0x5180):
+            # ADDQ.L / SUBQ.L #1..8,Dn. X follows C on arithmetic.
+            register = opcode & 7
+            immediate = (opcode >> 9) & 7 or 8
+            subtract = bool(opcode & 0x0100)
+            original = self.d[register] & 0xffffffff
+            result = (original - immediate if subtract else original + immediate) & 0xffffffff
+            if subtract:
+                overflow = bool(((original ^ immediate) & (original ^ result)) & 0x80000000)
+                carry = original < immediate
+            else:
+                overflow = bool((~(original ^ immediate) & (original ^ result)) & 0x80000000)
+                carry = original + immediate > 0xffffffff
+            self.d[register] = result
+            self.ccr = ((0x10 if carry else 0) | (0x08 if result & 0x80000000 else 0)
+                        | (0x04 if result == 0 else 0) | (0x02 if overflow else 0)
+                        | (0x01 if carry else 0))
+            mnemonic = "SUBQ.L #imm,Dn" if subtract else "ADDQ.L #imm,Dn"
         elif opcode & 0xf1f8 in (0x5040, 0x5140):
             # ADDQ.W / SUBQ.W #1..8,Dn; upper word is preserved.
             register = opcode & 7
