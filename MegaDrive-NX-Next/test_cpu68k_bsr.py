@@ -37,7 +37,7 @@ class BSRTests(unittest.TestCase):
         c.step()
         c.step()
         self.assertEqual(c.pc, 0x102)
-        self.assertEqual(c.a[7], 0xfefffc
+        self.assertEqual(c.a[7], 0xfefffc)
 
     def test_bsr_preserves_ccr(self):
         c = cpu("6102 4e71 4e75")
