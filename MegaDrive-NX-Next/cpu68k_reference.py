@@ -564,6 +564,27 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 in (0x0000, 0x0040, 0x0080, 0x0200, 0x0240, 0x0280, 0x0a00, 0x0a40, 0x0a80):
+            # ORI, ANDI, EORI immediate to Dn, all three operand sizes.
+            register = opcode & 7
+            size = (opcode >> 6) & 3
+            bits = (8, 16, 32)[size]
+            mask = (1 << bits) - 1
+            immediate = self.fetch_word()
+            if bits == 32:
+                immediate = (immediate << 16) | self.fetch_word()
+            immediate &= mask
+            original = self.d[register] & mask
+            operation = opcode & 0xff00
+            if operation == 0x0000:
+                result, name = original | immediate, "ORI"
+            elif operation == 0x0200:
+                result, name = original & immediate, "ANDI"
+            else:
+                result, name = original ^ immediate, "EORI"
+            self.d[register] = (self.d[register] & ~mask) | result
+            self._logic_flags(result, bits)
+            mnemonic = name + "." + ("B", "W", "L")[size] + " #imm,Dn"
         elif opcode & 0xfff8 == 0x4880:
             # EXT.W Dn: sign-extend low byte into low word.
             register = opcode & 7
