@@ -17,6 +17,15 @@ class ReferenceBusController:
         self.vdp = VDPPorts()
         self.cycle = BusCycle()
         self.response = None
+        self.completed_reads = 0
+        self.completed_writes = 0
+        self.completed_vdp_reads = 0
+        self.completed_vdp_writes = 0
+
+    def diagnostic_bus_counts(self):
+        """Completed acknowledged transfers only; not elapsed bus cycles."""
+        return (self.completed_reads, self.completed_writes,
+                self.completed_vdp_reads, self.completed_vdp_writes)
 
     def begin(self, request: Request):
         if request.address & 1 or not (request.upper and request.lower):
@@ -45,8 +54,10 @@ class ReferenceBusController:
         if acknowledged:
             if req.read:
                 self.response = self.memory.read_word(req.address)
+                self.completed_reads += 1
             else:
                 self.memory.write_word(req.address, req.data)
+                self.completed_writes += 1
         return acknowledged
 
     def clock_vdp_reference(self, *, as_n=0, ready=False):
@@ -83,6 +94,12 @@ class ReferenceBusController:
         acknowledged = self.cycle.sample(as_n=as_n, dtack_n=0, vdp_selected=1)
         if acknowledged:
             self.response = value
+            if req.read:
+                self.completed_reads += 1
+                self.completed_vdp_reads += 1
+            else:
+                self.completed_writes += 1
+                self.completed_vdp_writes += 1
         return acknowledged
 
     def finish(self):
