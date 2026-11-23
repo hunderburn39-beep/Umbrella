@@ -107,3 +107,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Address-register indirect 68000 reference instructions
 `CPU68KReference` now initializes address registers `A0..A7` on reset (`A7` starts at the initial SSP) and supports `MOVEA.L #imm,An`, `MOVE.W Dn,(An)` and `MOVE.W (An),Dn` through the existing explicit reference bus. `test_cpu68k_indirect.py` adds eight scenarios for RAM, VDP and alignment. The earlier unaligned-word test now expects `ValueError` rather than `NotImplementedError`. These instructions are a small subset of the Motorola 68000, and the status register, condition codes, exceptions and chip timing are not modeled. No passing GitHub Actions status was confirmed for this commit.
+
+## 68000 condition codes and conditional branches
+`CPU68KReference` now holds a partial CCR (`X N Z V C`). Implemented MOVE/MOVEQ operations update N/Z and clear V/C while preserving X; `CMP.W Dn,Dm` and `CMPI.W #imm,Dn` compute N/Z/V/C for word subtraction. The reference `Bcc` decoder supports 8-bit and 16-bit displacement conditions except BSR (explicitly unsupported), and BRA remains supported. `test_cpu68k_flags.py` adds eleven regression cases. This is not a complete status register, interrupt, exception, timing or 68000 core model. CI test execution is not confirmed.
