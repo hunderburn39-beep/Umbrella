@@ -473,6 +473,14 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 == 0x4840:
+            # SWAP Dn exchanges high and low 16-bit halves of Dn.
+            register = opcode & 7
+            original = self.d[register] & 0xffffffff
+            result = ((original & 0xffff) << 16) | (original >> 16)
+            self.d[register] = result
+            self._logic_flags(result, 32)
+            mnemonic = "SWAP Dn"
         elif opcode & 0xfff8 in (0x4600, 0x4640, 0x4680):
             # NOT.B/W/L Dn: complement selected operand, preserving upper bits.
             register = opcode & 7
