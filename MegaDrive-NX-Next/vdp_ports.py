@@ -5,6 +5,7 @@ recognition only. Does not implement VA2 VDP execution, FIFO, DMA, DTACK,
 video output, or command-to-VRAM transfers.
 """
 from dataclasses import dataclass, field
+from vram import VRAM
 
 CONTROL_PORT = 0xC00004
 DATA_PORT = 0xC00000
@@ -12,6 +13,7 @@ DATA_PORT = 0xC00000
 @dataclass
 class VDPPorts:
     registers: list[int] = field(default_factory=lambda: [0] * 24)
+    vram: VRAM = field(default_factory=VRAM)
     pending_command: int | None = None
     last_command: int | None = None
 
@@ -43,3 +45,11 @@ class VDPPorts:
         self.registers[:] = [0] * len(self.registers)
         self.pending_command = None
         self.last_command = None
+
+    def diagnostic_vram_read(self, address: int) -> int:
+        """Direct VRAM inspection, intentionally bypassing the VDP data port."""
+        return self.vram.read_word(address)
+
+    def diagnostic_vram_write(self, address: int, value: int) -> None:
+        """Direct VRAM test injection, not a VDP FIFO or CPU bus write."""
+        self.vram.write_word(address, value)
