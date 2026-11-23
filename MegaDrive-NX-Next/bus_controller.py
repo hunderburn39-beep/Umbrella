@@ -78,6 +78,18 @@ class ReferenceBusController:
             raise RuntimeError("cannot bypass an active bus cycle")
         self.z80.write_byte(address, value)
 
+    def diagnostic_read_vdp_status(self, address: int) -> int:
+        """Inspect diagnostic status through a bus-controller API.
+
+        This is NOT a 68000 read cycle: it never asserts DTACK and does
+        not replace VDPPorts.read_status() or model FIFO/timing.
+        """
+        if self.cycle.phase is not Phase.IDLE:
+            raise RuntimeError("cannot bypass an active bus cycle")
+        if address != CONTROL_PORT:
+            raise ValueError("only canonical VDP control/status port supported")
+        return self.vdp.diagnostic_status_word()
+
     def stage_vdp_control_word(self, address: int, value: int) -> str:
         """Untimed test-only staging, not a completed 68000 bus transaction."""
         if self.cycle.phase is not Phase.IDLE:
