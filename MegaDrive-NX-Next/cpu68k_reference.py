@@ -473,6 +473,23 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 in (0x4400, 0x4440, 0x4480):
+            # NEG.B/W/L Dn: 0 - operand, with X=C and V on min negative.
+            register = opcode & 7
+            size_code = (opcode >> 6) & 3
+            bits = (8, 16, 32)[size_code]
+            mask = (1 << bits) - 1
+            original = self.d[register] & mask
+            result = (-original) & mask
+            self.d[register] = (self.d[register] & ~mask) | result
+            carry = original != 0
+            overflow = original == (1 << (bits - 1))
+            self.ccr = ((0x10 if carry else 0) |
+                        (0x08 if result & (1 << (bits - 1)) else 0) |
+                        (0x04 if result == 0 else 0) |
+                        (0x02 if overflow else 0) |
+                        (0x01 if carry else 0))
+            mnemonic = ("NEG.B Dn", "NEG.W Dn", "NEG.L Dn")[size_code]
         elif opcode & 0xfff8 == 0x4200:
             # CLR.B Dn: only low eight bits change, X is preserved.
             register = opcode & 7
