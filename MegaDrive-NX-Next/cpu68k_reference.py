@@ -262,6 +262,23 @@ class CPU68KReference:
             source = opcode & 7
             self._compare_word(self.d[destination], self.d[source])
             mnemonic = "CMP.W Dn,Dm"
+        elif opcode & 0xf0f8 == 0x50c8:
+            # DBcc Dn,disp16. Decrement only if condition is false.
+            # Branch displacement is relative to extension-word address.
+            condition = (opcode >> 8) & 15
+            register = opcode & 7
+            extension_address = self.pc
+            extension = self.fetch_word()
+            displacement = extension - 65536 if extension & 0x8000 else extension
+            if not self._condition(condition):
+                value = ((self.d[register] & 0xffff) - 1) & 0xffff
+                target = (extension_address + displacement) & 0xffffffff
+                if value != 0xffff and target & 1:
+                    raise ValueError("odd DBcc target")
+                self.d[register] = (self.d[register] & 0xffff0000) | value
+                if value != 0xffff:
+                    self.pc = target
+            mnemonic = "DBcc"
         elif opcode & 0xf000 == 0x6000 and ((opcode >> 8) & 15) != 1:
             condition = (opcode >> 8) & 15
             displacement = opcode & 0xff
