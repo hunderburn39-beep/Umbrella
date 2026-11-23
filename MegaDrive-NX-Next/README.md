@@ -128,3 +128,6 @@ The CPU reference supports `MOVE.L #imm,Dn`, `MOVE.L (abs.l),Dn` and `MOVE.L #im
 
 ## MOVE.L register-to-absolute memory
 `MOVE.L Dn,(abs.l)` now writes a 32-bit data register as two ordered 16-bit bus cycles (high word first). Three regression cases cover RAM content, CCR updates, and odd-address rejection. This is instruction-level reference behavior, not cycle-accurate timing. The full CI test result has not been independently verified.
+
+## Address-indirect 32-bit transfers
+`MOVE.L (An),Dn` and `MOVE.L Dn,(An)` now use two big-endian 16-bit reference bus cycles while preserving the address register. `test_cpu68k_long.py` covers RAM roundtrip, flags, alignment, and boundary rejection. These operations are not cycle accurate and do not imply verified Switch boot or VDP hardware timing.
