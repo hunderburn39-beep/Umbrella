@@ -47,3 +47,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Z80 RAM and integration bridge
 `z80_ram.py` provides an 8 KiB byte-addressed RAM reference with a modeled 8 KiB mirror and explicitly gated 68000-side access. `z80_bridge.py` connects the Z80 BUSREQ/RESET control state to RAM access for end-to-end regression tests. Grant must be externally observed; this is **not** a real Z80 core or verified VA2 arbitration. The bridge is not yet connected to `ReferenceBusController`, which remains word-only. Z80 RAM word lanes, audio peripherals and actual timing remain unimplemented. Tests are in `test_z80_ram.py` and `test_z80_bridge.py`.
+
+## Main controller Z80 bridge integration
+`ReferenceBusController` now owns a `Z80Bridge` and exposes explicit untimed control-register and Z80 RAM byte methods. They are blocked while a word bus cycle is active. The original 68000 word transaction path deliberately does not complete Z80 accesses: physical byte-lane behavior and DTACK timing have not been established. Regression tests: `test_controller_z80.py`. This is **not** CPU instruction execution or a verified 315-6123 implementation.
