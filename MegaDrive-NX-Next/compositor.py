@@ -9,6 +9,7 @@ from planes import DiagnosticPlane
 from cram import CRAM
 from scroll import ScrollOffset, sample_scrolled
 from sprites import linked_sprites, sprite_pixel
+from sprite_scanline import evaluate_scanline
 
 @dataclass
 class DiagnosticCompositor:
@@ -19,12 +20,15 @@ class DiagnosticCompositor:
     scroll_a: ScrollOffset = ScrollOffset()
     scroll_b: ScrollOffset = ScrollOffset()
     sprite_table_base: int | None = None
+    sprite_scanline_width: int | None = None
 
     def __post_init__(self):
         if not 0 <= self.backdrop_index < 64:
             raise ValueError("backdrop index must be 0..63")
         if self.sprite_table_base is not None and (not 0 <= self.sprite_table_base <= 0xffff or self.sprite_table_base % 8):
             raise ValueError("sprite table base must be 8-byte aligned")
+        if self.sprite_scanline_width is not None and self.sprite_scanline_width not in (256, 320):
+            raise ValueError("sprite scanline width must be 256 or 320")
 
     def sample(self, x: int, y: int) -> tuple[int, int, int]:
         a_index, a_palette, a_priority = sample_scrolled(self.plane_a, x, y, self.scroll_a)
@@ -37,7 +41,10 @@ class DiagnosticCompositor:
             (b_index, b_palette, 4 if b_priority else 1),
         ]
         if self.sprite_table_base is not None:
-            sprites = linked_sprites(self.plane_a.vram, self.sprite_table_base)
+            sprites = (linked_sprites(self.plane_a.vram, self.sprite_table_base)
+                       if self.sprite_scanline_width is None else
+                       evaluate_scanline(self.plane_a.vram, self.sprite_table_base,
+                                         y, self.sprite_scanline_width).sprites)
             for sprite in sprites:
                 pixel = sprite_pixel(self.plane_a.vram, sprite, x, y)
                 if pixel is not None:
