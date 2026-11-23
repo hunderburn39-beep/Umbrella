@@ -28,7 +28,7 @@ jobs:
           python3 --version
           /opt/devkitpro/devkitA64/bin/aarch64-none-elf-gcc --version
           bash -n MegaDrive-NX/build.sh
-          python3 -m py_compile MegaDrive-NX/port.py MegaDrive-NX/diagnostic.py MegaDrive-NX/test_diagnostic_rom.py MegaDrive-NX/analyse_rom_boot_trace.py MegaDrive-NX/test_rom_boot_trace.py MegaDrive-NX/analyse_cpu_bus_trace.py MegaDrive-NX/test_cpu_bus_trace.py MegaDrive-NX/audit_generated_traces.py MegaDrive-NX/test_generated_trace_audit.py MegaDrive-NX/correlate_boot_traces.py MegaDrive-NX/test_correlate_boot_traces.py
+          python3 -m py_compile MegaDrive-NX/port.py MegaDrive-NX/diagnostic.py MegaDrive-NX/test_diagnostic_rom.py MegaDrive-NX/analyse_rom_boot_trace.py MegaDrive-NX/test_rom_boot_trace.py MegaDrive-NX/analyse_cpu_bus_trace.py MegaDrive-NX/test_cpu_bus_trace.py MegaDrive-NX/audit_generated_traces.py MegaDrive-NX/test_generated_trace_audit.py MegaDrive-NX/correlate_boot_traces.py MegaDrive-NX/test_correlate_boot_traces.py MegaDrive-NX/analyze_vdp_handshake.py MegaDrive-NX/test_vdp_handshake_analyzer.py
           python3 MegaDrive-NX/test_diagnostic_rom.py
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_rom_boot_trace.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_cpu_bus_trace.py" -v
@@ -36,6 +36,7 @@ jobs:
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_generated_trace_audit.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_correlate_boot_traces.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_va4*.py" -v
+          PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_vdp_handshake_analyzer.py" -v
           python3 -m py_compile MegaDrive-NX/vdp_transaction_diagnostic.py
       - name: Compile and package NRO
         run: |
@@ -80,7 +81,7 @@ jobs:
       - name: Package corresponding source
         run: |
           mkdir -p MegaDrive-NX/dist/source
-          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,test_diagnostic_rom.py,analyse_rom_boot_trace.py,test_rom_boot_trace.py,analyse_cpu_bus_trace.py,test_cpu_bus_trace.py,test_cpu_trace_patch.py,audit_generated_traces.py,test_generated_trace_audit.py,correlate_boot_traces.py,test_correlate_boot_traces.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
+          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,test_diagnostic_rom.py,analyse_rom_boot_trace.py,test_rom_boot_trace.py,analyse_cpu_bus_trace.py,test_cpu_bus_trace.py,test_cpu_trace_patch.py,audit_generated_traces.py,test_generated_trace_audit.py,correlate_boot_traces.py,test_correlate_boot_traces.py,analyze_vdp_handshake.py,test_vdp_handshake_analyzer.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
           tar --exclude='*.elf' --exclude='*.nro' --exclude='*.nacp' -czf MegaDrive-NX/dist/source/patched-source.tar.gz -C MegaDrive-NX/build .
           rm -rf MegaDrive-NX/dist/source/__pycache__
       - uses: actions/upload-artifact@v4
@@ -97,7 +98,7 @@ jobs:
         with:
           name: Umbrella-MegaDrive-NX
           path: dist
-      - name: Publish V4.0
+      - name: Publish V5.7
         env:
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
@@ -105,9 +106,9 @@ jobs:
           cd dist
           sha256sum -c Umbrella-MegaDrive-NX.sha256
           tar -czf Umbrella-MegaDrive-NX-source.tar.gz source
-          tag=megadrive-nx-v4.0
+          tag=megadrive-nx-v5.7
           if ! gh release view "$tag" >/dev/null 2>&1; then
-            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V4.0' --notes 'Adds a 64-entry 68000 bus trace and a diagnostic ROM with a VRAM tile, plane A name table and CRAM colour. Hardware validation pending.'
+            gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V5.7' --notes 'VDP handshake trace and read-only analyzer regression included. AArch64 build verification; Switch hardware validation pending.'
           fi
           gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz build-provenance.txt --clobber
           gh release edit "$tag" --target "$GITHUB_SHA" \
