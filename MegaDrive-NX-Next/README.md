@@ -50,3 +50,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Main controller Z80 bridge integration
 `ReferenceBusController` now owns a `Z80Bridge` and exposes explicit untimed control-register and Z80 RAM byte methods. They are blocked while a word bus cycle is active. The original 68000 word transaction path deliberately does not complete Z80 accesses: physical byte-lane behavior and DTACK timing have not been established. Regression tests: `test_controller_z80.py`. This is **not** CPU instruction execution or a verified 315-6123 implementation.
+
+## VDP command-port reference
+`vdp_ports.py` recognizes conventional VDP register-write control words and stages two-word control commands. The reference controller exposes `stage_vdp_control_word()` for isolated untimed tests only; its real 68000 bus-cycle path continues to wait for external DTACK and never automatically writes VDP registers. Data port, VRAM, FIFO, DMA, status bits, rasterization and VA2-specific chip behavior are not implemented. Regression tests: `test_vdp_ports.py` and `test_controller_vdp.py`.
