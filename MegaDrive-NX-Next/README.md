@@ -56,3 +56,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## VRAM reference storage
 `vram.py` provides a 64 KiB byte-array reference with byte/word access, address-boundary wrapping and clearing. `VDPPorts` now owns an isolated VRAM instance with explicit **diagnostic-only** read/write methods. No control-command address decoding into VRAM operations, data-port transfer, FIFO, DMA, VDP memory layout, rendering, or VA2 timing is claimed. `test_vram.py` and `test_vdp_vram.py` cover storage and verify that unacknowledged 68000 writes cannot mutate VRAM. CI execution not yet confirmed.
+
+## VDP VRAM command transfer reference
+`vdp_address.py` decodes conventional two-word VDP control commands into VRAM addresses and operation codes. `VDPPorts` now supports **reference** VRAM read/write via an active command and register 15 address auto-increment, with wraparound. These are direct Python method calls, not timed VDP FIFO operations or acknowledged 68000 bus cycles. CRAM/VSRAM, DMA, read buffering, hardware byte-swapping, rendering and VA2-specific behavior are unimplemented. Tests: `test_vdp_address.py` and `test_vdp_transfer.py`.
