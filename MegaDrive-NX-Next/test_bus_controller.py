@@ -36,9 +36,24 @@ class ControllerTests(unittest.TestCase):
         with self.assertRaises(NotImplementedError):
             self.c.clock(external_dtack_n=0)
 
-    def test_reject_byte_lanes(self):
+    def test_rom_byte_lanes(self):
+        for address, upper, lower, expected in [(0, True, False, 0x1200), (1, False, True, 0x34), (2, True, False, 0x5600), (3, False, True, 0x78)]:
+            with self.subTest(address=address):
+                self.c.begin(Request(address, True, upper=upper, lower=lower))
+                self.assertTrue(self.c.clock())
+                self.assertEqual(self.c.finish(), (True, expected))
+
+    def test_ram_byte_lanes_preserve_other_byte(self):
+        self.c.memory.write_word(0xff0000, 0xabcd)
+        for address, data, upper, lower, expected in [(0xff0000, 0x1200, True, False, 0x12cd), (0xff0001, 0x0034, False, True, 0x1234)]:
+            self.c.begin(Request(address, False, data, upper=upper, lower=lower))
+            self.assertTrue(self.c.clock())
+            self.assertEqual(self.c.finish(), (True, None))
+            self.assertEqual(self.c.memory.read_word(0xe00000), expected)
+
+    def test_reject_unmodeled_peripheral_byte_lanes(self):
         with self.assertRaises(NotImplementedError):
-            self.c.begin(Request(1, True, upper=False, lower=True))
+            self.c.begin(Request(0xa10001, True, upper=False, lower=True))
 
     def test_unmapped_does_not_ack(self):
         self.c.begin(Request(0x400000, True))
