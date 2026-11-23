@@ -413,18 +413,20 @@ if s.count("nx_sel_samples++;") != 1:
 s=replace(s,"    int nx_rom_trace_saved=0;",
 '''    int nx_rom_trace_saved=0;
     unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];
-    unsigned int nx_cpu_trace_n=0,nx_cpu_trace_last=0xffffffffu;
+    unsigned int nx_cpu_trace_n=0,nx_cpu_trace_last=0xffffffffu,nx_cpu_trace_last_flags=0xffffffffu;
     int nx_cpu_trace_saved=0;''')
 s=replace(s,"                nx_latest_addr=nx_addr;",
 '''                nx_latest_addr=nx_addr;
-                if (nx_cpu_trace_n < 64 && nx_addr != nx_cpu_trace_last) {
-                    unsigned int nx_flags = (!m68k.o_rw ? 1u : 0u)
-                        | (!m68k.o_data_z ? 2u : 0u);
+                unsigned int nx_flags = (!m68k.o_rw ? 1u : 0u)
+                    | (!m68k.o_data_z ? 2u : 0u);
+                if (nx_cpu_trace_n < 64 &&
+                    (nx_addr != nx_cpu_trace_last || nx_flags != nx_cpu_trace_last_flags)) {
                     nx_cpu_addr_trace[nx_cpu_trace_n] = nx_addr;
                     nx_cpu_data_trace[nx_cpu_trace_n] =
                         !m68k.o_data_z ? ((unsigned int)m68k.o_data & 0xffffu) : 0u;
                     nx_cpu_flags_trace[nx_cpu_trace_n] = nx_flags;
                     nx_cpu_trace_last = nx_addr;
+                    nx_cpu_trace_last_flags = nx_flags;
                     nx_cpu_trace_n++;
                 }''')
 s=replace(s,"        mcycles++;\n        if (!nx_rom_trace_saved && nx_rom_n == 32) {",
