@@ -38,6 +38,7 @@ class CPU68KReference:
         self.a[:] = [0] * 8
         self.a[7] = self.ssp
         self.stopped = False
+        self.vdp_ready = False  # Reset must revoke test-only external readiness.
         self.ccr = 0
         self.sr_upper = 0x2700
 
