@@ -25,7 +25,7 @@ class BSRTests(unittest.TestCase):
         self.assertEqual(c.a[7], 0xff0000)
 
     def test_word_call_and_return(self):
-        c = cpu("6100 0002 4e71 4e75")
+        c = cpu("6100 0004 4e71 4e75")
         c.step()
         self.assertEqual(c.pc, 0x106)
         self.assertEqual(c.bus.memory.read_word(0xfefffe), 0x104)
@@ -36,8 +36,8 @@ class BSRTests(unittest.TestCase):
         c = cpu("4e71 6100 fffc")
         c.step()
         c.step()
-        self.assertEqual(c.pc, 0x100)
-        self.assertEqual(c.a[7], 0xfefffc)
+        self.assertEqual(c.pc, 0x102)
+        self.assertEqual(c.a[7], 0xfefffc
 
     def test_bsr_preserves_ccr(self):
         c = cpu("6102 4e71 4e75")
