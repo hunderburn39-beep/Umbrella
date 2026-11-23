@@ -44,3 +44,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Z80 control research
 `z80_control.py` models the conventional 68000-facing Z80 BUSREQ (0xA11100) and RESET (0xA11200) bit-8 control convention. Grant is an explicit external observation, never inferred from a request. This module does not execute Z80 instructions, provide bus-grant timing or integrate Z80 RAM with the main reference bus. `test_z80_control.py` covers request/grant/reset transitions. The reset-held access assumption requires confirmation against VA2 hardware behavior.
+
+## Z80 RAM and integration bridge
+`z80_ram.py` provides an 8 KiB byte-addressed RAM reference with a modeled 8 KiB mirror and explicitly gated 68000-side access. `z80_bridge.py` connects the Z80 BUSREQ/RESET control state to RAM access for end-to-end regression tests. Grant must be externally observed; this is **not** a real Z80 core or verified VA2 arbitration. The bridge is not yet connected to `ReferenceBusController`, which remains word-only. Z80 RAM word lanes, audio peripherals and actual timing remain unimplemented. Tests are in `test_z80_ram.py` and `test_z80_bridge.py`.
