@@ -15,9 +15,9 @@ def cpu_for(hex_program):
 
 class JumpTests(unittest.TestCase):
     def test_absolute_long_jmp_skips_instruction(self):
-        cpu = cpu_for("4ef9 0000 010a 7001 4e71 4e71 7207")
+        cpu = cpu_for("4ef9 0000 010c 7001 4e71 4e71 7207")
         self.assertEqual(cpu.step().mnemonic, "JMP")
-        self.assertEqual(cpu.pc, 0x10a)
+        self.assertEqual(cpu.pc, 0x10c)
         cpu.step()
         self.assertEqual(cpu.d[1], 7)
         self.assertEqual(cpu.d[0], 0)
