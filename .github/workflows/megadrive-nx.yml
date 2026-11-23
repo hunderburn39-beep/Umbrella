@@ -21,6 +21,9 @@ jobs:
           persist-credentials: false
       - name: Toolchain and source checks
         run: |
+          set -euo pipefail
+          mkdir -p MegaDrive-NX/dist
+          exec > >(tee MegaDrive-NX/dist/preflight-log.txt) 2>&1
           git --version
           python3 --version
           /opt/devkitpro/devkitA64/bin/aarch64-none-elf-gcc --version
@@ -46,6 +49,7 @@ jobs:
           name: Umbrella-MegaDrive-NX-build-failure
           path: |
             MegaDrive-NX/dist/build-log.txt
+            MegaDrive-NX/dist/preflight-log.txt
             MegaDrive-NX/build/md.c
             MegaDrive-NX/build/md.h
             MegaDrive-NX/SD_IO_AUDIT.md
