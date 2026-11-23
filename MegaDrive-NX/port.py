@@ -533,6 +533,13 @@ s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_w
 '''        nx_trace_flush_main();
         nx_rom_trace_flush_main();
         nx_video_show_boot(nx_get_worker_clock());''')
+# V5.4: make an empty or partial cartridge trace explicit on Switch.
+# Without a count the 2M-cycle timeout can look like a complete ROM trace.
+s=replace(s,'fprintf(out,"Cartridge reads: word address, byte address, ROM data\\n");',
+'''fprintf(out,"Captured cartridge reads: %u / 32\\n",nx_rom_published_count);
+    if (!nx_rom_published_count)
+        fprintf(out,"NO CARTRIDGE READS OBSERVED: inspect reset, bus arbitration and ROM mapping\\n");
+    fprintf(out,"Cartridge reads: word address, byte address, ROM data\\n");''')
 # V5.3: stop mutating CPU trace after release publication.
 # A partial trace can be published at 2M cycles before reaching 64 entries.
 s=replace(s,"if (nx_cpu_trace_n < 64 &&",
