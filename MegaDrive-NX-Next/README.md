@@ -125,3 +125,6 @@ The 68000 reference harness now supports DBcc (`0x50C8` pattern, including DBF a
 
 ## 68000 32-bit MOVE reference operations
 The CPU reference supports `MOVE.L #imm,Dn`, `MOVE.L (abs.l),Dn` and `MOVE.L #imm,(abs.l)` with big-endian two-word transfers and 32-bit N/Z flags (X preserved, V/C cleared). Eight cases in `test_cpu68k_long.py` cover ROM/RAM, flags and rejected addresses. BSR.s/BSR.w relative calls are also supported with six dedicated tests in `test_cpu68k_bsr.py`. CI remains unverified; this is not a cycle-accurate CPU or full game-boot implementation.
+
+## MOVE.L register-to-absolute memory
+`MOVE.L Dn,(abs.l)` now writes a 32-bit data register as two ordered 16-bit bus cycles (high word first). Three regression cases cover RAM content, CCR updates, and odd-address rejection. This is instruction-level reference behavior, not cycle-accurate timing. The full CI test result has not been independently verified.
