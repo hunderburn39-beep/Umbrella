@@ -39,6 +39,9 @@ class BootTraceTests(unittest.TestCase):
         self.assertIn("0x00FF0200",out)
         self.assertIn("0x00006BAC",out)
         self.assertIn("0x6bbc",out.lower())
+        self.assertIn("target 0x006BC6",out)
+        self.assertIn("A10001 & 0x0F",out)
+        self.assertIn("neither the A10001 read result",out)
         self.assertIn("not an instruction-execution",out)
 
     def test_invalid_byte_address(self):
