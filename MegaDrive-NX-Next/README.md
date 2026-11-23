@@ -149,3 +149,6 @@ The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a si
 
 ## Synthetic scanline scheduler
 `vdp_scanline_reference.py` advances explicit scanline ticks, tracks frame/line, samples VDP register 0 bit 4 (H interrupt enable), register 1 bit 5 (V interrupt enable), and register 10 (synthetic H counter reload), and uses the existing IRQ bridge. A V event is generated on the first non-visible line. Five new tests cover event timing at scanline granularity, masking, register gating, rollover, and geometry. This is **not** pixel-accurate VDP timing, a validated PAL/NTSC timing model, or measured Genesis 3 VA2 ASIC behavior. GitHub CI test execution is not yet independently confirmed.
+
+## End-to-end synthetic VBlank smoke
+`diagnostic_vblank_smoke.py` constructs a tiny synthetic 68000 ROM with vector 30 pointing to `RTE`. It executes `STOP #$2000`, advances 224 visible scanlines without interrupt, asserts the first VBlank at line 224, services IRQ6, restores the SR/PC with `RTE`, and executes the following `NOP`. GitHub Actions now invokes this diagnostic after the CPU-to-VRAM smoke. The sequence is asserted in source but its execution result has not been independently verified. It does not prove pixel timing, VDP interrupt signal fidelity, or commercial ROM compatibility.
