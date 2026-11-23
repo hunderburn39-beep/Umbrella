@@ -449,6 +449,54 @@ s=replace(s,"        mcycles++;\n        if (!nx_rom_trace_saved && nx_rom_n == 
             }
         }
         if (!nx_rom_trace_saved && nx_rom_n == 32) {''')
+# V4.9: hand off CPU trace to the main thread; no SD calls in chip worker.
+# Keep the published snapshot immutable after release-store of ready.
+s=replace(s,"    unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];\n    unsigned int nx_cpu_trace_n=0,nx_cpu_trace_last=0xffffffffu,nx_cpu_trace_last_flags=0xffffffffu;\n    int nx_cpu_trace_saved=0;",
+'''    unsigned int nx_cpu_trace_n=0,nx_cpu_trace_last=0xffffffffu,nx_cpu_trace_last_flags=0xffffffffu;
+    int nx_cpu_trace_saved=0;''')
+s=replace(s,"int SDLCALL work_thread(void *data)",
+'''static unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];
+static unsigned int nx_cpu_published_count=0;
+static unsigned long long nx_cpu_published_clocks=0;
+static int nx_cpu_trace_ready=0;
+static int nx_cpu_trace_flushed=0;
+static void nx_trace_flush_main(void) {
+    if (nx_cpu_trace_flushed || !__atomic_load_n(&nx_cpu_trace_ready,__ATOMIC_ACQUIRE)) return;
+    nx_cpu_trace_flushed=1;
+    FILE *out=fopen("sdmc:/switch/Umbrella-MegaDrive-NX/cpu-bus-trace.txt","w");
+    if (!out) return;
+    fprintf(out,"Captured entries: %u; master clocks: %llu\\n",
+        nx_cpu_published_count,nx_cpu_published_clocks);
+    if (!nx_cpu_published_count)
+        fprintf(out,"NO ACTIVE CPU ADDRESS OBSERVED: inspect reset, clock and bus arbitration\\n");
+    fprintf(out,"CPU bus address transitions (word-addressed); flags: bit0 write, bit1 CPU data driven\\n");
+    for (unsigned int k=0;k<nx_cpu_published_count;k++)
+        fprintf(out,"%02u %06X %06X %04X %02X\\n",
+            k,nx_cpu_addr_trace[k],nx_cpu_addr_trace[k]*2u,
+            nx_cpu_data_trace[k],nx_cpu_flags_trace[k]);
+    fclose(out);
+}
+int SDLCALL work_thread(void *data)''')
+s=replace(s,'''            FILE *nx_cpu_file = fopen(
+                "sdmc:/switch/Umbrella-MegaDrive-NX/cpu-bus-trace.txt","w");
+            if (nx_cpu_file) {
+                fprintf(nx_cpu_file,"Captured entries: %u; master clocks: %llu\\n",nx_cpu_trace_n,(unsigned long long)mcycles);
+                if (!nx_cpu_trace_n) fprintf(nx_cpu_file,"NO ACTIVE CPU ADDRESS OBSERVED: inspect reset, clock and bus arbitration\\n");
+                fprintf(nx_cpu_file,
+                    "CPU bus address transitions (word-addressed); flags: bit0 write, bit1 CPU data driven\\n");
+                for (unsigned int nx_k=0; nx_k<nx_cpu_trace_n; nx_k++)
+                    fprintf(nx_cpu_file,"%02u %06X %06X %04X %02X\\n",
+                        nx_k,nx_cpu_addr_trace[nx_k],
+                        nx_cpu_addr_trace[nx_k]*2u,
+                        nx_cpu_data_trace[nx_k],nx_cpu_flags_trace[nx_k]);
+                fclose(nx_cpu_file);
+            }''',
+'''            nx_cpu_published_count=nx_cpu_trace_n;
+            nx_cpu_published_clocks=(unsigned long long)mcycles;
+            __atomic_store_n(&nx_cpu_trace_ready,1,__ATOMIC_RELEASE);''')
+s=replace(s,"        nx_video_show_boot(nx_get_worker_clock());",
+'''        nx_trace_flush_main();
+        nx_video_show_boot(nx_get_worker_clock());''')
 if "cpu-bus-trace.txt" not in s: raise RuntimeError("CPU trace patch missing")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
