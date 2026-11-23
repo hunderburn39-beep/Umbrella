@@ -28,8 +28,10 @@ class ReferenceBusController:
                 self.completed_vdp_reads, self.completed_vdp_writes)
 
     def begin(self, request: Request):
-        if request.address & 1 or not (request.upper and request.lower):
-            raise NotImplementedError("byte-lane transfers not yet modeled")
+        if request.address & 1 and request.upper:
+            raise ValueError("invalid upper byte lane")
+        if not (request.upper and request.lower) and decode_region(request.address) not in ("cartridge", "work-ram-mirror"):
+            raise NotImplementedError("peripheral byte lanes not yet modeled")
         self.cycle.start(request)
         self.response = None
 
@@ -54,10 +56,16 @@ class ReferenceBusController:
                                          vdp_selected=int(region == "vdp-candidate"))
         if acknowledged and not was_acknowledged:
             if req.read:
-                self.response = self.memory.read_word(req.address)
+                word = self.memory.read_word(req.address & ~1)
+                self.response = word & ((0xff00 if req.upper else 0) | (0xff if req.lower else 0))
                 self.completed_reads += 1
             else:
-                self.memory.write_word(req.address, req.data)
+                address = req.address & ~1
+                mask = (0xff00 if req.upper else 0) | (0xff if req.lower else 0)
+                value = req.data
+                if mask != 0xffff:
+                    value = (self.memory.read_word(address) & ~mask) | (value & mask)
+                self.memory.write_word(address, value)
                 self.completed_writes += 1
         return acknowledged
 
