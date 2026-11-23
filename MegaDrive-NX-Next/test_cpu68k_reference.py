@@ -42,7 +42,7 @@ class CPU68KReferenceTests(unittest.TestCase):
     def test_bra_word_negative(self):
         cpu = make_cpu(bytes.fromhex("6000fffc"))
         cpu.step()
-        self.assertEqual(cpu.pc, 0x100)
+        self.assertEqual(cpu.pc, 0xfe)
 
     def test_unsupported_opcode_does_not_advance(self):
         cpu = make_cpu(bytes.fromhex("ffff"))
