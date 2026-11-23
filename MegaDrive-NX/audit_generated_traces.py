@@ -84,6 +84,21 @@ def main(path):
         elif prototype in source and source.index(prototype) > calls[0].start():
             errors.append("Invocation precedes declaration: " + name)
 
+    # A published trace must be immutable while the UI thread flushes it.
+    # Check generated C rather than relying on textual patches in port.py.
+    cpu_guard = re.search(
+        r"if\s*\(\s*!nx_cpu_trace_saved\s*&&\s*nx_cpu_trace_n\s*<\s*64\s*&&",
+        worker,
+    )
+    rom_guard = re.search(
+        r"md\.vaddress\s*!=\s*nx_rom_last\s*&&\s*!nx_rom_trace_saved",
+        worker,
+    )
+    if not cpu_guard:
+        errors.append("CPU trace writes are not guarded after publication")
+    if not rom_guard:
+        errors.append("ROM trace writes are not guarded after publication")
+
     if "mcycles >= 2000000ULL" not in worker:
         errors.append("Missing trace timeout in chip worker")
 
