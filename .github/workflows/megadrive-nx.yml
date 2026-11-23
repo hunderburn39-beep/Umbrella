@@ -28,6 +28,10 @@ jobs:
           python3 --version
           /opt/devkitpro/devkitA64/bin/aarch64-none-elf-gcc --version
           bash -n MegaDrive-NX/build.sh
+          command -v git
+          test -x /opt/devkitpro/portlibs/switch/bin/sdl2-config
+          test -x /opt/devkitpro/tools/bin/elf2nro
+          test -x /opt/devkitpro/tools/bin/nacptool
           python3 -m py_compile MegaDrive-NX/port.py MegaDrive-NX/diagnostic.py MegaDrive-NX/test_diagnostic_rom.py MegaDrive-NX/analyse_rom_boot_trace.py MegaDrive-NX/test_rom_boot_trace.py MegaDrive-NX/analyse_cpu_bus_trace.py MegaDrive-NX/test_cpu_bus_trace.py MegaDrive-NX/audit_generated_traces.py MegaDrive-NX/test_generated_trace_audit.py MegaDrive-NX/correlate_boot_traces.py MegaDrive-NX/test_correlate_boot_traces.py MegaDrive-NX/analyze_vdp_handshake.py MegaDrive-NX/test_vdp_handshake_analyzer.py
           python3 MegaDrive-NX/test_diagnostic_rom.py
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_rom_boot_trace.py" -v
@@ -45,6 +49,15 @@ jobs:
           set -o pipefail
           mkdir -p MegaDrive-NX/dist
           bash MegaDrive-NX/build.sh 2>&1 | tee MegaDrive-NX/dist/build-log.txt
+      - name: Explain failed build stage
+        if: failure()
+        run: |
+          echo "=== Last preflight lines ==="
+          tail -n 35 MegaDrive-NX/dist/preflight-log.txt 2>/dev/null || true
+          echo "=== Last build lines ==="
+          tail -n 70 MegaDrive-NX/dist/build-log.txt 2>/dev/null || true
+          echo "=== Generated source ==="
+          ls -l MegaDrive-NX/build/md.c MegaDrive-NX/build/Umbrella-MegaDrive-NX.elf 2>/dev/null || true
       - name: Preserve build diagnostics on failure
         if: failure()
         uses: actions/upload-artifact@v4
