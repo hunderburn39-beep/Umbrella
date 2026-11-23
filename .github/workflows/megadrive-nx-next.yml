@@ -1,0 +1,24 @@
+name: Mega Drive NX Next | Genesis 3 VA2
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'MegaDrive-NX-Next/**'
+      - '.github/workflows/megadrive-nx-next.yml'
+permissions:
+  contents: read
+jobs:
+  board-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate new project
+        run: |
+          set -euo pipefail
+          python3 -m py_compile MegaDrive-NX-Next/board.py MegaDrive-NX-Next/test_board.py
+          PYTHONPATH=MegaDrive-NX-Next python3 -m unittest discover -s MegaDrive-NX-Next -p 'test_*.py' -v
+      - name: Explicitly report implementation status
+        run: |
+          echo "Genesis 3 VA2 board research scaffold validated."
+          echo "315-6123 executable hardware core: NOT YET IMPLEMENTED."
+          echo "Switch NRO: NOT YET AVAILABLE."
