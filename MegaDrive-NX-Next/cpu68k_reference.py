@@ -52,6 +52,28 @@ class CPU68KReference:
         self.pc = (self.pc + 2) & 0xffffffff
         return word
 
+    def read_word(self, address: int) -> int:
+        """Read a word via the bus, with explicit VDP readiness required."""
+        if not 0 <= address <= 0xffffff:
+            raise ValueError("address outside 24-bit bus")
+        self.bus.begin(Request(address, True))
+        try:
+            if address in (0xc00000, 0xc00004):
+                acknowledged = self.bus.clock_vdp_reference(ready=self.vdp_ready)
+            else:
+                acknowledged = self.bus.clock()
+            if not acknowledged:
+                raise NotImplementedError("bus responder not ready")
+            completed, value = self.bus.finish()
+            if not completed or value is None:
+                raise RuntimeError("bus read did not complete")
+            return value
+        except BaseException:
+            from bus_cycle import Phase
+            if self.bus.cycle.phase is not Phase.IDLE:
+                self.bus.finish()
+            raise
+
     def write_word(self, address: int, value: int):
         """Issue one 68000 word write through the reference bus.
 
@@ -89,6 +111,19 @@ class CPU68KReference:
             immediate = opcode & 0xff
             self.d[register] = (immediate - 256 if immediate & 0x80 else immediate) & 0xffffffff
             mnemonic = "MOVEQ"
+        elif opcode & 0xf1ff == 0x3039:
+            # MOVE.W (absolute long), Dn. Word writes preserve upper Dn.
+            register = (opcode >> 9) & 7
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            value = self.read_word(address)
+            self.d[register] = (self.d[register] & 0xffff0000) | value
+            mnemonic = "MOVE.W (abs.l),Dn"
+        elif opcode & 0xf1ff == 0x303c:
+            # MOVE.W #immediate, Dn.
+            register = (opcode >> 9) & 7
+            value = self.fetch_word()
+            self.d[register] = (self.d[register] & 0xffff0000) | value
+            mnemonic = "MOVE.W #imm,Dn"
         elif opcode == 0x33fc:
             # MOVE.W #immediate, (absolute long)
             value = self.fetch_word()
