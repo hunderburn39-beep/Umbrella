@@ -1,6 +1,6 @@
 """Minimal instruction-level 68000 reference harness for boot research.
 
-Supports only NOP, MOVEQ, BRA.s/BRA.w and STOP (supervisor mode).
+Supports NOP, MOVEQ, BRA.s/BRA.w, and selected MOVE.W forms.
 All instruction fetches use ReferenceBusController's ROM/RAM handshake.
 Not a full 68000 emulator, ASIC core, or ROM-compatible execution engine.
 """
@@ -23,6 +23,7 @@ class CPU68KReference:
         self.ssp = 0
         self.d = [0] * 8
         self.stopped = False
+        self.vdp_ready = False  # Explicit test-only peripheral readiness.
 
     def reset(self):
         vectors = reset_vectors(self.bus.memory.rom)
@@ -51,6 +52,29 @@ class CPU68KReference:
         self.pc = (self.pc + 2) & 0xffffffff
         return word
 
+    def write_word(self, address: int, value: int):
+        """Issue one 68000 word write through the reference bus.
+
+        VDP transactions require an explicitly enabled reference responder;
+        this does not infer VA2 hardware DTACK or FIFO readiness.
+        """
+        self.bus.begin(Request(address & 0xffffff, False, value))
+        try:
+            if address in (0xc00000, 0xc00004):
+                ack = self.bus.clock_vdp_reference(ready=self.vdp_ready)
+            else:
+                ack = self.bus.clock()
+            if not ack:
+                raise NotImplementedError("bus responder not ready")
+            completed, _ = self.bus.finish()
+            if not completed:
+                raise RuntimeError("bus write not acknowledged")
+        except BaseException:
+            from bus_cycle import Phase
+            if self.bus.cycle.phase is not Phase.IDLE:
+                self.bus.finish()
+            raise
+
     def step(self) -> StepResult:
         if self.stopped:
             raise RuntimeError("CPU is stopped")
@@ -65,6 +89,17 @@ class CPU68KReference:
             immediate = opcode & 0xff
             self.d[register] = (immediate - 256 if immediate & 0x80 else immediate) & 0xffffffff
             mnemonic = "MOVEQ"
+        elif opcode == 0x33fc:
+            # MOVE.W #immediate, (absolute long)
+            value = self.fetch_word()
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            self.write_word(address, value)
+            mnemonic = "MOVE.W #imm,(abs.l)"
+        elif opcode & 0xfff8 == 0x33c0:
+            # MOVE.W Dn, (absolute long)
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            self.write_word(address, self.d[opcode & 7] & 0xffff)
+            mnemonic = "MOVE.W Dn,(abs.l)"
         elif opcode & 0xff00 == 0x6000:
             displacement = opcode & 0xff
             if displacement == 0:
