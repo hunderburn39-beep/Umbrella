@@ -202,6 +202,33 @@ class CPU68KReference:
             self.d[register] = (immediate - 256 if immediate & 0x80 else immediate) & 0xffffffff
             self._logic_flags(self.d[register], 32)
             mnemonic = "MOVEQ"
+        elif opcode & 0xf1ff == 0x203c:
+            # MOVE.L #immediate,Dn; two big-endian extension words.
+            register = (opcode >> 9) & 7
+            value = (self.fetch_word() << 16) | self.fetch_word()
+            self.d[register] = value
+            self._logic_flags(value, 32)
+            mnemonic = "MOVE.L #imm,Dn"
+        elif opcode & 0xf1ff == 0x2039:
+            # MOVE.L (abs.l),Dn; high word then low word.
+            register = (opcode >> 9) & 7
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            if address > 0xfffffd:
+                raise ValueError("longword crosses reference bus boundary")
+            value = (self.read_word(address) << 16) | self.read_word(address + 2)
+            self.d[register] = value
+            self._logic_flags(value, 32)
+            mnemonic = "MOVE.L (abs.l),Dn"
+        elif opcode == 0x23fc:
+            # MOVE.L #immediate,(abs.l); two word writes.
+            value = (self.fetch_word() << 16) | self.fetch_word()
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            if address > 0xfffffd:
+                raise ValueError("longword crosses reference bus boundary")
+            self.write_word(address, value >> 16)
+            self.write_word(address + 2, value & 0xffff)
+            self._logic_flags(value, 32)
+            mnemonic = "MOVE.L #imm,(abs.l)"
         elif opcode & 0xf1ff == 0x207c:
             # MOVEA.L #immediate,An; no condition codes modeled.
             register = (opcode >> 9) & 7
