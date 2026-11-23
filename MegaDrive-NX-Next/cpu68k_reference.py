@@ -149,6 +149,32 @@ class CPU68KReference:
         self.a[7] = (sp + 4) & 0xffffffff
         return value
 
+    def trap_reference(self, number: int):
+        """Supervisor-only TRAP #n, 68000 short exception frame (SR, PC).
+
+        Vector lookup is through the existing 16-bit reference bus. No
+        interrupt arbitration, trace exceptions, or user stack switching.
+        """
+        if not 0 <= number <= 15:
+            raise ValueError("TRAP vector must be 0..15")
+        if not (self.sr_upper & 0x2000):
+            raise NotImplementedError("user-mode exception entry not modeled")
+        vector_address = (32 + number) * 4
+        target = (self.read_word(vector_address) << 16) | self.read_word(vector_address + 2)
+        if target & 1:
+            raise ValueError("odd TRAP handler PC")
+        saved_sr = self.sr
+        saved_pc = self.pc
+        sp = self.a[7]
+        if sp & 1 or not 6 <= sp <= 0x1000000:
+            raise ValueError("invalid supervisor exception stack")
+        self.push_long(saved_pc)
+        self.write_word(self.a[7] - 2, saved_sr)
+        self.a[7] -= 2
+        self.sr_upper &= ~0x8000  # Clear trace flag on exception entry.
+        self.pc = target
+        self.stopped = False
+
     def _logic_flags(self, value: int, bits: int):
         """MOVE/MOVEQ: preserve X, set N/Z, clear V/C."""
         mask = (1 << bits) - 1
@@ -213,6 +239,26 @@ class CPU68KReference:
             self.push_long(self.pc)
             self.pc = target
             mnemonic = "JSR"
+        elif opcode == 0x4e73:
+            # RTE: restore 68000 short supervisor exception frame.
+            if not (self.sr_upper & 0x2000):
+                raise NotImplementedError("privilege exception entry not modeled")
+            sp = self.a[7]
+            if sp & 1 or not 0 <= sp <= 0xfffffa:
+                raise ValueError("invalid supervisor exception frame")
+            restored_sr = self.read_word(sp)
+            restored_pc = (self.read_word(sp + 2) << 16) | self.read_word(sp + 4)
+            if restored_pc & 1:
+                raise ValueError("odd RTE return PC")
+            if not (restored_sr & 0x2000) or restored_sr & 0x08e0:
+                raise NotImplementedError("unsupported restored SR")
+            self.a[7] = sp + 6
+            self.set_sr_reference(restored_sr)
+            self.pc = restored_pc
+            mnemonic = "RTE"
+        elif opcode & 0xfff0 == 0x4e40:
+            self.trap_reference(opcode & 15)
+            mnemonic = "TRAP"
         elif opcode == 0x4e72:
             # STOP #SR: reference-only halt; interrupts and exceptions absent.
             if not (self.sr_upper & 0x2000):
