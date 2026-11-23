@@ -564,6 +564,35 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 in (0x0400, 0x0440, 0x0480, 0x0600, 0x0640, 0x0680, 0x0c00, 0x0c40, 0x0c80):
+            register = opcode & 7
+            size = (opcode >> 6) & 3
+            bits = (8, 16, 32)[size]
+            mask = (1 << bits) - 1
+            sign = 1 << (bits - 1)
+            immediate = self.fetch_word()
+            if bits == 32:
+                immediate = (immediate << 16) | self.fetch_word()
+            immediate &= mask
+            original = self.d[register] & mask
+            operation = opcode & 0xff00
+            compare = operation == 0x0c00
+            if operation == 0x0600:
+                result = (original + immediate) & mask
+                carry = original + immediate > mask
+                overflow = bool(~(original ^ immediate) & (original ^ result) & sign)
+                name = "ADDI"
+            else:
+                result = (original - immediate) & mask
+                carry = original < immediate
+                overflow = bool((original ^ immediate) & (original ^ result) & sign)
+                name = "CMPI" if compare else "SUBI"
+            if not compare:
+                self.d[register] = (self.d[register] & ~mask) | result
+            extend = self.ccr & 0x10 if compare else (0x10 if carry else 0)
+            self.ccr = (extend | (8 if result & sign else 0) | (4 if result == 0 else 0)
+                        | (2 if overflow else 0) | (1 if carry else 0))
+            mnemonic = name + "." + ("B", "W", "L")[size] + " #imm,Dn"
         elif opcode & 0xfff8 in (0x0000, 0x0040, 0x0080, 0x0200, 0x0240, 0x0280, 0x0a00, 0x0a40, 0x0a80):
             # ORI, ANDI, EORI immediate to Dn, all three operand sizes.
             register = opcode & 7
