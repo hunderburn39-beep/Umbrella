@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from planes import DiagnosticPlane
 from cram import CRAM
 from scroll import ScrollOffset, sample_scrolled
+from sprites import linked_sprites, sprite_pixel
 
 @dataclass
 class DiagnosticCompositor:
@@ -17,24 +18,35 @@ class DiagnosticCompositor:
     backdrop_index: int = 0
     scroll_a: ScrollOffset = ScrollOffset()
     scroll_b: ScrollOffset = ScrollOffset()
+    sprite_table_base: int | None = None
 
     def __post_init__(self):
         if not 0 <= self.backdrop_index < 64:
             raise ValueError("backdrop index must be 0..63")
+        if self.sprite_table_base is not None and (not 0 <= self.sprite_table_base <= 0xffff or self.sprite_table_base % 8):
+            raise ValueError("sprite table base must be 8-byte aligned")
 
     def sample(self, x: int, y: int) -> tuple[int, int, int]:
         a_index, a_palette, a_priority = sample_scrolled(self.plane_a, x, y, self.scroll_a)
         b_index, b_palette, b_priority = sample_scrolled(self.plane_b, x, y, self.scroll_b)
-        # Candidate display ordering for the conventional VDP:
-        # A high > B high > A low > B low > backdrop.
-        candidates = (
-            (a_index, a_palette, a_priority, 1),
-            (b_index, b_palette, b_priority, 0),
-        )
+        # Simplified priority: high sprite > high A > high B >
+        # low sprite > low A > low B > backdrop.
+        # Earlier linked sprites win overlaps at the same priority.
+        candidates = [
+            (a_index, a_palette, 5 if a_priority else 2),
+            (b_index, b_palette, 4 if b_priority else 1),
+        ]
+        if self.sprite_table_base is not None:
+            sprites = linked_sprites(self.plane_a.vram, self.sprite_table_base)
+            for sprite in reversed(sprites):
+                pixel = sprite_pixel(self.plane_a.vram, sprite, x, y)
+                if pixel is not None:
+                    index, palette, priority = pixel
+                    candidates.append((index, palette, 6 if priority else 3))
         visible = [item for item in candidates if item[0] != 0]
         if not visible:
             return self.cram.rgb(self.backdrop_index)
-        index, palette, _, _ = max(visible, key=lambda item: (item[2], item[3]))
+        index, palette, _ = max(visible, key=lambda item: item[2])
         return self.cram.rgb(palette * 16 + index)
 
     def rgb_frame(self, width: int, height: int):
