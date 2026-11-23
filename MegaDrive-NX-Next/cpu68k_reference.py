@@ -433,7 +433,7 @@ class CPU68KReference:
             subtract = bool(opcode & 0x0100)
             self.a[register] = ((self.a[register] - immediate) if subtract
                                 else (self.a[register] + immediate)) & 0xffffffff
-            size = "L" if opcode & 0x0040 else "W"
+            size = "L" if opcode & 0x0080 else "W"
             mnemonic = ("SUBQ" if subtract else "ADDQ") + "." + size + " #imm,An"
         elif opcode & 0xf1f8 in (0x5080, 0x5180):
             # ADDQ.L / SUBQ.L #1..8,Dn. X follows C on arithmetic.
