@@ -31,6 +31,8 @@ class CpuTracePatchTests(unittest.TestCase):
         self.assertIn("__atomic_store_n(&nx_rom_trace_ready,1,__ATOMIC_RELEASE)",self.code)
         self.assertIn("__atomic_load_n(&nx_rom_trace_ready,__ATOMIC_ACQUIRE)",self.code)
         self.assertLess(self.code.index("# V4.9:"),self.code.index("# V5.0:"))
+        self.assertIn("nx_rom_n == 32 || mcycles >= 2000000ULL",self.code)
+        self.assertIn("md.vaddress != nx_rom_last && !nx_rom_trace_saved",self.code)
 
     def test_no_instruction_pc_claim(self):
         self.assertIn("NOT a decoded instruction PC",self.code)
