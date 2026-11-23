@@ -37,9 +37,14 @@ def main():
     word = cpu.bus.vdp.vram.read_word(0)
     assert word == 0x1234, f"VRAM expected 0x1234, got 0x{word:04x}"
     assert cpu.bus.vdp.registers[15] == 2
+    reads, writes, vdp_reads, vdp_writes = cpu.bus.diagnostic_bus_counts()
+    assert reads > 0 and writes == 4 and vdp_reads == 0 and vdp_writes == 4, (
+        f"unexpected bus counts: {reads}, {writes}, {vdp_reads}, {vdp_writes}"
+    )
     for item in trace:
         print(f"{item.pc_before:06X}: {item.opcode:04X} {item.mnemonic}")
     print(f"PASS: VRAM[0000]={word:04X}, VDP auto-increment={cpu.bus.vdp.registers[15]}")
+    print(f"BUS: {reads} acknowledged reads, {writes} writes, {vdp_writes} VDP writes")
 
 if __name__ == "__main__":
     main()
