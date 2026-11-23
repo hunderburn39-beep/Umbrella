@@ -557,6 +557,62 @@ s=replace(s,"md.vaddress != nx_rom_last) {",
 '''md.vaddress != nx_rom_last && !nx_rom_trace_saved) {''')
 s=replace(s,"if (!nx_rom_trace_saved && nx_rom_n == 32) {",
 '''if (!nx_rom_trace_saved && (nx_rom_n == 32 || mcycles >= 2000000ULL)) {''')
+# V5.5: bounded synchronized read-only VDP control-port handshake trace.
+# Capture on the same FC1004 tick; publish immutable snapshot to main thread.
+s=replace(s,"int SDLCALL work_thread(void *data)",
+'''static unsigned int nx_hs_rows[96][9];
+static unsigned int nx_hs_count=0;
+static unsigned long long nx_hs_clock=0;
+static int nx_hs_ready=0,nx_hs_flushed=0;
+static void nx_hs_flush_main(void) {
+    if (nx_hs_flushed || !__atomic_load_n(&nx_hs_ready,__ATOMIC_ACQUIRE)) return;
+    nx_hs_flushed=1;
+    FILE *out=fopen("sdmc:/switch/Umbrella-MegaDrive-NX/vdp-handshake-trace.txt","w");
+    if (!out) return;
+    fprintf(out,"Samples: %u; last master clock: %llu\\n",nx_hs_count,nx_hs_clock);
+    fprintf(out,"clock addr data cpu_as cpu_rw board_dtack vdp_sel vdp_ack reg_disp reg_m5\\n");
+    for (unsigned int i=0;i<nx_hs_count;i++) {
+        fprintf(out,"%u %06X %04X %u %u %u %u %u %u %u\\n",
+          nx_hs_rows[i][0],nx_hs_rows[i][1],nx_hs_rows[i][2],
+          nx_hs_rows[i][3],nx_hs_rows[i][4],nx_hs_rows[i][5],
+          nx_hs_rows[i][6],nx_hs_rows[i][7],nx_hs_rows[i][8]>>1,
+          nx_hs_rows[i][8]&1);
+    }
+    fclose(out);
+}
+int SDLCALL work_thread(void *data)''')
+s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
+'''            FC1004_Clock(&ym, mcycles & 1, mcycles);
+            /* Capture transitions at physical C00004, no signal overrides. */
+            if (!__atomic_load_n(&nx_hs_ready,__ATOMIC_RELAXED)) {
+                unsigned int nx_hs_addr=(unsigned int)m68k.o_address;
+                if (!m68k.o_address_z && nx_hs_addr==0x600002u && !m68k.o_as) {
+                    unsigned int nx_hs_data=(unsigned int)m68k.o_data & 0xffffu;
+                    unsigned int nx_hs_state=((!!m68k.o_as)<<0)|((!!m68k.o_rw)<<1)
+                      |((!!md.dtack)<<2)|((!!ym.vdp.input.i_sel0)<<3)
+                      |((!!ym.vdp.w117)<<4)|((!!ym.vdp.reg_disp)<<5)
+                      |((!!ym.vdp.reg_m5)<<6);
+                    static unsigned int nx_hs_last=0xffffffffu,nx_hs_last_data=0xffffffffu;
+                    if (nx_hs_count<96 && (nx_hs_state!=nx_hs_last || nx_hs_data!=nx_hs_last_data)) {
+                        unsigned int *p=nx_hs_rows[nx_hs_count++];
+                        p[0]=(unsigned int)mcycles; p[1]=nx_hs_addr;
+                        p[2]=nx_hs_data; p[3]=!!m68k.o_as;
+                        p[4]=!!m68k.o_rw; p[5]=!!md.dtack;
+                        p[6]=!!ym.vdp.input.i_sel0; p[7]=!!ym.vdp.w117;
+                        p[8]=((!!ym.vdp.reg_disp)<<1)|(!!ym.vdp.reg_m5);
+                        nx_hs_last=nx_hs_state; nx_hs_last_data=nx_hs_data;
+                    }
+                }
+                if (nx_hs_count==96 || mcycles>=2000000ULL) {
+                    nx_hs_clock=(unsigned long long)mcycles;
+                    __atomic_store_n(&nx_hs_ready,1,__ATOMIC_RELEASE);
+                }
+            }''')
+s=replace(s,"                nx_rom_trace_flush_main();",
+'''                nx_rom_trace_flush_main();
+                nx_hs_flush_main();''')
+if s.count("nx_hs_flush_main();")!=1: raise RuntimeError("Handshake flush not installed exactly once")
+
 if "cpu-bus-trace.txt" not in s: raise RuntimeError("CPU trace patch missing")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
