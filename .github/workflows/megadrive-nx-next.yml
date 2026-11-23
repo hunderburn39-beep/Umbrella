@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate new project
-        run: |
-          set -euo pipefail
-          python3 -m py_compile MegaDrive-NX-Next/board.py MegaDrive-NX-Next/test_board.py
-          python3 -m compileall -q MegaDrive-NX-Next
-          PYTHONPATH=MegaDrive-NX-Next python3 -m unittest discover -s MegaDrive-NX-Next -p 'test_*.py' -v
-          python3 MegaDrive-NX-Next/diagnostic_cpu_smoke.py
-          python3 MegaDrive-NX-Next/diagnostic_vblank_smoke.py
+      - name: Compile Python sources
+        run: python3 -m compileall -q MegaDrive-NX-Next
+      - name: Run unit and integration tests
+        run: PYTHONPATH=MegaDrive-NX-Next python3 -m unittest discover -s MegaDrive-NX-Next -p 'test_*.py' -v
+      - name: CPU smoke diagnostic
+        run: python3 MegaDrive-NX-Next/diagnostic_cpu_smoke.py
+      - name: VDP VBlank smoke diagnostic
+        run: python3 MegaDrive-NX-Next/diagnostic_vblank_smoke.py
       - name: Explicitly report implementation status
         run: |
           echo "Genesis 3 VA2 board research scaffold validated."
