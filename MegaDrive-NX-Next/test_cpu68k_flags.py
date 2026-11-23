@@ -61,10 +61,13 @@ class FlagsAndBranchesTests(unittest.TestCase):
         c.run(3)
         self.assertEqual(c.pc, 0x102)
 
-    def test_bsr_not_implemented(self):
-        c = cpu("6102")
-        with self.assertRaises(NotImplementedError):
-            c.step()
+    def test_bsr_short_pushes_return_pc(self):
+        c = cpu("6102 4e71 4e75")
+        self.assertEqual(c.step().mnemonic, "BSR")
+        self.assertEqual(c.pc, 0x104)
+        self.assertEqual(c.bus.memory.read_word(0xfefffe), 0x102)
+        self.assertEqual(c.step().mnemonic, "RTS")
+        self.assertEqual(c.pc, 0x102)
 
     def test_signed_overflow_comparison(self):
         c = cpu("303c 7fff 0c40 ffff")
