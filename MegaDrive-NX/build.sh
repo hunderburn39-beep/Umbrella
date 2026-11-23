@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
+BUILD_STAGE="startup"
+trap 'rc=$?; echo "BUILD FAILED stage=$BUILD_STAGE line=$LINENO exit=$rc command=$BASH_COMMAND" >&2' ERR
+stage() { BUILD_STAGE="$1"; echo "=== BUILD STAGE: $BUILD_STAGE ==="; }
+stage "initialize"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REV=594ca2a494104df559a907db7c8f5602a93b2078
 REPO=https://github.com/nukeykt/Nuked-MD.git
 SRC="$ROOT/third_party/Nuked-MD"
 OUT="$ROOT/build"
 mkdir -p "$ROOT/third_party" "$OUT"
+stage "fetch pinned Nuked-MD source"
 if [[ ! -d "$SRC/.git" ]]; then git clone "$REPO" "$SRC"; fi
 [[ "$(git -C "$SRC" remote get-url origin)" == "$REPO" ]]
 git -C "$SRC" fetch origin "$REV"
@@ -18,9 +23,12 @@ printf "Nuked-MD pinned revision: %s\n" "$(git -C "$SRC" rev-parse HEAD)"
 rm -rf -- "$OUT"
 mkdir -p "$OUT"
 git -C "$SRC" archive "$REV" | tar -x -C "$OUT"
+stage "generate diagnostic ROM"
 python3 "$ROOT/diagnostic.py" "$OUT"
 python3 "$ROOT/test_diagnostic_rom.py"
+stage "apply Switch source patch"
 python3 "$ROOT/port.py" "$OUT"
+stage "audit generated traces and bus wiring"
 python3 "$ROOT/audit_generated_traces.py" "$OUT/md.c"
 python3 "$ROOT/audit_bus_wiring.py" "$ROOT"
 cp "$ROOT"/nx_frontend.{c,h} "$OUT/"
@@ -29,13 +37,17 @@ if [[ "${1:-build}" == prepare ]]; then exit 0; fi
 : "${DEVKITA64:=$DEVKITPRO/devkitA64}"
 export DEVKITPRO DEVKITA64
 export PATH="$DEVKITA64/bin:$DEVKITPRO/tools/bin:$DEVKITPRO/portlibs/switch/bin:$PATH"
+stage "check Switch SDK and SDL2"
 SDL="$DEVKITPRO/portlibs/switch/bin/sdl2-config"
 test -x "$SDL"
 cd "$OUT"
 sources=(68k.c arbiter.c cartridge.c controller.c fc1004.c fm.c iochip.c md.c tmss.c vdp.c z80.c vram.c audio.c video.c savestate.c nx_frontend.c)
+stage "compile and link AArch64 ELF"
 aarch64-none-elf-gcc -std=gnu11 -Werror=implicit-function-declaration -Werror=incompatible-pointer-types -O3 -flto -fomit-frame-pointer -fno-semantic-interposition -DNDEBUG -march=armv8-a+crc+crypto -mtune=cortex-a57 -mtp=soft -fPIE -ffunction-sections -fdata-sections -D__SWITCH__ -I"$DEVKITPRO/libnx/include" -I"$DEVKITPRO/portlibs/switch/include" $("$SDL" --cflags) "${sources[@]}" -specs="$DEVKITPRO/libnx/switch.specs" -flto -Wl,--gc-sections -L"$DEVKITPRO/libnx/lib" -L"$DEVKITPRO/portlibs/switch/lib" $("$SDL" --static-libs) -lm -lnx -o Umbrella-MegaDrive-NX.elf
+stage "package NACP and NRO"
 nacptool --create "Umbrella Mega Drive NX" "Umbrella / Nuked-MD contributors" "4.0" Umbrella-MegaDrive-NX.nacp
 elf2nro Umbrella-MegaDrive-NX.elf Umbrella-MegaDrive-NX.nro --nacp=Umbrella-MegaDrive-NX.nacp
 mkdir -p "$ROOT/dist"
 cp Umbrella-MegaDrive-NX.nro "$ROOT/dist/"
+stage "complete"
 echo "NRO built; hardware test still required."
