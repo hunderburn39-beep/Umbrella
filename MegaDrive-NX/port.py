@@ -533,6 +533,10 @@ s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_w
 '''        nx_trace_flush_main();
         nx_rom_trace_flush_main();
         nx_video_show_boot(nx_get_worker_clock());''')
+# V5.3: stop mutating CPU trace after release publication.
+# A partial trace can be published at 2M cycles before reaching 64 entries.
+s=replace(s,"if (nx_cpu_trace_n < 64 &&",
+'''if (!nx_cpu_trace_saved && nx_cpu_trace_n < 64 &&''')
 # V5.2: main loop can appear before the worker in upstream md.c.
 # Declare the trace flush functions before any main-thread call sites.
 s=replace(s,'#include "nx_frontend.h"',
