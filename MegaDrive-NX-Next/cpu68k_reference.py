@@ -241,6 +241,37 @@ class CPU68KReference:
                 raise ValueError("odd JMP target")
             self.pc = target
             mnemonic = "JMP"
+        elif opcode & 0xfff8 == 0x4e50:
+            # LINK An,#disp16: save old frame pointer then allocate stack.
+            register = opcode & 7
+            displacement = self.fetch_word()
+            if displacement & 0x8000:
+                displacement -= 0x10000
+            self.push_long(self.a[register])
+            frame = self.a[7]
+            new_sp = (frame + displacement) & 0xffffffff
+            if new_sp & 1:
+                raise ValueError("unaligned LINK stack pointer")
+            if not 0 <= new_sp <= 0xffffff:
+                raise ValueError("LINK stack outside 24-bit reference bus")
+            self.a[register] = frame
+            self.a[7] = new_sp
+            mnemonic = "LINK An,#disp16"
+        elif opcode & 0xfff8 == 0x4e58:
+            # UNLK An: restore A7 from frame pointer, then pop saved An.
+            register = opcode & 7
+            frame = self.a[register]
+            if frame & 1 or not 0 <= frame <= 0xfffffc:
+                raise ValueError("invalid UNLK frame pointer")
+            saved_sp = self.a[7]
+            self.a[7] = frame
+            try:
+                previous = self.pop_long()
+            except BaseException:
+                self.a[7] = saved_sp
+                raise
+            self.a[register] = previous
+            mnemonic = "UNLK An"
         elif opcode & 0xfff8 == 0x4850:
             # PEA (An): push effective address, not the pointed-to value.
             address = self.a[opcode & 7]
