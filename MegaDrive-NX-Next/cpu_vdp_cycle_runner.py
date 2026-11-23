@@ -39,9 +39,10 @@ class CPUVDPCycleReferenceRunner:
         executed = []
         charged = 0
         while not self.cpu.stopped and self.credit >= 4:
-            # Peek through the existing bus; do not advance PC on insufficient
-            # credit. Only statically priced reference opcodes are supported.
-            opcode = self.cpu.read_word(self.cpu.pc & 0xffffff)
+            # Diagnostic peek bypasses the transaction controller so it does
+            # not fabricate an extra CPU bus transfer or affect ACK counters.
+            # Instruction fetch itself still uses the bus in cpu.step().
+            opcode = self.cpu.bus.memory.read_word(self.cpu.pc & 0xffffff)
             cost = estimate_instruction_cycles(type("Opcode", (), {"opcode": opcode})())
             if cost > self.credit:
                 break
