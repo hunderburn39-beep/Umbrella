@@ -48,6 +48,10 @@ def decode_region(byte_address: int) -> str:
 
 def boot_probe(rom: bytes) -> dict:
     vectors = reset_vectors(rom)
+    if vectors.initial_ssp & 1:
+        raise ValueError("odd initial SSP cannot support aligned 68000 stack operations")
+    if not 0 <= vectors.initial_ssp <= 0xffffff:
+        raise ValueError("initial SSP outside 24-bit reference bus")
     if vectors.initial_pc & 1:
         raise ValueError("odd initial PC cannot fetch aligned 68000 instructions")
     if vectors.initial_pc > ROM_LIMIT:
