@@ -186,7 +186,7 @@ class CPU68KReference:
             self.write_word(address, self.d[opcode & 7] & 0xffff)
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
-        elif opcode & 0xf1ff == 0x0c40:
+        elif opcode & 0xfff8 == 0x0c40:
             # CMPI.W #imm,Dn
             register = opcode & 7
             immediate = self.fetch_word()
