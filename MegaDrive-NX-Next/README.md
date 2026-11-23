@@ -134,3 +134,6 @@ The CPU reference supports `MOVE.L #imm,Dn`, `MOVE.L (abs.l),Dn` and `MOVE.L #im
 
 ## MOVEA.L pointer loads
 The reference CPU supports `MOVEA.L (abs.l),An` and `MOVEA.L (An),Am` with ordered 16-bit memory reads, preserved CCR, and source-address capture before a same-register destination update. Four tests were added to `test_cpu68k_long.py`. CI execution remains unverified because this runtime cannot resolve github.com; the GitHub connector did confirm the commits.
+
+## Limited 68000 status register and STOP
+Reset initializes SR to `0x2700` (supervisor mode, interrupt mask 7). `CPU68KReference.sr` combines supervisor/mask state with the modeled CCR flags. `STOP #SR` is accepted only for the supported supervisor subset, halts execution, and is cleared by reset. User-mode transitions, privilege exceptions, interrupt servicing, and wake-up are explicitly **not implemented**. Six regression tests are in `test_cpu68k_sr.py`. GitHub Actions results remain unverified; the available workflow-run lookup only returns pull-request-triggered runs and found none for the previous commit.
