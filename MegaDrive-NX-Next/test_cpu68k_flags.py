@@ -61,6 +61,16 @@ class FlagsAndBranchesTests(unittest.TestCase):
         c.run(3)
         self.assertEqual(c.pc, 0x100)
 
+    def test_bne_word_base_is_opcode_plus_two(self):
+        c = cpu("7001 6600 0004 4e71 4e71 4e71")
+        c.run(2)
+        self.assertEqual(c.pc, 0x106)
+
+    def test_beq_word_not_taken_consumes_extension(self):
+        c = cpu("7001 6700 0004 4e71")
+        c.run(2)
+        self.assertEqual(c.pc, 0x106)
+
     def test_bsr_short_pushes_return_pc(self):
         c = cpu("6102 4e71 4e75")
         self.assertEqual(c.step().mnemonic, "BSR")
