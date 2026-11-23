@@ -97,6 +97,39 @@ class LongwordTests(unittest.TestCase):
             c.step()
         self.assertIs(c.bus.cycle.phase, Phase.IDLE)
 
+    def test_movea_absolute_long_loads_pointer(self):
+        c = cpu("2279 00ff 0020")
+        c.bus.memory.write_word(0xff0020, 0x00c0)
+        c.bus.memory.write_word(0xff0022, 0x0004)
+        c.ccr = 0x1b
+        self.assertEqual(c.step().mnemonic, "MOVEA.L (abs.l),An")
+        self.assertEqual(c.a[1], 0xc00004)
+        self.assertEqual(c.ccr, 0x1b)
+
+    def test_movea_indirect_loads_pointer(self):
+        c = cpu("2250")
+        c.a[0] = 0xff0020
+        c.bus.memory.write_word(0xff0020, 0x00ff)
+        c.bus.memory.write_word(0xff0022, 0x1000)
+        self.assertEqual(c.step().mnemonic, "MOVEA.L (An),Am")
+        self.assertEqual(c.a[1], 0xff1000)
+        self.assertEqual(c.a[0], 0xff0020)
+
+    def test_movea_indirect_same_register_uses_old_pointer(self):
+        c = cpu("2050")
+        c.a[0] = 0xff0020
+        c.bus.memory.write_word(0xff0020, 0x00ff)
+        c.bus.memory.write_word(0xff0022, 0x0040)
+        c.step()
+        self.assertEqual(c.a[0], 0xff0040)
+
+    def test_movea_indirect_rejects_odd_address(self):
+        c = cpu("2250")
+        c.a[0] = 0xff0021
+        with self.assertRaises(ValueError):
+            c.step()
+        self.assertIs(c.bus.cycle.phase, Phase.IDLE)
+
     def test_longword_rom_read(self):
         c = cpu("2039 0000 0100")
         c.step()
