@@ -42,6 +42,26 @@ class LongwordTests(unittest.TestCase):
         self.assertTrue(c.ccr & 8)
         self.assertIs(c.bus.cycle.phase, Phase.IDLE)
 
+    def test_register_longword_write_to_ram(self):
+        c = cpu("203c 1357 9bdf 23c0 00ff 0010")
+        c.run(2)
+        self.assertEqual(c.bus.memory.read_word(0xff0010), 0x1357)
+        self.assertEqual(c.bus.memory.read_word(0xff0012), 0x9bdf)
+        self.assertIs(c.bus.cycle.phase, Phase.IDLE)
+
+    def test_register_longword_write_preserves_x(self):
+        c = cpu("23c1 00ff 0010")
+        c.d[1] = 0x80000001
+        c.ccr = 0x1f
+        self.assertEqual(c.step().mnemonic, "MOVE.L Dn,(abs.l)")
+        self.assertEqual(c.ccr, 0x18)
+
+    def test_register_longword_write_odd_address_rejected(self):
+        c = cpu("23c0 00ff 0011")
+        with self.assertRaises(ValueError):
+            c.step()
+        self.assertIs(c.bus.cycle.phase, Phase.IDLE)
+
     def test_longword_rom_read(self):
         c = cpu("2039 0000 0100")
         c.step()
