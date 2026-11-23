@@ -50,6 +50,19 @@ class GeneratedTraceAuditTests(unittest.TestCase):
         result=self.run_audit(source)
         self.assertNotEqual(result.returncode,0)
 
+    def test_worker_fputs_is_rejected(self):
+        source=HEADER+WORKER.replace(
+            'if (mcycles >= 2000000ULL) {',
+            'fputs("bad", stderr);\\n    if (mcycles >= 2000000ULL) {')
+        result=self.run_audit(source)
+        self.assertNotEqual(result.returncode,0)
+
+    def test_prototypes_without_main_calls_are_rejected(self):
+        source=HEADER+WORKER.replace('    nx_trace_flush_main();','').replace(
+            '    nx_rom_trace_flush_main();','')
+        result=self.run_audit(source)
+        self.assertNotEqual(result.returncode,0)
+
     def test_missing_main_thread_flush_is_rejected(self):
         result=self.run_audit(HEADER+WORKER.replace('    nx_rom_trace_flush_main();',''))
         self.assertNotEqual(result.returncode,0)
