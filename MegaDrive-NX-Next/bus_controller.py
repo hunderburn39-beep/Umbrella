@@ -8,11 +8,13 @@ from bus_cycle import BusCycle, Phase, Request
 from boot_bus import decode_region
 from z80_bridge import Z80Bridge
 from z80_control import BUSREQ_ADDR, RESET_ADDR
+from vdp_ports import VDPPorts, CONTROL_PORT
 
 class ReferenceBusController:
     def __init__(self, rom: bytes):
         self.memory = ReferenceBus(rom)
         self.z80 = Z80Bridge()
+        self.vdp = VDPPorts()
         self.cycle = BusCycle()
         self.response = None
 
@@ -75,3 +77,11 @@ class ReferenceBusController:
         if self.cycle.phase is not Phase.IDLE:
             raise RuntimeError("cannot bypass an active bus cycle")
         self.z80.write_byte(address, value)
+
+    def stage_vdp_control_word(self, address: int, value: int) -> str:
+        """Untimed test-only staging, not a completed 68000 bus transaction."""
+        if self.cycle.phase is not Phase.IDLE:
+            raise RuntimeError("cannot bypass an active bus cycle")
+        if address != CONTROL_PORT:
+            raise ValueError("only canonical VDP control port supported")
+        return self.vdp.write_control(value)
