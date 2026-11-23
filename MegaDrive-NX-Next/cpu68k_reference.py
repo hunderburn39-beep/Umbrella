@@ -102,6 +102,28 @@ class CPU68KReference:
                 self.bus.finish()
             raise
 
+    def push_long(self, value: int):
+        """Push a longword as two big-endian bus words onto A7."""
+        if self.a[7] & 1:
+            raise ValueError("unaligned stack pointer")
+        new_sp = (self.a[7] - 4) & 0xffffffff
+        if new_sp > 0xffffff:
+            raise NotImplementedError("stack address outside reference bus")
+        self.write_word(new_sp, (value >> 16) & 0xffff)
+        self.write_word(new_sp + 2, value & 0xffff)
+        self.a[7] = new_sp
+
+    def pop_long(self) -> int:
+        """Pop a big-endian longword from the A7 stack."""
+        sp = self.a[7]
+        if sp & 1:
+            raise ValueError("unaligned stack pointer")
+        if sp > 0xfffffb:
+            raise NotImplementedError("stack read outside reference bus")
+        value = (self.read_word(sp) << 16) | self.read_word(sp + 2)
+        self.a[7] = (sp + 4) & 0xffffffff
+        return value
+
     def _logic_flags(self, value: int, bits: int):
         """MOVE/MOVEQ: preserve X, set N/Z, clear V/C."""
         mask = (1 << bits) - 1
@@ -130,6 +152,28 @@ class CPU68KReference:
         opcode = self.fetch_word()
         if opcode == 0x4e71:
             mnemonic = "NOP"
+        elif opcode == 0x4e75:
+            target = self.pop_long()
+            if target & 1:
+                raise ValueError("odd RTS target")
+            self.pc = target
+            mnemonic = "RTS"
+        elif opcode == 0x4eb9:
+            # JSR (absolute long)
+            target = (self.fetch_word() << 16) | self.fetch_word()
+            if target & 1:
+                raise ValueError("odd JSR target")
+            self.push_long(self.pc)
+            self.pc = target
+            mnemonic = "JSR"
+        elif opcode & 0xfff8 == 0x4e90:
+            # JSR (An)
+            target = self.a[opcode & 7]
+            if target & 1:
+                raise ValueError("odd JSR target")
+            self.push_long(self.pc)
+            self.pc = target
+            mnemonic = "JSR"
         elif opcode == 0x4e72:
             raise NotImplementedError("STOP requires supervisor/status-register model")
         elif opcode & 0xf100 == 0x7000:
