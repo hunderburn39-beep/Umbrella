@@ -155,3 +155,6 @@ The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a si
 
 ## CPU/VDP instruction-budget runner
 `cpu_vdp_runner.py` provides `CPUVDPReferenceRunner` to advance one synthetic VDP scanline, service any explicit H/V interrupt, and execute a configurable number of 68000 reference instructions. STOP suspends instruction execution until an accepted IRQ. `test_cpu_vdp_runner.py` adds five tests for STOP/VBlank/RTE resume, zero budget, exact instruction count, frame rollover and input validation. This is an **instruction-count budget**, not a CPU-cycle budget or verified VA2 timing. Test execution is not independently confirmed; the GitHub commit status endpoint returned no status entries.
+
+## Initial nominal 68000 cycle estimates
+`cpu68k_cycle_estimates.py` supplies explicit, nominal baseline costs for NOP, MOVEQ, RTS, RTE and STOP. It intentionally raises `NotImplementedError` for unknown opcodes or dynamic DBcc timing rather than guessing. Four regression tests were added. **These estimates are not yet connected to the scanline runner**, and do not include VDP DTACK, DMA, bus stalls, instruction prefetch, or measured Genesis 3 VA2 timings. No CI pass has been confirmed.
