@@ -49,6 +49,40 @@ class ReferenceBusController:
                 self.memory.write_word(req.address, req.data)
         return acknowledged
 
+    def clock_vdp_reference(self, *, as_n=0, ready=False):
+        """Opt-in, externally gated reference VDP transaction.
+
+        The caller supplies ready; this is not a measured VA2 DTACK source.
+        Only canonical 16-bit VDP data/control ports are modeled.
+        """
+        if self.cycle.phase is Phase.IDLE:
+            raise RuntimeError("no pending transaction")
+        req = self.cycle.request
+        if req.address not in (0xc00000, CONTROL_PORT):
+            raise ValueError("not a supported canonical VDP port")
+        if not isinstance(ready, bool):
+            raise ValueError("ready must be boolean")
+        if self.cycle.phase is Phase.ACKNOWLEDGED:
+            return self.cycle.sample(as_n=as_n, dtack_n=0, vdp_selected=1)
+        if not ready:
+            return self.cycle.sample(as_n=as_n, dtack_n=1, vdp_selected=1)
+        # Validate supported operation before acknowledging, avoiding
+        # successful bus completion for unimplemented peripheral behavior.
+        if req.read and req.address == CONTROL_PORT:
+            raise NotImplementedError("CPU-visible VDP status requires verified timing/FIFO")
+        if req.read and req.address == 0xc00000:
+            value = self.vdp.read_data()
+        elif req.address == CONTROL_PORT:
+            self.vdp.write_control(req.data)
+            value = None
+        else:
+            self.vdp.write_data(req.data)
+            value = None
+        acknowledged = self.cycle.sample(as_n=as_n, dtack_n=0, vdp_selected=1)
+        if acknowledged:
+            self.response = value
+        return acknowledged
+
     def finish(self):
         acknowledged = self.cycle.release()
         result = self.response
