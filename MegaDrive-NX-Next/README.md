@@ -140,3 +140,6 @@ Reset initializes SR to `0x2700` (supervisor mode, interrupt mask 7). `CPU68KRef
 
 ## Supervisor exception frame (reference-only)
 The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a six-byte supervisor stack frame containing SR and return PC. `RTE` restores this frame, subject to supported supervisor SR bits and aligned return PC. Tests cover TRAP #0, TRAP #3, RTE roundtrip, odd handler rejection, and unsupported user-mode restore. **Not modeled:** user-mode stack switching, external IRQ levels, interrupt acknowledge, hardware exception cycles, bus/address error frames, and timing. The tests have been committed but their CI execution is not independently confirmed.
+
+## Explicit autovector interrupt reference
+`service_autovector_irq_reference(level)` accepts externally supplied levels 1..6, compares them with the SR interrupt mask, uses vectors 25..30, and stacks a short SR/PC frame. A serviced interrupt updates the mask, releases `STOP`, and `RTE` restores the prior state. The test-only method does **not** model IRQ signal generation, pending IRQ queues, interrupt acknowledge cycles, level-7 edge behavior, VDP VBlank/HBlank wiring, or ASIC timing. Five tests cover reset masking, STOP wake-up, nesting, mask rejection, and invalid levels. Tests have been committed but not independently run in this environment.
