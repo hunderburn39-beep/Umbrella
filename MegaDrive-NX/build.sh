@@ -13,6 +13,7 @@ git -C "$SRC" archive "$REV" | tar -x -C "$OUT"
 python3 "$ROOT/diagnostic.py" "$OUT"
 python3 "$ROOT/test_diagnostic_rom.py"
 python3 "$ROOT/port.py" "$OUT"
+python3 "$ROOT/audit_generated_traces.py" "$OUT/md.c"
 python3 "$ROOT/audit_bus_wiring.py" "$ROOT"
 cp "$ROOT"/nx_frontend.{c,h} "$OUT/"
 if [[ "${1:-build}" == prepare ]]; then exit 0; fi
