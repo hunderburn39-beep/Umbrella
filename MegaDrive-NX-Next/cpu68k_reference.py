@@ -241,6 +241,16 @@ class CPU68KReference:
                 raise ValueError("odd JMP target")
             self.pc = target
             mnemonic = "JMP"
+        elif opcode & 0xfff8 == 0x4850:
+            # PEA (An): push effective address, not the pointed-to value.
+            address = self.a[opcode & 7]
+            self.push_long(address)
+            mnemonic = "PEA (An)"
+        elif opcode == 0x4879:
+            # PEA (abs.l): push 32-bit absolute effective address.
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            self.push_long(address)
+            mnemonic = "PEA (abs.l)"
         elif opcode == 0x4e75:
             target = self.pop_long()
             if target & 1:
