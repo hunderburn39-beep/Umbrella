@@ -23,7 +23,15 @@ def inspect_rom(rom: bytes, max_steps: int = 100):
         try:
             step = cpu.step()
         except (NotImplementedError, ValueError, RuntimeError) as exc:
-            failure = {"pc": pc, "type": type(exc).__name__, "message": str(exc)}
+            # Read the opcode directly from the original ROM only when the
+            # failing PC points to a valid cartridge word. Do not issue a
+            # second CPU/bus transaction after a failed instruction.
+            opcode = None
+            if 0 <= pc < min(len(rom) - 1, 0x400000) and not pc & 1:
+                opcode = (rom[pc] << 8) | rom[pc + 1]
+            failure = {"pc": pc, "opcode": opcode,
+                       "type": type(exc).__name__, "message": str(exc),
+                       "cpu_pc_after_failure": cpu.pc}
             break
         events.append({"pc": step.pc_before, "opcode": step.opcode,
                        "mnemonic": step.mnemonic, "next_pc": step.pc_after})
@@ -52,7 +60,8 @@ def main():
             print(f"{item['pc']:08X}: {item['opcode']:04X} {item['mnemonic']} -> {item['next_pc']:08X}")
         if result["halt"]:
             h = result["halt"]
-            print(f"HALT {h['type']} at {h['pc']:08X}: {h['message']}")
+            opcode = f" opcode={h['opcode']:04X}" if h.get("opcode") is not None else ""
+            print(f"HALT {h['type']} at {h['pc']:08X}{opcode}: {h['message']}")
         else:
             print(f"LIMIT: {len(result['steps'])} steps")
     return 0 if result["halt"] is None else 2
