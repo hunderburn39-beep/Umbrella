@@ -417,6 +417,14 @@ class CPU68KReference:
             self.write_word(address, self.d[opcode & 7] & 0xffff)
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
+        elif opcode & 0xfff8 == 0x4a40:
+            # TST.W Dn: update N/Z, clear V/C, preserve X; no data change.
+            self._logic_flags(self.d[opcode & 7], 16)
+            mnemonic = "TST.W Dn"
+        elif opcode & 0xfff8 == 0x4a80:
+            # TST.L Dn: full 32-bit signed/zero test.
+            self._logic_flags(self.d[opcode & 7], 32)
+            mnemonic = "TST.L Dn"
         elif opcode & 0xfff8 == 0x0c40:
             # CMPI.W #imm,Dn
             register = opcode & 7
