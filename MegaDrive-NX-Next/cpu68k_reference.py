@@ -408,6 +408,36 @@ class CPU68KReference:
             source = opcode & 7
             self.a[destination] = self.a[source]
             mnemonic = "LEA (An),Am"
+        elif opcode & 0xf1f8 in (0x1000, 0x2000, 0x3000):
+            bits = {1: 8, 2: 32, 3: 16}[opcode >> 12]
+            mask = (1 << bits) - 1
+            source, destination = opcode & 7, (opcode >> 9) & 7
+            value = self.d[source] & mask
+            self.d[destination] = (self.d[destination] & ~mask) | value
+            self._logic_flags(value, bits)
+            mnemonic = "MOVE." + {8: "B", 16: "W", 32: "L"}[bits] + " Dn,Dm"
+        elif opcode & 0xf1f8 in (0x2040, 0x3040):
+            source, destination = opcode & 7, (opcode >> 9) & 7
+            value = self.d[source]
+            word = (opcode >> 12) == 3
+            if word:
+                value &= 0xffff
+                if value & 0x8000:
+                    value |= 0xffff0000
+            self.a[destination] = value & 0xffffffff
+            mnemonic = "MOVEA." + ("W" if word else "L") + " Dn,An"
+        elif opcode & 0xf1f8 in (0xb000, 0xb080):
+            bits = 32 if opcode & 0x80 else 8
+            mask = (1 << bits) - 1
+            sign = 1 << (bits - 1)
+            a = self.d[(opcode >> 9) & 7] & mask
+            b = self.d[opcode & 7] & mask
+            result = (a - b) & mask
+            self.ccr = ((self.ccr & 16) | (8 if result & sign else 0)
+                        | (4 if result == 0 else 0)
+                        | (2 if (a ^ b) & (a ^ result) & sign else 0)
+                        | int(a < b))
+            mnemonic = "CMP." + ("L" if bits == 32 else "B") + " Dn,Dm"
         elif opcode & 0xf1ff == 0x207c:
             # MOVEA.L #immediate,An; no condition codes modeled.
             register = (opcode >> 9) & 7
