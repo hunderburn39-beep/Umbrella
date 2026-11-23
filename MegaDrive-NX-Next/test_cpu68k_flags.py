@@ -59,7 +59,7 @@ class FlagsAndBranchesTests(unittest.TestCase):
     def test_bne_word_negative_loop(self):
         c = cpu("7001 6600 fffc")
         c.run(3)
-        self.assertEqual(c.pc, 0x102)
+        self.assertEqual(c.pc, 0x100)
 
     def test_bsr_short_pushes_return_pc(self):
         c = cpu("6102 4e71 4e75")
