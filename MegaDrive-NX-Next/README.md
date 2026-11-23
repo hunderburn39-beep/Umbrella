@@ -41,3 +41,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Peripheral address selection
 `peripheral_decode.py` classifies standard cartridge, Z80, IO, VDP and work RAM address regions and labels commonly used 68000 IO register addresses, including controller data/control and Z80 BUSREQ/RESET. This is a software-visible reference map, **not** verified Genesis 3 VA2 ASIC decoding. No peripheral data, register side effects, DTACK or ASIC timing are implemented. Tests: `test_peripheral_decode.py`.
+
+## Z80 control research
+`z80_control.py` models the conventional 68000-facing Z80 BUSREQ (0xA11100) and RESET (0xA11200) bit-8 control convention. Grant is an explicit external observation, never inferred from a request. This module does not execute Z80 instructions, provide bus-grant timing or integrate Z80 RAM with the main reference bus. `test_z80_control.py` covers request/grant/reset transitions. The reset-held access assumption requires confirmation against VA2 hardware behavior.
