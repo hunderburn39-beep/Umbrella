@@ -427,6 +427,13 @@ class CPU68KReference:
             value = self.read_word(self.a[opcode & 7])
             self._logic_flags(value, 16)
             mnemonic = "TST.W (An)"
+        elif opcode == 0x4a79:
+            # TST.W (abs.l): fetch the address, read through the bus,
+            # and update CCR without changing the memory word.
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            value = self.read_word(address)
+            self._logic_flags(value, 16)
+            mnemonic = "TST.W (abs.l)"
         elif opcode & 0xfff8 == 0x4a80:
             # TST.L Dn: full 32-bit signed/zero test.
             self._logic_flags(self.d[opcode & 7], 32)
