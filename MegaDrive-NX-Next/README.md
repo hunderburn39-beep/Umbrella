@@ -110,3 +110,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## 68000 condition codes and conditional branches
 `CPU68KReference` now holds a partial CCR (`X N Z V C`). Implemented MOVE/MOVEQ operations update N/Z and clear V/C while preserving X; `CMP.W Dn,Dm` and `CMPI.W #imm,Dn` compute N/Z/V/C for word subtraction. The reference `Bcc` decoder supports 8-bit and 16-bit displacement conditions except BSR (explicitly unsupported), and BRA remains supported. `test_cpu68k_flags.py` adds eleven regression cases. This is not a complete status register, interrupt, exception, timing or 68000 core model. CI test execution is not confirmed.
+
+## 68000 subroutine stack reference
+`CPU68KReference` supports `JSR (abs.l)` (`0x4EB9`), `JSR (An)` (`0x4E90..0x4E97`) and `RTS` (`0x4E75`). Return addresses are pushed to A7 in big-endian 16-bit bus words and popped on return. `test_cpu68k_subroutines.py` adds seven regression cases for stack values, nested calls, alignment and unmodeled stack access. This remains an untimed reference subset without exceptions, supervisor transitions, stack guard semantics or full 68000 execution. Test execution has not been confirmed.
