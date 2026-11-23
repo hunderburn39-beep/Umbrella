@@ -32,6 +32,15 @@ def analyse(path):
     tmss = [0x23FC,0x5345,0x4741,0x00A1,0x4000]
     found = [hex(a) for a in words if all(words.get(a+2*i)==w for i,w in enumerate(tmss))]
     print("TMSS SEGA instruction found at:", ", ".join(found) if found else "not in captured words")
+    # Decode the observed startup conditional branch without pretending that
+    # the read trace proves which path the CPU actually took.
+    if words.get(0x6BBA) == 0x670A:
+        print("Startup BEQ at 0x006BBA: target 0x006BC6 (PC after opcode + signed 8-bit displacement).")
+        print("If (A10001 & 0x0F) == 0, branch skips TMSS write at 0x006BBC.")
+        print("If (A10001 & 0x0F) != 0, expected write: LONG 0x53454741 to 0xA14000.")
+        print("The trace contains neither the A10001 read result nor evidence of either execution path.")
+    if words.get(0x6BC6) == 0x3001:
+        print("Branch destination 0x006BC6 begins with MOVE.W D1,D0 (opcode 0x3001).")
     print("IMPORTANT: ROM read trace is not an instruction-execution or write trace.")
     print("NEXT: capture PC/instruction boundaries, A10001 reads, A14000 writes, C00004/C00000 writes.")
     for error in errors: print("ERROR:", error)
