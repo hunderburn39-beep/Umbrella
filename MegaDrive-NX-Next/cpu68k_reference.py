@@ -22,6 +22,7 @@ class CPU68KReference:
         self.pc = 0
         self.ssp = 0
         self.d = [0] * 8
+        self.a = [0] * 8
         self.stopped = False
         self.vdp_ready = False  # Explicit test-only peripheral readiness.
 
@@ -32,6 +33,8 @@ class CPU68KReference:
         self.pc = vectors.initial_pc
         self.ssp = vectors.initial_ssp
         self.d[:] = [0] * 8
+        self.a[:] = [0] * 8
+        self.a[7] = self.ssp
         self.stopped = False
 
     def fetch_word(self):
@@ -111,6 +114,24 @@ class CPU68KReference:
             immediate = opcode & 0xff
             self.d[register] = (immediate - 256 if immediate & 0x80 else immediate) & 0xffffffff
             mnemonic = "MOVEQ"
+        elif opcode & 0xf1ff == 0x207c:
+            # MOVEA.L #immediate,An; no condition codes modeled.
+            register = (opcode >> 9) & 7
+            self.a[register] = (self.fetch_word() << 16) | self.fetch_word()
+            mnemonic = "MOVEA.L #imm,An"
+        elif opcode & 0xf1f8 == 0x3010:
+            # MOVE.W (An),Dn, preserving upper 16 bits.
+            dst = (opcode >> 9) & 7
+            src = opcode & 7
+            value = self.read_word(self.a[src])
+            self.d[dst] = (self.d[dst] & 0xffff0000) | value
+            mnemonic = "MOVE.W (An),Dn"
+        elif opcode & 0xf1f8 == 0x3080:
+            # MOVE.W Dn,(An)
+            dst = (opcode >> 9) & 7
+            src = opcode & 7
+            self.write_word(self.a[dst], self.d[src] & 0xffff)
+            mnemonic = "MOVE.W Dn,(An)"
         elif opcode & 0xf1ff == 0x3039:
             # MOVE.W (absolute long), Dn. Word writes preserve upper Dn.
             register = (opcode >> 9) & 7
