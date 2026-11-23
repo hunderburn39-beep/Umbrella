@@ -64,7 +64,7 @@ class FlagsAndBranchesTests(unittest.TestCase):
     def test_bne_word_base_is_opcode_plus_two(self):
         c = cpu("7001 6600 0004 4e71 4e71 4e71")
         c.run(2)
-        self.assertEqual(c.pc, 0x106)
+        self.assertEqual(c.pc, 0x108)
 
     def test_beq_word_not_taken_consumes_extension(self):
         c = cpu("7001 6700 0004 4e71")
