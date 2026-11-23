@@ -63,5 +63,26 @@ class CPUVDPIntegrationTests(unittest.TestCase):
         self.assertEqual(cpu.bus.completed_vdp_reads, 0)
         self.assertIs(cpu.bus.cycle.phase, Phase.IDLE)
 
+    def test_vdp_control_read_rejected_without_acknowledgement(self):
+        cpu = make_cpu("3039 00c0 0004")
+        cpu.vdp_ready = True
+        before = cpu.bus.diagnostic_bus_counts()
+        with self.assertRaises(NotImplementedError):
+            cpu.step()
+        after = cpu.bus.diagnostic_bus_counts()
+        # Instruction fetches are real completed reads; the unsupported
+        # VDP status access must not be counted as a completed VDP read.
+        self.assertEqual(after[2:], before[2:])
+        self.assertIs(cpu.bus.cycle.phase, Phase.IDLE)
+
+    def test_invalid_vdp_data_write_preserves_counters(self):
+        cpu = make_cpu("33fc abcd 00c0 0000")
+        cpu.vdp_ready = True
+        with self.assertRaises(NotImplementedError):
+            cpu.step()
+        self.assertEqual(cpu.bus.completed_vdp_writes, 0)
+        self.assertIsNone(cpu.bus.vdp.active_command)
+        self.assertIs(cpu.bus.cycle.phase, Phase.IDLE)
+
 if __name__ == "__main__":
     unittest.main()
