@@ -152,6 +152,20 @@ class CPU68KReference:
         opcode = self.fetch_word()
         if opcode == 0x4e71:
             mnemonic = "NOP"
+        elif opcode == 0x4ef9:
+            # JMP (absolute long), no stack write.
+            target = (self.fetch_word() << 16) | self.fetch_word()
+            if target & 1:
+                raise ValueError("odd JMP target")
+            self.pc = target
+            mnemonic = "JMP"
+        elif opcode & 0xfff8 == 0x4ed0:
+            # JMP (An), no stack write.
+            target = self.a[opcode & 7]
+            if target & 1:
+                raise ValueError("odd JMP target")
+            self.pc = target
+            mnemonic = "JMP"
         elif opcode == 0x4e75:
             target = self.pop_long()
             if target & 1:
