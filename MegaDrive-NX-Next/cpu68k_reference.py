@@ -705,6 +705,13 @@ class CPU68KReference:
             self.push_long(self.pc)
             self.pc = target
             mnemonic = "BSR"
+        elif opcode & 0xf0f8 == 0x50c0:
+            # Scc Dn: write condition result to low byte; CCR unchanged.
+            condition = (opcode >> 8) & 15
+            register = opcode & 7
+            value = 0xff if self._condition(condition) else 0
+            self.d[register] = (self.d[register] & 0xffffff00) | value
+            mnemonic = "Scc Dn"
         elif opcode & 0xf0f8 == 0x50c8:
             # DBcc Dn,disp16. Decrement only if condition is false.
             # Branch displacement is relative to extension-word address.
