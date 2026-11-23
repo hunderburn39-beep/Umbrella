@@ -116,3 +116,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## JMP control flow
 `CPU68KReference.step()` supports `JMP (abs.l)` (`4EF9`) and `JMP (An)` (`4ED0..4ED7`), rejects odd jump destinations and leaves A7 unchanged. `test_cpu68k_jump.py` provides five regression cases. This is a partial 68000 instruction reference, not an operational commercial-ROM boot or cycle-accurate Genesis 3 VA2 hardware reconstruction. Test execution is not yet confirmed.
+
+## Synthetic CPU-to-VDP smoke diagnostic
+Run `python MegaDrive-NX-Next/diagnostic_cpu_smoke.py` from the repository root. This executes ten supported 68000 reference instructions to configure VDP register 15, stage a VRAM-write command, and write `0x1234` to VRAM address zero through the explicit-ready bus. It prints the instruction trace and asserts the expected VRAM value. This does not prove ASIC timing, real CPU completeness, or commercial game boot. The environment could not download the repository to execute the full suite, so passing tests are not claimed. Also fixed 16-bit word alignment checks and a misleading RTS stack test.
