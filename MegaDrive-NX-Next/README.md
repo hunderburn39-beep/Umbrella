@@ -158,3 +158,6 @@ The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a si
 
 ## Initial nominal 68000 cycle estimates
 `cpu68k_cycle_estimates.py` supplies explicit, nominal baseline costs for NOP, MOVEQ, RTS, RTE and STOP. It intentionally raises `NotImplementedError` for unknown opcodes or dynamic DBcc timing rather than guessing. Four regression tests were added. **These estimates are not yet connected to the scanline runner**, and do not include VDP DTACK, DMA, bus stalls, instruction prefetch, or measured Genesis 3 VA2 timings. No CI pass has been confirmed.
+
+## Nominal cycle-credit CPU/VDP scheduler
+`cpu_vdp_cycle_runner.py` adds an opt-in runner with a configurable nominal cycle budget per synthetic scanline. Credits carry between lines for an executing CPU, while STOP discards unused credits. A bus word read peeks at the next opcode before executing; unsupported timing estimates raise `NotImplementedError` without executing the instruction. Five regression tests cover NOP pricing, RTS credit accumulation, STOP, unknown opcodes, and invalid budgets. The existing instruction-budget runner remains available. **Limitations:** no bus wait states, DMA, IRQ entry costs, VDP dot clock, instruction prefetch, or actual Genesis 3 VA2 cycle accuracy. GitHub test execution remains unverified.
