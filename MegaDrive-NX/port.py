@@ -557,10 +557,10 @@ s=replace(s,"md.vaddress != nx_rom_last) {",
 '''md.vaddress != nx_rom_last && !nx_rom_trace_saved) {''')
 s=replace(s,"if (!nx_rom_trace_saved && nx_rom_n == 32) {",
 '''if (!nx_rom_trace_saved && (nx_rom_n == 32 || mcycles >= 2000000ULL)) {''')
-# V5.5: bounded synchronized read-only VDP control-port handshake trace.
+# V5.6: extended bounded read-only VDP trace (512 transitions or 10M clocks).
 # Capture on the same FC1004 tick; publish immutable snapshot to main thread.
 s=replace(s,"int SDLCALL work_thread(void *data)",
-'''static unsigned int nx_hs_rows[96][9];
+'''static unsigned int nx_hs_rows[512][9];
 static unsigned int nx_hs_count=0;
 static unsigned long long nx_hs_clock=0;
 static int nx_hs_ready=0,nx_hs_flushed=0;
@@ -593,7 +593,7 @@ s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
                       |((!!ym.vdp.w117)<<4)|((!!ym.vdp.reg_disp)<<5)
                       |((!!ym.vdp.reg_m5)<<6);
                     static unsigned int nx_hs_last=0xffffffffu,nx_hs_last_data=0xffffffffu;
-                    if (nx_hs_count<96 && (nx_hs_state!=nx_hs_last || nx_hs_data!=nx_hs_last_data)) {
+                    if (nx_hs_count<512 && (nx_hs_state!=nx_hs_last || nx_hs_data!=nx_hs_last_data)) {
                         unsigned int *p=nx_hs_rows[nx_hs_count++];
                         p[0]=(unsigned int)mcycles; p[1]=nx_hs_addr;
                         p[2]=nx_hs_data; p[3]=!!m68k.o_as;
@@ -603,7 +603,7 @@ s=replace(s,"            FC1004_Clock(&ym, mcycles & 1, mcycles);",
                         nx_hs_last=nx_hs_state; nx_hs_last_data=nx_hs_data;
                     }
                 }
-                if (nx_hs_count==96 || mcycles>=2000000ULL) {
+                if (nx_hs_count==512 || mcycles>=10000000ULL) {
                     nx_hs_clock=(unsigned long long)mcycles;
                     __atomic_store_n(&nx_hs_ready,1,__ATOMIC_RELEASE);
                 }
