@@ -30,8 +30,15 @@ class CPU68KReference:
 
     def reset(self):
         vectors = reset_vectors(self.bus.memory.rom)
+        # Validate both reset vectors before mutating the CPU state.
+        if vectors.initial_ssp & 1:
+            raise ValueError("odd reset SSP")
+        if not 0 <= vectors.initial_ssp <= 0xffffff:
+            raise ValueError("reset SSP outside 24-bit reference bus")
         if vectors.initial_pc & 1:
             raise ValueError("odd reset PC")
+        if not 0 <= vectors.initial_pc <= 0xfffffe:
+            raise ValueError("reset PC outside 24-bit reference bus")
         self.pc = vectors.initial_pc
         self.ssp = vectors.initial_ssp
         self.d[:] = [0] * 8
