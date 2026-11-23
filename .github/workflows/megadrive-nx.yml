@@ -52,6 +52,7 @@ jobs:
           if-no-files-found: warn
       - name: Verify NRO header and hash
         run: |
+          printf "Git commit: %s\nWorkflow run: %s\n" "$GITHUB_SHA" "$GITHUB_RUN_ID" > MegaDrive-NX/dist/build-provenance.txt
           python3 - <<'PY'
           from pathlib import Path
           import struct, hashlib
@@ -95,4 +96,4 @@ jobs:
           if ! gh release view "$tag" >/dev/null 2>&1; then
             gh release create "$tag" --target "$GITHUB_SHA" --title 'Umbrella Mega Drive NX V4.0' --notes 'Adds a 64-entry 68000 bus trace and a diagnostic ROM with a VRAM tile, plane A name table and CRAM colour. Hardware validation pending.'
           fi
-          gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz --clobber
+          gh release upload "$tag" Umbrella-MegaDrive-NX.nro Umbrella-MegaDrive-NX.sha256 Umbrella-MegaDrive-NX-source.tar.gz build-provenance.txt --clobber
