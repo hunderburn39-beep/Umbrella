@@ -15,6 +15,19 @@ def make_cpu(opcode, register=0):
     return cpu
 
 class ClearRegisterTests(unittest.TestCase):
+    def test_clear_byte_preserves_upper_24_bits(self):
+        cpu = make_cpu(0x4200)
+        self.assertEqual(cpu.step().mnemonic, "CLR.B Dn")
+        self.assertEqual(cpu.d[0], 0xdeadbe00)
+        self.assertEqual(cpu.ccr, 0x14)
+
+    def test_clear_byte_on_d5(self):
+        cpu = make_cpu(0x4205, register=5)
+        cpu.step()
+        self.assertEqual(cpu.d[5], 0xdeadbe00)
+        self.assertEqual(cpu.d[0], 0)
+        self.assertEqual(cpu.pc, 0x102)
+
     def test_clear_word_preserves_high_word(self):
         cpu = make_cpu(0x4240)
         self.assertEqual(cpu.step().mnemonic, "CLR.W Dn")
