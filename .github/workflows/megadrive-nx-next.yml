@@ -19,6 +19,7 @@ jobs:
           python3 -m compileall -q MegaDrive-NX-Next
           PYTHONPATH=MegaDrive-NX-Next python3 -m unittest discover -s MegaDrive-NX-Next -p 'test_*.py' -v
           python3 MegaDrive-NX-Next/diagnostic_cpu_smoke.py
+          python3 MegaDrive-NX-Next/diagnostic_vblank_smoke.py
       - name: Explicitly report implementation status
         run: |
           echo "Genesis 3 VA2 board research scaffold validated."
