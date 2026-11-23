@@ -36,7 +36,7 @@ class BusCountersTests(unittest.TestCase):
         bus = ReferenceBusController(bytes.fromhex("1234"))
         bus.begin(Request(0, True))
         self.assertTrue(bus.clock())
-        self.assertTrue(bus.clock())
+        self.assertFalse(bus.clock())
         bus.finish()
         self.assertEqual(bus.diagnostic_bus_counts(), (1, 0, 0, 0))
 
