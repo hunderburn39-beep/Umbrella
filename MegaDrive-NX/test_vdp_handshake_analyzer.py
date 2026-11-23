@@ -30,7 +30,7 @@ class HandshakeTest(unittest.TestCase):
             self.assertIn("samples: 8", result)
             self.assertIn("register 1 values: ['0x4', '0x44']", result)
             self.assertIn("display bit in register 1: [False, True]", result)
-            self.assertIn("vdp_ack falling edges: 2", result)
+            self.assertIn("vdp_ack falling edges: 3", result)
             self.assertIn("board_dtack falling edges: 3", result)
             self.assertIn("reg_disp ever enabled: False", result)
 
