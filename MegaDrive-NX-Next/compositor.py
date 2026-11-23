@@ -7,6 +7,7 @@ raster timing or the actual Genesis 3 VA2 ASIC.
 from dataclasses import dataclass
 from planes import DiagnosticPlane
 from cram import CRAM
+from scroll import ScrollOffset, sample_scrolled
 
 @dataclass
 class DiagnosticCompositor:
@@ -14,14 +15,16 @@ class DiagnosticCompositor:
     plane_b: DiagnosticPlane
     cram: CRAM
     backdrop_index: int = 0
+    scroll_a: ScrollOffset = ScrollOffset()
+    scroll_b: ScrollOffset = ScrollOffset()
 
     def __post_init__(self):
         if not 0 <= self.backdrop_index < 64:
             raise ValueError("backdrop index must be 0..63")
 
     def sample(self, x: int, y: int) -> tuple[int, int, int]:
-        a_index, a_palette, a_priority = self.plane_a.sample_index(x, y)
-        b_index, b_palette, b_priority = self.plane_b.sample_index(x, y)
+        a_index, a_palette, a_priority = sample_scrolled(self.plane_a, x, y, self.scroll_a)
+        b_index, b_palette, b_priority = sample_scrolled(self.plane_b, x, y, self.scroll_b)
         # Candidate display ordering for the conventional VDP:
         # A high > B high > A low > B low > backdrop.
         candidates = (
