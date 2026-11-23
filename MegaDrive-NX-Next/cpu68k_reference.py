@@ -425,6 +425,26 @@ class CPU68KReference:
             self.write_word(address, self.d[opcode & 7] & 0xffff)
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
+        elif opcode & 0xf1f8 in (0x5040, 0x5140):
+            # ADDQ.W / SUBQ.W #1..8,Dn; upper word is preserved.
+            register = opcode & 7
+            immediate = (opcode >> 9) & 7 or 8
+            subtract = bool(opcode & 0x0100)
+            original = self.d[register] & 0xffff
+            result = (original - immediate if subtract else original + immediate) & 0xffff
+            self.d[register] = (self.d[register] & 0xffff0000) | result
+            negative = bool(result & 0x8000)
+            zero = result == 0
+            if subtract:
+                overflow = bool(((original ^ immediate) & (original ^ result)) & 0x8000)
+                carry = original < immediate
+            else:
+                overflow = bool((~(original ^ immediate) & (original ^ result)) & 0x8000)
+                carry = original + immediate > 0xffff
+            self.ccr = ((0x10 if carry else 0) | (0x08 if negative else 0)
+                        | (0x04 if zero else 0) | (0x02 if overflow else 0)
+                        | (0x01 if carry else 0))
+            mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
         elif opcode & 0xfff8 == 0x4a00:
             # TST.B Dn: only the low byte affects N/Z; preserve X and Dn.
             self._logic_flags(self.d[opcode & 7], 8)
