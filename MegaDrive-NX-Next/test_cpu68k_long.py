@@ -62,6 +62,41 @@ class LongwordTests(unittest.TestCase):
             c.step()
         self.assertIs(c.bus.cycle.phase, Phase.IDLE)
 
+    def test_address_indirect_longword_roundtrip(self):
+        c = cpu("207c 00ff 0020 223c 89ab cdef 2081 2410")
+        trace = c.run(4)
+        self.assertEqual([s.mnemonic for s in trace],
+                         ["MOVEA.L #imm,An", "MOVE.L #imm,Dn",
+                          "MOVE.L Dn,(An)", "MOVE.L (An),Dn"])
+        self.assertEqual(c.d[2], 0x89abcdef)
+        self.assertEqual(c.a[0], 0xff0020)
+        self.assertEqual(c.bus.memory.read_word(0xff0020), 0x89ab)
+        self.assertEqual(c.bus.memory.read_word(0xff0022), 0xcdef)
+
+    def test_indirect_longword_read_preserves_address_register(self):
+        c = cpu("2010")
+        c.a[0] = 0xff0100
+        c.bus.memory.write_word(0xff0100, 0x8000)
+        c.bus.memory.write_word(0xff0102, 0x0001)
+        c.step()
+        self.assertEqual(c.d[0], 0x80000001)
+        self.assertEqual(c.a[0], 0xff0100)
+        self.assertEqual(c.ccr & 15, 8)
+
+    def test_indirect_longword_odd_address_rejected(self):
+        c = cpu("2010")
+        c.a[0] = 0xff0101
+        with self.assertRaises(ValueError):
+            c.step()
+        self.assertIs(c.bus.cycle.phase, Phase.IDLE)
+
+    def test_indirect_longword_boundary_rejected(self):
+        c = cpu("2081")
+        c.a[0] = 0xfffffe
+        with self.assertRaises(ValueError):
+            c.step()
+        self.assertIs(c.bus.cycle.phase, Phase.IDLE)
+
     def test_longword_rom_read(self):
         c = cpu("2039 0000 0100")
         c.step()
