@@ -146,3 +146,6 @@ The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a si
 
 ## Explicit VDP-to-68000 interrupt bridge
 `vdp_irq_bridge.py` maps caller-supplied HBlank to autovector level 4 and VBlank to level 6, using the existing CPU reference IRQ service. The caller explicitly supplies whether the event is enabled. The bridge respects the CPU mask and can wake STOP through an accepted interrupt; masked events are not queued. Five regression cases cover reset mask, STOP wake/RTE, nested priority, disabled events, and invalid arguments. **No VDP scanline clocks, hardware IRQ generation, VDP register enable decoding, or measured ASIC timing are implemented.** CI results are not independently verified.
+
+## Synthetic scanline scheduler
+`vdp_scanline_reference.py` advances explicit scanline ticks, tracks frame/line, samples VDP register 0 bit 4 (H interrupt enable), register 1 bit 5 (V interrupt enable), and register 10 (synthetic H counter reload), and uses the existing IRQ bridge. A V event is generated on the first non-visible line. Five new tests cover event timing at scanline granularity, masking, register gating, rollover, and geometry. This is **not** pixel-accurate VDP timing, a validated PAL/NTSC timing model, or measured Genesis 3 VA2 ASIC behavior. GitHub CI test execution is not yet independently confirmed.
