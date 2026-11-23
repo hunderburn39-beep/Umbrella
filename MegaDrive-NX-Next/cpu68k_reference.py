@@ -473,6 +473,12 @@ class CPU68KReference:
                         | (0x04 if zero else 0) | (0x02 if overflow else 0)
                         | (0x01 if carry else 0))
             mnemonic = "SUBQ.W #imm,Dn" if subtract else "ADDQ.W #imm,Dn"
+        elif opcode & 0xfff8 == 0x4200:
+            # CLR.B Dn: only low eight bits change, X is preserved.
+            register = opcode & 7
+            self.d[register] &= 0xffffff00
+            self._logic_flags(0, 8)
+            mnemonic = "CLR.B Dn"
         elif opcode & 0xfff8 == 0x4240:
             # CLR.W Dn: zero low 16 bits, preserve high 16 and X.
             self.d[opcode & 7] &= 0xffff0000
