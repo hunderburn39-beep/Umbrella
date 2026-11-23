@@ -61,7 +61,9 @@ class CPU68KReference:
     def fetch_word(self):
         if self.pc & 1:
             raise ValueError("odd instruction fetch PC")
-        self.bus.begin(Request(self.pc & 0xffffff, True))
+        if not 0 <= self.pc <= 0xfffffe:
+            raise ValueError("instruction PC outside 24-bit reference bus")
+        self.bus.begin(Request(self.pc, True))
         try:
             if not self.bus.clock():
                 raise NotImplementedError("instruction fetch responder not ready")
