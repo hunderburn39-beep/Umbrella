@@ -50,6 +50,15 @@ jobs:
             MegaDrive-NX/build/md.h
             MegaDrive-NX/SD_IO_AUDIT.md
           if-no-files-found: warn
+      - name: Verify compiled ELF architecture
+        run: |
+          set -euo pipefail
+          elf=MegaDrive-NX/build/Umbrella-MegaDrive-NX.elf
+          test -s "$elf"
+          /opt/devkitpro/devkitA64/bin/aarch64-none-elf-readelf -h "$elf" | tee MegaDrive-NX/dist/elf-header.txt
+          grep -q 'Machine:.*AArch64' MegaDrive-NX/dist/elf-header.txt
+          /opt/devkitpro/devkitA64/bin/aarch64-none-elf-readelf -sW "$elf" > MegaDrive-NX/dist/elf-symbols.txt
+          echo "ELF architecture verified: AArch64"
       - name: Verify NRO header and hash
         run: |
           printf "Git commit: %s\nWorkflow run: %s\n" "$GITHUB_SHA" "$GITHUB_RUN_ID" > MegaDrive-NX/dist/build-provenance.txt
