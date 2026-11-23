@@ -137,3 +137,6 @@ The reference CPU supports `MOVEA.L (abs.l),An` and `MOVEA.L (An),Am` with order
 
 ## Limited 68000 status register and STOP
 Reset initializes SR to `0x2700` (supervisor mode, interrupt mask 7). `CPU68KReference.sr` combines supervisor/mask state with the modeled CCR flags. `STOP #SR` is accepted only for the supported supervisor subset, halts execution, and is cleared by reset. User-mode transitions, privilege exceptions, interrupt servicing, and wake-up are explicitly **not implemented**. Six regression tests are in `test_cpu68k_sr.py`. GitHub Actions results remain unverified; the available workflow-run lookup only returns pull-request-triggered runs and found none for the previous commit.
+
+## Supervisor exception frame (reference-only)
+The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a six-byte supervisor stack frame containing SR and return PC. `RTE` restores this frame, subject to supported supervisor SR bits and aligned return PC. Tests cover TRAP #0, TRAP #3, RTE roundtrip, odd handler rejection, and unsupported user-mode restore. **Not modeled:** user-mode stack switching, external IRQ levels, interrupt acknowledge, hardware exception cycles, bus/address error frames, and timing. The tests have been committed but their CI execution is not independently confirmed.
