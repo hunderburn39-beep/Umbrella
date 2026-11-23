@@ -12,14 +12,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          sparse-checkout: MegaDrive-NX-Next
       - name: Compile Python sources
-        run: python3 -m compileall -q MegaDrive-NX-Next
+        shell: bash
+        run: |
+          mkdir -p test-results
+          set -o pipefail
+          python3 -m compileall -q MegaDrive-NX-Next 2>&1 | tee test-results/compile.log
       - name: Run unit and integration tests
-        run: PYTHONPATH=MegaDrive-NX-Next python3 -m unittest discover -s MegaDrive-NX-Next -p 'test_*.py' -v
+        shell: bash
+        run: |
+          mkdir -p test-results
+          set -o pipefail
+          PYTHONPATH=MegaDrive-NX-Next python3 -m unittest discover -s MegaDrive-NX-Next -p 'test_*.py' -v 2>&1 | tee test-results/unittest.log
       - name: CPU smoke diagnostic
-        run: python3 MegaDrive-NX-Next/diagnostic_cpu_smoke.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 MegaDrive-NX-Next/diagnostic_cpu_smoke.py 2>&1 | tee test-results/cpu-smoke.log
       - name: VDP VBlank smoke diagnostic
-        run: python3 MegaDrive-NX-Next/diagnostic_vblank_smoke.py
+        shell: bash
+        run: |
+          set -o pipefail
+          python3 MegaDrive-NX-Next/diagnostic_vblank_smoke.py 2>&1 | tee test-results/vblank-smoke.log
+      - name: Upload diagnostic logs even on failure
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: megadrive-nx-next-test-logs
+          path: test-results/
+          if-no-files-found: warn
+          retention-days: 14
       - name: Explicitly report implementation status
         run: |
           echo "Genesis 3 VA2 board research scaffold validated."
