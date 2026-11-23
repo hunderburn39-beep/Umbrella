@@ -425,6 +425,16 @@ class CPU68KReference:
             self.write_word(address, self.d[opcode & 7] & 0xffff)
             self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
+        elif opcode & 0xf1f8 in (0x5048, 0x5148, 0x5088, 0x5188):
+            # ADDQ/SUBQ to An: word and long forms both operate on
+            # the full 32-bit address register and never modify CCR.
+            register = opcode & 7
+            immediate = (opcode >> 9) & 7 or 8
+            subtract = bool(opcode & 0x0100)
+            self.a[register] = ((self.a[register] - immediate) if subtract
+                                else (self.a[register] + immediate)) & 0xffffffff
+            size = "L" if opcode & 0x0040 else "W"
+            mnemonic = ("SUBQ" if subtract else "ADDQ") + "." + size + " #imm,An"
         elif opcode & 0xf1f8 in (0x5080, 0x5180):
             # ADDQ.L / SUBQ.L #1..8,Dn. X follows C on arithmetic.
             register = opcode & 7
