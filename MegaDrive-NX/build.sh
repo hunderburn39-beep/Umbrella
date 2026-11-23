@@ -13,6 +13,10 @@ git -C "$SRC" fetch origin "$REV"
 git -C "$SRC" checkout --detach --force "$REV"
 test "$(git -C "$SRC" rev-parse HEAD)" = "$REV"
 printf "Nuked-MD pinned revision: %s\n" "$(git -C "$SRC" rev-parse HEAD)"
+# Never mix generated C from an older port with the pinned upstream.
+# OUT is a fixed subdirectory of ROOT, not a user-supplied deletion path.
+rm -rf -- "$OUT"
+mkdir -p "$OUT"
 git -C "$SRC" archive "$REV" | tar -x -C "$OUT"
 python3 "$ROOT/diagnostic.py" "$OUT"
 python3 "$ROOT/test_diagnostic_rom.py"
