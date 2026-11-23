@@ -26,6 +26,12 @@ class CpuTracePatchTests(unittest.TestCase):
         self.assertIn("__atomic_load_n(&nx_cpu_trace_ready,__ATOMIC_ACQUIRE)",self.code)
         self.assertIn("nx_trace_flush_main();",self.code)
 
+    def test_rom_trace_main_thread_handoff(self):
+        self.assertIn("nx_rom_trace_flush_main();",self.code)
+        self.assertIn("__atomic_store_n(&nx_rom_trace_ready,1,__ATOMIC_RELEASE)",self.code)
+        self.assertIn("__atomic_load_n(&nx_rom_trace_ready,__ATOMIC_ACQUIRE)",self.code)
+        self.assertLess(self.code.index("# V4.9:"),self.code.index("# V5.0:"))
+
     def test_no_instruction_pc_claim(self):
         self.assertIn("NOT a decoded instruction PC",self.code)
 
