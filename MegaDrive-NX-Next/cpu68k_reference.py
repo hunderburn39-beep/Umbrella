@@ -324,6 +324,7 @@ class CPU68KReference:
             mnemonic = "DBcc"
         elif opcode & 0xf000 == 0x6000 and ((opcode >> 8) & 15) != 1:
             condition = (opcode >> 8) & 15
+            branch_base = self.pc  # Opcode address + 2; also for word extensions.
             displacement = opcode & 0xff
             if displacement == 0:
                 extension = self.fetch_word()
