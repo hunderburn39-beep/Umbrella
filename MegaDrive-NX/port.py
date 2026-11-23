@@ -533,6 +533,11 @@ s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_w
 '''        nx_trace_flush_main();
         nx_rom_trace_flush_main();
         nx_video_show_boot(nx_get_worker_clock());''')
+# V5.1: ROM snapshot must remain immutable after early timeout publication.
+s=replace(s,"md.vaddress != nx_rom_last) {",
+'''md.vaddress != nx_rom_last && !nx_rom_trace_saved) {''')
+s=replace(s,"if (!nx_rom_trace_saved && nx_rom_n == 32) {",
+'''if (!nx_rom_trace_saved && (nx_rom_n == 32 || mcycles >= 2000000ULL)) {''')
 if "cpu-bus-trace.txt" not in s: raise RuntimeError("CPU trace patch missing")
 save("md.c",s)
 # V2.9: expose three *existing* VDP logic signals, without altering equations.
