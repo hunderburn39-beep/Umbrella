@@ -119,3 +119,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Synthetic CPU-to-VDP smoke diagnostic
 Run `python MegaDrive-NX-Next/diagnostic_cpu_smoke.py` from the repository root. This executes ten supported 68000 reference instructions to configure VDP register 15, stage a VRAM-write command, and write `0x1234` to VRAM address zero through the explicit-ready bus. It prints the instruction trace and asserts the expected VRAM value. This does not prove ASIC timing, real CPU completeness, or commercial game boot. The environment could not download the repository to execute the full suite, so passing tests are not claimed. Also fixed 16-bit word alignment checks and a misleading RTS stack test.
+
+## DBcc loops and CI smoke coverage
+The 68000 reference harness now supports DBcc (`0x50C8` pattern, including DBF and DBEQ) with a 16-bit decrement of the low data-register word when its condition is false. The branch base is the extension-word address and CCR is unchanged. Five regression cases are in `test_cpu68k_dbcc.py`. The GitHub Actions workflow now runs Python compileall, the complete unittest discovery suite, and `diagnostic_cpu_smoke.py`. This is synthetic diagnostic coverage only. CI success has not been verified; external ROM boot and chip-level timing remain unimplemented.
