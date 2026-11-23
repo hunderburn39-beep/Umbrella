@@ -149,31 +149,45 @@ class CPU68KReference:
         self.a[7] = (sp + 4) & 0xffffffff
         return value
 
-    def trap_reference(self, number: int):
-        """Supervisor-only TRAP #n, 68000 short exception frame (SR, PC).
-
-        Vector lookup is through the existing 16-bit reference bus. No
-        interrupt arbitration, trace exceptions, or user stack switching.
-        """
-        if not 0 <= number <= 15:
-            raise ValueError("TRAP vector must be 0..15")
+    def _enter_exception_reference(self, vector: int, irq_level=None):
+        """Enter a supervisor-only 68000 short exception frame."""
         if not (self.sr_upper & 0x2000):
             raise NotImplementedError("user-mode exception entry not modeled")
-        vector_address = (32 + number) * 4
+        vector_address = vector * 4
         target = (self.read_word(vector_address) << 16) | self.read_word(vector_address + 2)
         if target & 1:
-            raise ValueError("odd TRAP handler PC")
-        saved_sr = self.sr
-        saved_pc = self.pc
+            raise ValueError("odd exception handler PC")
         sp = self.a[7]
-        if sp & 1 or not 6 <= sp <= 0x1000000:
+        if sp & 1 or not 6 <= sp <= 0xffffff:
             raise ValueError("invalid supervisor exception stack")
+        saved_sr, saved_pc = self.sr, self.pc
         self.push_long(saved_pc)
         self.write_word(self.a[7] - 2, saved_sr)
         self.a[7] -= 2
-        self.sr_upper &= ~0x8000  # Clear trace flag on exception entry.
+        self.sr_upper &= ~0x8000
+        if irq_level is not None:
+            self.sr_upper = (self.sr_upper & ~0x0700) | (irq_level << 8)
         self.pc = target
         self.stopped = False
+
+    def trap_reference(self, number: int):
+        """Explicit TRAP #n via vector 32+n, not a hardware IRQ."""
+        if not 0 <= number <= 15:
+            raise ValueError("TRAP vector must be 0..15")
+        self._enter_exception_reference(32 + number)
+
+    def service_autovector_irq_reference(self, level: int) -> bool:
+        """Explicit test-only autovector IRQ level 1..6.
+
+        The caller supplies an asserted IRQ and its autovector selection.
+        No physical VDP signal, arbitration, or IACK timing is inferred.
+        """
+        if not isinstance(level, int) or isinstance(level, bool) or not 1 <= level <= 6:
+            raise ValueError("supported autovector IRQ level must be 1..6")
+        if level <= ((self.sr_upper >> 8) & 7):
+            return False
+        self._enter_exception_reference(24 + level, irq_level=level)
+        return True
 
     def _logic_flags(self, value: int, bits: int):
         """MOVE/MOVEQ: preserve X, set N/Z, clear V/C."""
