@@ -152,3 +152,6 @@ The 68000 reference CPU now handles `TRAP #0..#15` using vectors 32..47 and a si
 
 ## End-to-end synthetic VBlank smoke
 `diagnostic_vblank_smoke.py` constructs a tiny synthetic 68000 ROM with vector 30 pointing to `RTE`. It executes `STOP #$2000`, advances 224 visible scanlines without interrupt, asserts the first VBlank at line 224, services IRQ6, restores the SR/PC with `RTE`, and executes the following `NOP`. GitHub Actions now invokes this diagnostic after the CPU-to-VRAM smoke. The sequence is asserted in source but its execution result has not been independently verified. It does not prove pixel timing, VDP interrupt signal fidelity, or commercial ROM compatibility.
+
+## CPU/VDP instruction-budget runner
+`cpu_vdp_runner.py` provides `CPUVDPReferenceRunner` to advance one synthetic VDP scanline, service any explicit H/V interrupt, and execute a configurable number of 68000 reference instructions. STOP suspends instruction execution until an accepted IRQ. `test_cpu_vdp_runner.py` adds five tests for STOP/VBlank/RTE resume, zero budget, exact instruction count, frame rollover and input validation. This is an **instruction-count budget**, not a CPU-cycle budget or verified VA2 timing. Test execution is not independently confirmed; the GitHub commit status endpoint returned no status entries.
