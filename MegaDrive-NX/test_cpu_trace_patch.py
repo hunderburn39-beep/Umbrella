@@ -21,6 +21,11 @@ class CpuTracePatchTests(unittest.TestCase):
         self.assertIn("NO ACTIVE CPU ADDRESS OBSERVED",self.code)
         self.assertIn("nx_k<nx_cpu_trace_n",self.code)
 
+    def test_worker_handoff_uses_atomic_release_acquire(self):
+        self.assertIn("__atomic_store_n(&nx_cpu_trace_ready,1,__ATOMIC_RELEASE)",self.code)
+        self.assertIn("__atomic_load_n(&nx_cpu_trace_ready,__ATOMIC_ACQUIRE)",self.code)
+        self.assertIn("nx_trace_flush_main();",self.code)
+
     def test_no_instruction_pc_claim(self):
         self.assertIn("NOT a decoded instruction PC",self.code)
 
