@@ -34,6 +34,10 @@ class CpuTracePatchTests(unittest.TestCase):
         self.assertIn("nx_rom_n == 32 || mcycles >= 2000000ULL",self.code)
         self.assertIn("md.vaddress != nx_rom_last && !nx_rom_trace_saved",self.code)
 
+    def test_trace_functions_declared_before_use(self):
+        self.assertIn("static void nx_trace_flush_main(void);",self.code)
+        self.assertIn("static void nx_rom_trace_flush_main(void);",self.code)
+
     def test_no_instruction_pc_claim(self):
         self.assertIn("NOT a decoded instruction PC",self.code)
 
