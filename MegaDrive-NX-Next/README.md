@@ -95,3 +95,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Externally gated VDP reference bus transfers
 `ReferenceBusController.clock_vdp_reference(ready=...)` is an **opt-in** reference transaction path for canonical 16-bit VDP control/data ports. `ready=False` leaves the cycle waiting; `ready=True` allows staged control writes and VRAM data reads/writes if an appropriate command is active. A completed transaction cannot be applied twice. The normal `clock()` still never fabricates VDP DTACK. CPU-visible status reads remain explicitly unimplemented. `test_vdp_bus_reference.py` adds nine cases. This is not verified VDP response timing, FIFO, DMA or an operational 68000 CPU core. GitHub Actions execution not yet verified.
+
+## Minimal Motorola 68000 instruction reference
+`cpu68k_reference.py` adds a deliberately narrow instruction-level harness: reset-vector initialization, 16-bit instruction fetches via the reference bus controller, NOP, MOVEQ and BRA with 8/16-bit displacements. Unsupported opcodes raise `NotImplementedError`; STOP is explicitly not modeled without supervisor/status-register semantics. `test_cpu68k_reference.py` adds ten tests. **This is not a full 68000 CPU, cannot boot a commercial Mega Drive ROM, and does not execute VDP transactions from CPU instructions.** CI test execution has not been confirmed.
