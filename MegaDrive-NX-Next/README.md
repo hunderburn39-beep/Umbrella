@@ -38,3 +38,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Reference bus integration
 `bus_controller.py` links word-aligned ROM/RAM accesses to the DTACK state machine. ROM/RAM replies are immediate only by reference-test convention, not measured VA2 timing. VDP, Z80 and IO transactions deliberately remain unimplemented; even a supplied external ACK cannot be treated as a completed chip transaction until a responder exists. Byte-lane operations are not yet supported.
+
+## Peripheral address selection
+`peripheral_decode.py` classifies standard cartridge, Z80, IO, VDP and work RAM address regions and labels commonly used 68000 IO register addresses, including controller data/control and Z80 BUSREQ/RESET. This is a software-visible reference map, **not** verified Genesis 3 VA2 ASIC decoding. No peripheral data, register side effects, DTACK or ASIC timing are implemented. Tests: `test_peripheral_decode.py`.
