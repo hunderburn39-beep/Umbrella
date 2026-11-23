@@ -19,7 +19,7 @@ static void nx_rom_trace_flush_main(void) {
 """
 WORKER = """
 int SDLCALL work_thread(void *data) {
-    if (mcycles >= 2000000ULL) {
+    if (!nx_cpu_trace_saved && nx_cpu_trace_n < 64 && nx_addr != nx_cpu_trace_last) { nx_cpu_trace_n++; }\n    if (md.vaddress != nx_rom_last && !nx_rom_trace_saved) { nx_rom_n++; }\n    if (mcycles >= 2000000ULL) {
         __atomic_store_n(&nx_cpu_trace_ready,1,__ATOMIC_RELEASE);
         __atomic_store_n(&nx_rom_trace_ready,1,__ATOMIC_RELEASE);
     }
@@ -61,6 +61,18 @@ class GeneratedTraceAuditTests(unittest.TestCase):
         source=HEADER+WORKER.replace('    nx_trace_flush_main();','').replace(
             '    nx_rom_trace_flush_main();','')
         result=self.run_audit(source)
+        self.assertNotEqual(result.returncode,0)
+
+    def test_mutable_cpu_snapshot_is_rejected(self):
+        result=self.run_audit((HEADER+WORKER).replace(
+            "if (!nx_cpu_trace_saved && nx_cpu_trace_n < 64 &&",
+            "if (nx_cpu_trace_n < 64 &&"))
+        self.assertNotEqual(result.returncode,0)
+
+    def test_mutable_rom_snapshot_is_rejected(self):
+        result=self.run_audit((HEADER+WORKER).replace(
+            "md.vaddress != nx_rom_last && !nx_rom_trace_saved",
+            "md.vaddress != nx_rom_last"))
         self.assertNotEqual(result.returncode,0)
 
     def test_missing_main_thread_flush_is_rejected(self):
