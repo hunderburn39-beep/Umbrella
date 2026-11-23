@@ -9,6 +9,9 @@ mkdir -p "$ROOT/third_party" "$OUT"
 if [[ ! -d "$SRC/.git" ]]; then git clone "$REPO" "$SRC"; fi
 [[ "$(git -C "$SRC" remote get-url origin)" == "$REPO" ]]
 git -C "$SRC" fetch origin "$REV"
+# The wiring audit reads third_party/Nuked-MD directly: pin its worktree too.
+git -C "$SRC" checkout --detach --force "$REV"
+test "$(git -C "$SRC" rev-parse HEAD)" = "$REV"
 git -C "$SRC" archive "$REV" | tar -x -C "$OUT"
 python3 "$ROOT/diagnostic.py" "$OUT"
 python3 "$ROOT/test_diagnostic_rom.py"
