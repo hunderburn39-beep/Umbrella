@@ -292,13 +292,14 @@ class CPU68KReference:
         elif opcode & 0xff00 == 0x6100:
             # BSR.s / BSR.w (68000). Displacement is relative to PC
             # after opcode/extension fetch; push return PC as a longword.
+            branch_base = self.pc  # 68000 branch displacement base: opcode address + 2.
             displacement = opcode & 0xff
             if displacement == 0:
                 extension = self.fetch_word()
                 displacement = extension - 65536 if extension & 0x8000 else extension
             elif displacement & 0x80:
                 displacement -= 256
-            target = (self.pc + displacement) & 0xffffffff
+            target = (branch_base + displacement) & 0xffffffff
             if target & 1:
                 raise ValueError("odd BSR target")
             self.push_long(self.pc)
@@ -330,7 +331,7 @@ class CPU68KReference:
             elif displacement & 0x80:
                 displacement -= 256
             if self._condition(condition):
-                target = (self.pc + displacement) & 0xffffffff
+                target = (branch_base + displacement) & 0xffffffff
                 if target & 1:
                     raise ValueError("odd branch target")
                 self.pc = target
