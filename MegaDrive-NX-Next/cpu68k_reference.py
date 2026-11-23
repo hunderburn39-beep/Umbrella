@@ -25,6 +25,7 @@ class CPU68KReference:
         self.a = [0] * 8
         self.stopped = False
         self.vdp_ready = False  # Explicit test-only peripheral readiness.
+        self.ccr = 0  # X N Z V C; only N/Z/V/C updates for modeled operations.
 
     def reset(self):
         vectors = reset_vectors(self.bus.memory.rom)
@@ -36,6 +37,7 @@ class CPU68KReference:
         self.a[:] = [0] * 8
         self.a[7] = self.ssp
         self.stopped = False
+        self.ccr = 0
 
     def fetch_word(self):
         if self.pc & 1:
@@ -100,6 +102,27 @@ class CPU68KReference:
                 self.bus.finish()
             raise
 
+    def _logic_flags(self, value: int, bits: int):
+        """MOVE/MOVEQ: preserve X, set N/Z, clear V/C."""
+        mask = (1 << bits) - 1
+        result = value & mask
+        self.ccr = (self.ccr & 0x10) | (0x08 if result & (1 << (bits - 1)) else 0) | (0x04 if result == 0 else 0)
+
+    def _compare_word(self, destination: int, source: int):
+        """CMP.W: destination - source; preserve X."""
+        a, b = destination & 0xffff, source & 0xffff
+        result = (a - b) & 0xffff
+        negative = bool(result & 0x8000)
+        overflow = bool(((a ^ b) & (a ^ result)) & 0x8000)
+        carry = a < b
+        self.ccr = (self.ccr & 0x10) | (0x08 if negative else 0) | (0x04 if result == 0 else 0) | (0x02 if overflow else 0) | (0x01 if carry else 0)
+
+    def _condition(self, code: int) -> bool:
+        n, z, v, carry = (bool(self.ccr & bit) for bit in (8, 4, 2, 1))
+        return (True, False, not (carry or z), carry or z, not carry, carry,
+                not z, z, not v, v, not n, n, n == v, n != v,
+                not z and n == v, z or n != v)[code]
+
     def step(self) -> StepResult:
         if self.stopped:
             raise RuntimeError("CPU is stopped")
@@ -113,6 +136,7 @@ class CPU68KReference:
             register = (opcode >> 9) & 7
             immediate = opcode & 0xff
             self.d[register] = (immediate - 256 if immediate & 0x80 else immediate) & 0xffffffff
+            self._logic_flags(self.d[register], 32)
             mnemonic = "MOVEQ"
         elif opcode & 0xf1ff == 0x207c:
             # MOVEA.L #immediate,An; no condition codes modeled.
@@ -125,12 +149,14 @@ class CPU68KReference:
             src = opcode & 7
             value = self.read_word(self.a[src])
             self.d[dst] = (self.d[dst] & 0xffff0000) | value
+            self._logic_flags(value, 16)
             mnemonic = "MOVE.W (An),Dn"
         elif opcode & 0xf1f8 == 0x3080:
             # MOVE.W Dn,(An)
             dst = (opcode >> 9) & 7
             src = opcode & 7
             self.write_word(self.a[dst], self.d[src] & 0xffff)
+            self._logic_flags(self.d[src], 16)
             mnemonic = "MOVE.W Dn,(An)"
         elif opcode & 0xf1ff == 0x3039:
             # MOVE.W (absolute long), Dn. Word writes preserve upper Dn.
@@ -138,25 +164,55 @@ class CPU68KReference:
             address = (self.fetch_word() << 16) | self.fetch_word()
             value = self.read_word(address)
             self.d[register] = (self.d[register] & 0xffff0000) | value
+            self._logic_flags(value, 16)
             mnemonic = "MOVE.W (abs.l),Dn"
         elif opcode & 0xf1ff == 0x303c:
             # MOVE.W #immediate, Dn.
             register = (opcode >> 9) & 7
             value = self.fetch_word()
             self.d[register] = (self.d[register] & 0xffff0000) | value
+            self._logic_flags(value, 16)
             mnemonic = "MOVE.W #imm,Dn"
         elif opcode == 0x33fc:
             # MOVE.W #immediate, (absolute long)
             value = self.fetch_word()
             address = (self.fetch_word() << 16) | self.fetch_word()
             self.write_word(address, value)
+            self._logic_flags(value, 16)
             mnemonic = "MOVE.W #imm,(abs.l)"
         elif opcode & 0xfff8 == 0x33c0:
             # MOVE.W Dn, (absolute long)
             address = (self.fetch_word() << 16) | self.fetch_word()
             self.write_word(address, self.d[opcode & 7] & 0xffff)
+            self._logic_flags(self.d[opcode & 7], 16)
             mnemonic = "MOVE.W Dn,(abs.l)"
-        elif opcode & 0xff00 == 0x6000:
+        elif opcode & 0xf1ff == 0x0c40:
+            # CMPI.W #imm,Dn
+            register = opcode & 7
+            immediate = self.fetch_word()
+            self._compare_word(self.d[register], immediate)
+            mnemonic = "CMPI.W #imm,Dn"
+        elif opcode & 0xf1f8 == 0xb040:
+            # CMP.W Dn,Dm: destination register in bits 11..9.
+            destination = (opcode >> 9) & 7
+            source = opcode & 7
+            self._compare_word(self.d[destination], self.d[source])
+            mnemonic = "CMP.W Dn,Dm"
+        elif opcode & 0xf000 == 0x6000 and (opcode >> 8 & 15) != 1:
+            condition = (opcode >> 8) & 15
+            displacement = opcode & 0xff
+            if displacement == 0:
+                extension = self.fetch_word()
+                displacement = extension - 65536 if extension & 0x8000 else extension
+            elif displacement & 0x80:
+                displacement -= 256
+            if self._condition(condition):
+                target = (self.pc + displacement) & 0xffffffff
+                if target & 1:
+                    raise ValueError("odd branch target")
+                self.pc = target
+            mnemonic = "BRA" if condition == 0 else "Bcc"
+
             displacement = opcode & 0xff
             if displacement == 0:
                 extension = self.fetch_word()
@@ -169,6 +225,14 @@ class CPU68KReference:
             self.pc = target
             mnemonic = "BRA"
         else:
+            self.pc = before
+            raise NotImplementedError(f"68000 opcode 0x{opcode:04x} not implemented")
+        return StepResult(before, opcode, self.pc, mnemonic)
+
+    def run(self, max_steps: int = 100):
+        if not 1 <= max_steps <= 100000:
+            raise ValueError("max_steps must be 1..100000")
+        return tuple(self.step() for _ in range(max_steps))        else:
             self.pc = before
             raise NotImplementedError(f"68000 opcode 0x{opcode:04x} not implemented")
         return StepResult(before, opcode, self.pc, mnemonic)
