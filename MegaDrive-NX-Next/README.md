@@ -74,3 +74,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Diagnostic full-plane scrolling
 `scroll.py` implements independent signed horizontal/vertical pixel offsets for each diagnostic plane, wrapping at the plane dimensions. `DiagnosticCompositor` now accepts `scroll_a` and `scroll_b` offsets. This is **not** register-driven Mega Drive line scrolling or column scrolling, and sign conventions still require trace-based validation. `test_scroll.py` covers X/Y shifts, wrapping and independent planes. Sprite attribute tables, sprite mixing, real VDP timing and Switch NRO remain pending. GitHub Actions execution not confirmed.
+
+## Diagnostic sprite attribute table
+`sprites.py` decodes conventional 8-byte SAT entries (9-bit X/Y with 128-pixel bias), tile dimensions, palette, H/V flip, priority, pattern index and linked-list traversal. It samples individual sprite pixels with column-major pattern ordering and transparent color index 0. `test_sprites.py` contains reference tests for attributes, links, positions and pattern layout. **Not yet integrated into the A/B compositor.** Hardware sprite-per-line limits, collision/masking, priority interactions, sprite cache and VA2 timing remain unimplemented. GitHub Actions execution remains unverified.
