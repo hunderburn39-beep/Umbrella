@@ -61,6 +61,8 @@ class CPU68KReference:
         """Read a word via the bus, with explicit VDP readiness required."""
         if not 0 <= address <= 0xffffff:
             raise ValueError("address outside 24-bit bus")
+        if address & 1:
+            raise ValueError("unaligned 68000 word read")
         self.bus.begin(Request(address, True))
         try:
             if address in (0xc00000, 0xc00004):
@@ -85,7 +87,11 @@ class CPU68KReference:
         VDP transactions require an explicitly enabled reference responder;
         this does not infer VA2 hardware DTACK or FIFO readiness.
         """
-        self.bus.begin(Request(address & 0xffffff, False, value))
+        if not 0 <= address <= 0xffffff:
+            raise ValueError("address outside 24-bit bus")
+        if address & 1:
+            raise ValueError("unaligned 68000 word write")
+        self.bus.begin(Request(address, False, value))
         try:
             if address in (0xc00000, 0xc00004):
                 ack = self.bus.clock_vdp_reference(ready=self.vdp_ready)
