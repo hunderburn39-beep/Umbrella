@@ -35,7 +35,7 @@ jobs:
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_cpu_trace_patch.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_generated_trace_audit.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_correlate_boot_traces.py" -v
-          PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_va4*.py" -v
+          python3 -m py_compile MegaDrive-NX/board_profiles.py MegaDrive-NX/va4_bus_diagnostics.py
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_board_profiles.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_va4_bus_diagnostics.py" -v
           PYTHONPATH=MegaDrive-NX python3 -m unittest discover -s MegaDrive-NX -p "test_vdp_handshake_analyzer.py" -v
@@ -56,6 +56,7 @@ jobs:
             MegaDrive-NX/build/md.c
             MegaDrive-NX/build/md.h
             MegaDrive-NX/SD_IO_AUDIT.md
+            MegaDrive-NX/VA4_V5_8_PLAN.md
           if-no-files-found: warn
       - name: Verify compiled ELF architecture
         run: |
@@ -83,7 +84,7 @@ jobs:
       - name: Package corresponding source
         run: |
           mkdir -p MegaDrive-NX/dist/source
-          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,test_diagnostic_rom.py,analyse_rom_boot_trace.py,test_rom_boot_trace.py,analyse_cpu_bus_trace.py,test_cpu_bus_trace.py,test_cpu_trace_patch.py,audit_generated_traces.py,test_generated_trace_audit.py,correlate_boot_traces.py,test_correlate_boot_traces.py,analyze_vdp_handshake.py,test_vdp_handshake_analyzer.py,nx_frontend.c,nx_frontend.h,README.md} MegaDrive-NX/dist/source/
+          cp MegaDrive-NX/{build.sh,port.py,diagnostic.py,test_diagnostic_rom.py,analyse_rom_boot_trace.py,test_rom_boot_trace.py,analyse_cpu_bus_trace.py,test_cpu_bus_trace.py,test_cpu_trace_patch.py,audit_generated_traces.py,test_generated_trace_audit.py,correlate_boot_traces.py,test_correlate_boot_traces.py,analyze_vdp_handshake.py,test_vdp_handshake_analyzer.py,nx_frontend.c,nx_frontend.h,board_profiles.py,test_board_profiles.py,va4_bus_diagnostics.py,test_va4_bus_diagnostics.py,VA4_V5_8_PLAN.md,README.md} MegaDrive-NX/dist/source/
           tar --exclude='*.elf' --exclude='*.nro' --exclude='*.nacp' -czf MegaDrive-NX/dist/source/patched-source.tar.gz -C MegaDrive-NX/build .
           rm -rf MegaDrive-NX/dist/source/__pycache__
       - uses: actions/upload-artifact@v4
