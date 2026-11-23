@@ -40,10 +40,10 @@ class DBccTests(unittest.TestCase):
     def test_dbcc_preserves_upper_word_and_flags(self):
         c = make_cpu("51c8 fffe")
         c.d[0] = 0xabcd0001
-        c.ccr = 0x1f
+        c.ccr = 0x1b  # DBF is always false; retain nonzero CCR.
         c.step()
         self.assertEqual(c.d[0], 0xabcd0000)
-        self.assertEqual(c.ccr, 0x1f)
+        self.assertEqual(c.ccr, 0x1b)
 
     def test_dbcc_zero_counter_exits(self):
         c = make_cpu("51c8 fffe 4e71")
