@@ -533,6 +533,12 @@ s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_w
 '''        nx_trace_flush_main();
         nx_rom_trace_flush_main();
         nx_video_show_boot(nx_get_worker_clock());''')
+# V5.2: main loop can appear before the worker in upstream md.c.
+# Declare the trace flush functions before any main-thread call sites.
+s=replace(s,'#include "nx_frontend.h"',
+'''#include "nx_frontend.h"
+static void nx_trace_flush_main(void);
+static void nx_rom_trace_flush_main(void);''')
 # V5.1: ROM snapshot must remain immutable after early timeout publication.
 s=replace(s,"md.vaddress != nx_rom_last) {",
 '''md.vaddress != nx_rom_last && !nx_rom_trace_saved) {''')
