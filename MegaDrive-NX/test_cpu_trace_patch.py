@@ -42,6 +42,11 @@ class CpuTracePatchTests(unittest.TestCase):
         self.assertIn("if (!nx_cpu_trace_saved && nx_cpu_trace_n < 64 &&",self.code)
         self.assertIn("nx_cpu_trace_saved = 1;",self.code)
 
+    def test_rom_partial_capture_reports_actual_count(self):
+        self.assertIn("Captured cartridge reads: %u / 32",self.code)
+        self.assertIn("NO CARTRIDGE READS OBSERVED",self.code)
+        self.assertIn("nx_rom_published_count",self.code)
+
     def test_no_instruction_pc_claim(self):
         self.assertIn("NOT a decoded instruction PC",self.code)
 
