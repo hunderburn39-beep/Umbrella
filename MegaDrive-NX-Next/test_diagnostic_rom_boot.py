@@ -16,7 +16,7 @@ class ROMBootDiagnosticTests(unittest.TestCase):
         self.assertEqual(result["steps"][0]["mnemonic"], "NOP")
         self.assertEqual(result["halt"]["pc"], 0x102)
         self.assertEqual(result["halt"]["opcode"], 0xffff)
-        self.assertEqual(result["halt"]["cpu_pc_after_failure"], 0x102)
+        self.assertEqual(result["halt"]["cpu_pc_after_failure"], 0x104)  # opcode fetch advanced PC
         self.assertEqual(result["halt"]["type"], "NotImplementedError")
         self.assertFalse(result["limit_reached"])
 
