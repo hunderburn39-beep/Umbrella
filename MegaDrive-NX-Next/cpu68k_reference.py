@@ -335,6 +335,24 @@ class CPU68KReference:
             self.write_word(address + 2, value & 0xffff)
             self._logic_flags(value, 32)
             mnemonic = "MOVE.L Dn,(abs.l)"
+        elif opcode & 0xf1ff == 0x307c:
+            # MOVEA.W #imm,An sign-extends 16-bit immediate; CCR unchanged.
+            register = (opcode >> 9) & 7
+            value = self.fetch_word()
+            self.a[register] = (value | 0xffff0000) if value & 0x8000 else value
+            mnemonic = "MOVEA.W #imm,An"
+        elif opcode & 0xf1ff == 0x41f9:
+            # LEA (abs.l),An loads an effective address without bus data read.
+            register = (opcode >> 9) & 7
+            address = (self.fetch_word() << 16) | self.fetch_word()
+            self.a[register] = address
+            mnemonic = "LEA (abs.l),An"
+        elif opcode & 0xf1f8 == 0x41d0:
+            # LEA (An),Am copies address register, not pointed-to contents.
+            destination = (opcode >> 9) & 7
+            source = opcode & 7
+            self.a[destination] = self.a[source]
+            mnemonic = "LEA (An),Am"
         elif opcode & 0xf1ff == 0x207c:
             # MOVEA.L #immediate,An; no condition codes modeled.
             register = (opcode >> 9) & 7
