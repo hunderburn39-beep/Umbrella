@@ -449,42 +449,6 @@ s=replace(s,"        mcycles++;\n        if (!nx_rom_trace_saved && nx_rom_n == 
             }
         }
         if (!nx_rom_trace_saved && nx_rom_n == 32) {''')
-# V5.0: ROM trace also uses the immutable main-thread handoff.
-s=replace(s,'''            FILE *nx_trace = fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt", "w");
-            nx_rom_trace_saved = 1;
-            if (nx_trace) {
-                unsigned int nx_k;
-                fprintf(nx_trace, "Cartridge reads: word address, byte address, ROM data\\n");
-                for (nx_k=0; nx_k<32;nx_k++)
-                    fprintf(nx_trace,"%02u %06X %06X %04X\\n",
-                        nx_k,nx_rom_addr[nx_k],nx_rom_addr[nx_k]*2u,nx_rom_word[nx_k]);
-                fclose(nx_trace);
-            }''',
-'''            nx_rom_trace_saved = 1;
-            nx_rom_published_count = nx_rom_n;
-            __atomic_store_n(&nx_rom_trace_ready,1,__ATOMIC_RELEASE);''')
-s=replace(s,"    unsigned int nx_rom_addr[32],nx_rom_word[32];\n    unsigned int nx_rom_n=0,nx_rom_last=0xffffffffu;",
-'''    unsigned int nx_rom_n=0,nx_rom_last=0xffffffffu;''')
-s=replace(s,"static unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];",
-'''static unsigned int nx_rom_addr[32],nx_rom_word[32];
-static unsigned int nx_rom_published_count=0;
-static int nx_rom_trace_ready=0, nx_rom_trace_flushed=0;
-static void nx_rom_trace_flush_main(void) {
-    if (nx_rom_trace_flushed || !__atomic_load_n(&nx_rom_trace_ready,__ATOMIC_ACQUIRE)) return;
-    nx_rom_trace_flushed=1;
-    FILE *out=fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt","w");
-    if (!out) return;
-    fprintf(out,"Cartridge reads: word address, byte address, ROM data\\n");
-    for (unsigned int k=0;k<nx_rom_published_count;k++)
-        fprintf(out,"%02u %06X %06X %04X\\n",
-            k,nx_rom_addr[k],nx_rom_addr[k]*2u,nx_rom_word[k]);
-    fclose(out);
-}
-static unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];''')
-s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_worker_clock());",
-'''        nx_trace_flush_main();
-        nx_rom_trace_flush_main();
-        nx_video_show_boot(nx_get_worker_clock());''')
 # V4.9: hand off CPU trace to the main thread; no SD calls in chip worker.
 # Keep the published snapshot immutable after release-store of ready.
 s=replace(s,"    unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];\n    unsigned int nx_cpu_trace_n=0,nx_cpu_trace_last=0xffffffffu,nx_cpu_trace_last_flags=0xffffffffu;\n    int nx_cpu_trace_saved=0;",
@@ -532,6 +496,42 @@ s=replace(s,'''            FILE *nx_cpu_file = fopen(
             __atomic_store_n(&nx_cpu_trace_ready,1,__ATOMIC_RELEASE);''')
 s=replace(s,"        nx_video_show_boot(nx_get_worker_clock());",
 '''        nx_trace_flush_main();
+        nx_video_show_boot(nx_get_worker_clock());''')
+# V5.0: ROM trace also uses the immutable main-thread handoff.
+s=replace(s,'''            FILE *nx_trace = fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt", "w");
+            nx_rom_trace_saved = 1;
+            if (nx_trace) {
+                unsigned int nx_k;
+                fprintf(nx_trace, "Cartridge reads: word address, byte address, ROM data\\n");
+                for (nx_k=0; nx_k<32;nx_k++)
+                    fprintf(nx_trace,"%02u %06X %06X %04X\\n",
+                        nx_k,nx_rom_addr[nx_k],nx_rom_addr[nx_k]*2u,nx_rom_word[nx_k]);
+                fclose(nx_trace);
+            }''',
+'''            nx_rom_trace_saved = 1;
+            nx_rom_published_count = nx_rom_n;
+            __atomic_store_n(&nx_rom_trace_ready,1,__ATOMIC_RELEASE);''')
+s=replace(s,"    unsigned int nx_rom_addr[32],nx_rom_word[32];\n    unsigned int nx_rom_n=0,nx_rom_last=0xffffffffu;",
+'''    unsigned int nx_rom_n=0,nx_rom_last=0xffffffffu;''')
+s=replace(s,"static unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];",
+'''static unsigned int nx_rom_addr[32],nx_rom_word[32];
+static unsigned int nx_rom_published_count=0;
+static int nx_rom_trace_ready=0, nx_rom_trace_flushed=0;
+static void nx_rom_trace_flush_main(void) {
+    if (nx_rom_trace_flushed || !__atomic_load_n(&nx_rom_trace_ready,__ATOMIC_ACQUIRE)) return;
+    nx_rom_trace_flushed=1;
+    FILE *out=fopen("sdmc:/switch/Umbrella-MegaDrive-NX/rom-boot-trace.txt","w");
+    if (!out) return;
+    fprintf(out,"Cartridge reads: word address, byte address, ROM data\\n");
+    for (unsigned int k=0;k<nx_rom_published_count;k++)
+        fprintf(out,"%02u %06X %06X %04X\\n",
+            k,nx_rom_addr[k],nx_rom_addr[k]*2u,nx_rom_word[k]);
+    fclose(out);
+}
+static unsigned int nx_cpu_addr_trace[64],nx_cpu_data_trace[64],nx_cpu_flags_trace[64];''')
+s=replace(s,"        nx_trace_flush_main();\n        nx_video_show_boot(nx_get_worker_clock());",
+'''        nx_trace_flush_main();
+        nx_rom_trace_flush_main();
         nx_video_show_boot(nx_get_worker_clock());''')
 if "cpu-bus-trace.txt" not in s: raise RuntimeError("CPU trace patch missing")
 save("md.c",s)
