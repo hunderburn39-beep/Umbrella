@@ -71,3 +71,6 @@ Reference 68000 reset-vector decoder, ROM/RAM word bus, explicit active-low DTAC
 
 ## Plane A/B diagnostic composition
 `compositor.py` combines two `DiagnosticPlane` samplers using a simplified conventional priority order (A high, B high, A low, B low, backdrop) and treats color index 0 as transparent. It produces RGB rows and PPM bytes, **not** a hardware-timed frame. `demo_frame.py` creates a synthetic 64x64 PPM diagnostic frame from patterns and name tables; it is not ROM-driven. `test_compositor.py` covers transparency, ordering, backdrop and PPM size. Scroll, sprites, window plane, backdrop register wiring, shadow/highlight and 315-6123 timing remain unimplemented. Test execution not yet verified.
+
+## Diagnostic full-plane scrolling
+`scroll.py` implements independent signed horizontal/vertical pixel offsets for each diagnostic plane, wrapping at the plane dimensions. `DiagnosticCompositor` now accepts `scroll_a` and `scroll_b` offsets. This is **not** register-driven Mega Drive line scrolling or column scrolling, and sign conventions still require trace-based validation. `test_scroll.py` covers X/Y shifts, wrapping and independent planes. Sprite attribute tables, sprite mixing, real VDP timing and Switch NRO remain pending. GitHub Actions execution not confirmed.
