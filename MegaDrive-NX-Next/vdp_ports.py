@@ -6,6 +6,7 @@ video output, or command-to-VRAM transfers.
 """
 from dataclasses import dataclass, field
 from vram import VRAM
+from cram import CRAM
 from vdp_address import VDPCommand, decode_command, increment_address
 
 CONTROL_PORT = 0xC00004
@@ -15,6 +16,7 @@ DATA_PORT = 0xC00000
 class VDPPorts:
     registers: list[int] = field(default_factory=lambda: [0] * 24)
     vram: VRAM = field(default_factory=VRAM)
+    cram: CRAM = field(default_factory=CRAM)
     pending_command: int | None = None
     last_command: int | None = None
     active_command: VDPCommand | None = None
@@ -73,3 +75,10 @@ class VDPPorts:
     def diagnostic_vram_write(self, address: int, value: int) -> None:
         """Direct VRAM test injection, not a VDP FIFO or CPU bus write."""
         self.vram.write_word(address, value)
+
+    def diagnostic_cram_write(self, index: int, word: int) -> None:
+        """Inject palette data for diagnostics, not a VDP CRAM port transfer."""
+        self.cram.write(index, word)
+
+    def diagnostic_cram_rgb(self, index: int) -> tuple[int, int, int]:
+        return self.cram.rgb(index)
