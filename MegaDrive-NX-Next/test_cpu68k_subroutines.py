@@ -60,10 +60,13 @@ class SubroutineTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             c.step()
 
-    def test_stack_underflow_not_fabricated(self):
+    def test_rts_reads_actual_stack_memory_without_invented_guard(self):
         c = cpu("4e75")
-        with self.assertRaises(NotImplementedError):
-            c.step()
+        c.bus.memory.write_word(0xff0000, 0x0000)
+        c.bus.memory.write_word(0xff0002, 0x0100)
+        self.assertEqual(c.step().mnemonic, "RTS")
+        self.assertEqual(c.pc, 0x100)
+        self.assertEqual(c.a[7], 0xff0004)
         self.assertIs(c.bus.cycle.phase, Phase.IDLE)
 
 if __name__ == "__main__":
