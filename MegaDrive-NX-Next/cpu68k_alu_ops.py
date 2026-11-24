@@ -2,13 +2,14 @@
 
 `execute(cpu, opcode)` returns the instruction mnemonic, or None when the
 opcode is outside these groups. Encodings that are recognized but not modeled
-(ADDX/SUBX, ABCD/SBCD, EXG, CMPM, MULU/MULS/DIVU/DIVS, bit-field forms) raise
+(ADDX/SUBX, ABCD/SBCD, EXG, CMPM, bit-field forms) raise
 NotImplementedError rather than executing incorrectly. Illegal encodings are
 not distinguished from unmodeled ones: no illegal-instruction exception is
 modeled. Instruction-level reference only, not cycle timing.
 """
 import cpu68k_alu as alu
 import cpu68k_ea as ea
+import cpu68k_muldiv as md
 
 SIZE_NAMES = ("B", "W", "L")
 SHIFT_KINDS = ("AS", "LS", "ROX", "RO")
@@ -61,11 +62,25 @@ def _logic_group(cpu, opcode, name, function, unmodeled):
     return text
 
 
+def _muldiv(cpu, opcode, divide):
+    dn, opmode, mode, reg = _fields(opcode)
+    signed = opmode == 7
+    src = ea.read(cpu, ea.resolve(cpu, mode, reg, 16, ea.DATA))
+    fn = md.divide if divide else md.multiply
+    result, flags = fn(cpu.d[dn], src, signed, cpu.ccr)
+    cpu.d[dn], cpu.ccr = result, flags
+    return ("DIV" if divide else "MUL") + ("S" if signed else "U") + ".W <ea>,Dn"
+
+
 def _or_group(cpu, opcode):
+    if (opcode >> 6) & 7 in (3, 7):
+        return _muldiv(cpu, opcode, True)
     return _logic_group(cpu, opcode, "OR", lambda a, b: a | b, "DIVU/DIVS")
 
 
 def _and_group(cpu, opcode):
+    if (opcode >> 6) & 7 in (3, 7):
+        return _muldiv(cpu, opcode, False)
     return _logic_group(cpu, opcode, "AND", lambda a, b: a & b, "MULU/MULS")
 
 
