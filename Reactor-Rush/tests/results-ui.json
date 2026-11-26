@@ -22,32 +22,32 @@
  {
   "test": "Mensagem BIG WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('BIGWIN115,05 CR', 138, 268)"
+  "detail": "('BIGWIN115,46 CR', 138, 268)"
  },
  {
   "test": "Mensagem MEGA WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MEGAWIN115,17 CR', 139, 268)"
+  "detail": "('MEGAWIN115,61 CR', 139, 268)"
  },
  {
   "test": "Mensagem SUPER WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('SUPERWIN115,42 CR', 149, 268)"
+  "detail": "('SUPERWIN115,07 CR', 149, 268)"
  },
  {
   "test": "Mensagem EPIC WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('EPICWIN115,17 CR', 138, 268)"
+  "detail": "('EPICWIN115,35 CR', 138, 268)"
  },
  {
   "test": "Mensagem QUANTUM WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('QUANTUMWIN115,37 CR', 243, 268)"
+  "detail": "('QUANTUMWIN115,63 CR', 243, 268)"
  },
  {
   "test": "Mensagem MAX WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MAXWIN115,59 CR', 138, 268)"
+  "detail": "('MAXWIN115,75 CR', 138, 268)"
  },
  {
   "test": "Mensagem ENERGOON ACTIVATED sem caixa e dentro da grelha",
@@ -75,6 +75,66 @@
   "detail": "('ELECTRICEXPLOSION', 201, 268)"
  },
  {
+  "test": "Repetição determinística semente 3333 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 0.11, 'got': 0.11, 'casc': 1}"
+ },
+ {
+  "test": "Repetição determinística semente 555555 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 2.61, 'got': 2.6, 'casc': 5}"
+ },
+ {
+  "test": "Repetição determinística semente 1 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 0.1, 'got': 0.1, 'casc': 1}"
+ },
+ {
+  "test": "Repetição determinística semente 5 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 0.14, 'got': 0.14, 'casc': 1}"
+ },
+ {
+  "test": "Repetição determinística semente 19 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 1.59, 'got': 1.58, 'casc': 12}"
+ },
+ {
+  "test": "Repetição determinística semente 20 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 0.47, 'got': 0.47, 'casc': 6}"
+ },
+ {
+  "test": "Repetição determinística semente 104 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 0.67, 'got': 0.67, 'casc': 8}"
+ },
+ {
+  "test": "Repetição determinística semente 171 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 2.73, 'got': 2.72, 'casc': 15}"
+ },
+ {
+  "test": "Repetição determinística semente 454 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 7.84, 'got': 7.84, 'casc': 24}"
+ },
+ {
+  "test": "Repetição determinística semente 668 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 2.95, 'got': 2.94, 'casc': 14}"
+ },
+ {
+  "test": "Repetição determinística semente 316 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 11.2, 'got': 11.2, 'casc': 17}"
+ },
+ {
+  "test": "Repetição determinística semente 499 (motor = interface)",
+  "ok": true,
+  "detail": "{'exp': 21.5, 'got': 21.5, 'casc': 17}"
+ },
+ {
   "test": "Patamares 10/20/50/100/250/1000",
   "ok": true,
   "detail": "[None, 'BIG WIN', 'MEGA WIN', 'SUPER WIN', 'EPIC WIN', 'QUANTUM WIN', 'MAX WIN']"
@@ -92,17 +152,17 @@
  {
   "test": "Contador de rondas",
   "ok": true,
-  "detail": "60"
+  "detail": "72"
  },
  {
   "test": "Saldo válido e finito",
   "ok": true,
-  "detail": "989.58"
+  "detail": "1043.6"
  },
  {
   "test": "Maior long task < 400 ms (Chrome headless)",
   "ok": true,
-  "detail": "68"
+  "detail": "0"
  },
  {
   "test": "Retrato: grelha quadrada ou aviso de rotação",
@@ -122,6 +182,6 @@
  {
   "test": "Demo Gargantoon não altera saldo e sem erros",
   "ok": true,
-  "detail": "(989.58, 989.58, [])"
+  "detail": "(1043.6, 1043.6, [])"
  }
 ]

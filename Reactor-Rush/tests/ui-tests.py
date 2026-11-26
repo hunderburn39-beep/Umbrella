@@ -31,6 +31,11 @@ async def main():
             rec('Mensagem '+k+' sem caixa e dentro da grelha',ok,info and (info['txt'][:30],round(info['w']),round(info['gw'])))
             if k in('GARGANTOON UNLEASHED','MAX WIN','QUANTUM OVERLOAD'): await pg.screenshot(path=SHOTS+'/banner_'+k.replace(' ','_')+'.png')
             await pg.wait_for_timeout(1800)
+        # repetição determinística: mesma semente -> o saldo final da interface = resultado do motor
+        for seed in (3333,555555,1,5,19,20,104,171,454,668,316,499):
+            r=await pg.evaluate("""async (seed)=>{const R=window.__rr,E=R.E;const bet=R.betNow();const exp=E.playRoundTrace(E.createRng(seed),E.DEFAULTS);
+              R.setSeed(seed);const b0=R.state().balance;await R.spin();const b1=R.state().balance;return {exp:Math.round(exp.win*bet*100)/100,got:Math.round((b1-b0+bet)*100)/100,casc:exp.cascades}}""",seed)
+            rec('Repetição determinística semente '+str(seed)+' (motor = interface)',abs(r['exp']-r['got'])<0.011,r)
         # tiers
         tiers=await pg.evaluate("[[9.9,0],[10,0],[20,0],[50,0],[100,0],[250,0],[1000,0]].map(x=>window.__rr.winTier(x[0]))")
         rec('Patamares 10/20/50/100/250/1000',tiers==[None,'BIG WIN','MEGA WIN','SUPER WIN','EPIC WIN','QUANTUM WIN','MAX WIN'],tiers)
