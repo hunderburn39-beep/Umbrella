@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V4.0 — Slot de Cascatas</title>
+<title>Reactor Rush V5.0 — Reconstrução Reactoonz 2</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -361,31 +361,125 @@ html.rr-skin body .app .rr-landscape-art{display:none!important}
 <script>
 (function(){function fit(){var v=window.visualViewport;var w=v?v.width:innerWidth,h=v?v.height:innerHeight;var a=document.documentElement.classList.contains('rr33')?177.6833/100:16/9;var fw=Math.min(w,h*a);document.documentElement.style.setProperty('--rr-fit-w',fw+'px');document.documentElement.style.setProperty('--rr-fit-h',fw/a+'px');}fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);new MutationObserver(fit).observe(document.documentElement,{attributes:true,attributeFilter:['class']});})();
 </script>
+<style id="rr50">/* ===== Reactor Rush V5.0 ===== */
+.app .rr3d{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.04em;width:max-content;max-width:100%;pointer-events:none;background:none;border:0;box-shadow:none;padding:0;perspective:700px;--a:#9ffcff;--b:#35c8ff;--c:#0b4f9e;--glow:#34e7ff;font-size:clamp(20px,6.2cqw,60px);animation:rr3dIn .55s cubic-bezier(.2,1.4,.4,1) both}
+.rr3d.feat{font-size:clamp(16px,4.7cqw,46px)}
+.rr3d[data-tone=gold]{--a:#fff6bd;--b:#ffc542;--c:#8a4a00;--glow:#ffb92e}.rr3d[data-tone=pink]{--a:#ffd3f4;--b:#ff5fcf;--c:#7a1561;--glow:#ff4fd0}
+.rr3d[data-tone=violet]{--a:#efd6ff;--b:#b35cff;--c:#46187f;--glow:#a45cff}.rr3d[data-tone=green]{--a:#d4ffe3;--b:#47f09c;--c:#0b6a43;--glow:#3dffa2}
+.rr3d[data-tone=plasma]{--a:#ffffff;--b:#7fe6ff;--c:#6a2cff;--glow:#7a5cff}.rr3d[data-tone=max]{--a:#ffffff;--b:#ffe36b;--c:#d1305e;--glow:#ff7a3d}
+.rr3d-line{display:flex;transform:rotateX(14deg);transform-style:preserve-3d;white-space:nowrap}
+.rr3d-line b{display:inline-block;font:1000 1em/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.03em;color:var(--a);-webkit-text-stroke:.02em #fff;paint-order:stroke fill;
+ background:linear-gradient(180deg,#fff 0,var(--a) 22%,var(--b) 58%,var(--c) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+ filter:drop-shadow(0 .03em 0 var(--c)) drop-shadow(0 .06em 0 var(--c)) drop-shadow(0 .09em 0 rgba(0,0,0,.55)) drop-shadow(0 0 .22em var(--glow)) drop-shadow(0 0 .55em var(--glow));
+ animation:rr3dLetter 1.1s ease-in-out infinite;animation-delay:calc(var(--i)*70ms)}
+.rr3d-val{margin-top:.12em;font:1000 .62em/1 system-ui,-apple-system,sans-serif;font-variant-numeric:tabular-nums;color:#fff;text-shadow:0 0 .3em var(--glow),0 0 .7em var(--glow),0 .06em 0 var(--c)}
+.rr3d-arc{position:absolute;left:-6%;right:-6%;top:50%;width:112%;height:.9em;transform:translateY(-50%);fill:none;stroke:var(--glow);stroke-width:2;stroke-linejoin:round;filter:drop-shadow(0 0 4px var(--glow));opacity:0;animation:rr3dArc .5s steps(2) 3 .1s}
+.rr3d.out{animation:rr3dOut .42s ease-in both}
+.rr-spark{position:absolute;width:.32em;height:.32em;border-radius:50%;background:var(--c,#7ffcff);box-shadow:0 0 .6em var(--c,#7ffcff);opacity:0;animation:rrSpark .85s ease-out forwards;pointer-events:none;font-size:inherit}
+.arena .rr-spark{font-size:16px}
+@keyframes rr3dIn{from{opacity:0;transform:translate(-50%,-50%) scale(.2) rotateX(70deg)}to{opacity:1;transform:translate(-50%,-50%) scale(1) rotateX(0)}}
+@keyframes rr3dOut{to{opacity:0;transform:translate(-50%,-80%) scale(1.25)}}
+@keyframes rr3dLetter{0%,100%{transform:translateY(0)}50%{transform:translateY(-.05em)}}
+@keyframes rr3dArc{0%{opacity:0}30%,70%{opacity:1}100%{opacity:0}}
+@keyframes rrSpark{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.2)}}
+.rr-bolt{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:4;overflow:visible}
+.rr-bolt polyline{fill:none;stroke:#e9ffff;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px #28f0ff) drop-shadow(0 0 10px #28f0ff);animation:boltFade .38s ease-out forwards}
+@keyframes boltFade{0%{opacity:1}100%{opacity:0}}
+.arena.wild-flash:after{content:"";position:absolute;inset:0;z-index:3;pointer-events:none;background:radial-gradient(circle,#b8ffff66,transparent 70%);animation:fade .45s forwards}
+/* tipos de peça */
+.cell.k-e{filter:drop-shadow(0 0 6px #3df4ff) saturate(1.3)}
+.cell.k-g1{filter:drop-shadow(0 0 7px #7dffb2) hue-rotate(-60deg) saturate(1.4)}
+.cell.k-G1{filter:drop-shadow(0 0 7px #d58cff) hue-rotate(40deg) saturate(1.3)}
+.cell.uncharged{filter:grayscale(.85) brightness(.75);opacity:.88}
+.cell.uncharged:after{content:"";position:absolute;inset:18%;border-radius:50%;border:2px dashed #8fdfff99}
+.fusion.energoon{filter:drop-shadow(0 0 10px #6dffb0) hue-rotate(-70deg) saturate(1.3)}
+/* reatores: iluminação progressiva por nível */
+.arena[data-reactor="1"].quantum-burst{box-shadow:0 0 28px #5cf0ff,inset 0 0 22px #5cf0ff55}
+.arena[data-reactor="2"].quantum-burst{box-shadow:0 0 36px #6dffb0,inset 0 0 28px #6dffb066}
+.arena[data-reactor="3"].quantum-burst{box-shadow:0 0 52px #c070ff,inset 0 0 36px #c070ff88}
+.arena[data-reactor="4"].quantum-burst{box-shadow:0 0 64px #ff6fd8,inset 0 0 44px #ffd36b88}
+.qbar.on{filter:drop-shadow(0 0 6px #5cf0ff)}
+.qbar:nth-child(2).on{filter:drop-shadow(0 0 6px #6dffb0)}.qbar:nth-child(3).on{filter:drop-shadow(0 0 8px #c070ff)}.qbar:nth-child(4).on{filter:drop-shadow(0 0 8px #ff6fd8)}
+.pip.on{box-shadow:0 0 8px #5cf0ff}
+/* tabela de prémios */
+.paytable{width:100%;border-collapse:collapse;font-size:11px;text-align:center;margin:6px 0}
+.paytable th,.paytable td{padding:3px 2px;border-bottom:1px solid #ffffff1f}.paytable th{color:#9fd6ff;font-weight:800}
+.pt-sym svg{width:26px;height:26px;display:block;margin:auto}
+.rr-note{font-size:11px;color:#ffd79a}
+@media(prefers-reduced-motion:reduce){.rr3d-line b,.rr3d-arc{animation:none}}
+/* painéis HTML V5.0 sobre a moldura aprovada (cobrem o texto/ícones da mecânica antiga) */
+#quantumBars,#chargeTotal,#queueLive,#giantStage,.quantum-panel .fluct-wrap,.quantum-panel .round-cascades{display:none!important}
+.rr-p1,.rr-p2{position:absolute;box-sizing:border-box;pointer-events:none;color:#e6f6ff;font-weight:900;text-align:center;overflow:hidden;
+ background:linear-gradient(150deg,#0e1745,#070a24 60%,#150a30);border:.25cqw solid #6f5be0;border-radius:1.5cqw;box-shadow:inset 0 0 1.6cqw #2a56b0aa,0 0 1.2cqw #b336fe88}
+.rr-p1{left:69.2%;top:9.4%;width:28.4%;height:29.2%;padding:.5cqw .8cqw}
+.rr-p2{left:69.2%;top:40.6%;width:28.4%;height:22.5%;padding:.4cqw .8cqw}
+.rr-ptitle{font-size:1.75cqw;letter-spacing:.08em;color:#7eeeff;text-shadow:0 0 .8cqw #2dd9ff;line-height:1.1}
+.rr-tubes{display:grid;grid-template-columns:repeat(4,1fr);gap:.9cqw;height:68%;margin-top:.5cqw}
+.rr-tubes .tube{position:relative;border:.2cqw solid #5b4fbf;border-radius:1.1cqw 1.1cqw .8cqw .8cqw;background:#0a0f33;overflow:hidden;--q:0%;box-shadow:inset 0 0 .8cqw #000}
+.rr-tubes .tube:before{content:"";position:absolute;left:0;right:0;bottom:0;height:var(--q);background:linear-gradient(0deg,#1fc5ff,#9ff6ff);transition:height .4s ease;box-shadow:0 0 1cqw #3de8ff}
+.rr-tubes .tube:nth-child(2):before{background:linear-gradient(0deg,#25d777,#b6ffd3);box-shadow:0 0 1cqw #6dffb0}
+.rr-tubes .tube:nth-child(3):before{background:linear-gradient(0deg,#8a3dff,#e0b7ff);box-shadow:0 0 1cqw #c070ff}
+.rr-tubes .tube:nth-child(4):before{background:linear-gradient(0deg,#ff4fc3,#ffe27a);box-shadow:0 0 1cqw #ff6fd8}
+.rr-tubes .tube.on{animation:tubePulse 1.1s ease-in-out infinite}
+.rr-tubes .tube i{position:absolute;left:0;right:0;top:.4cqw;font:900 1.35cqw/1 system-ui,sans-serif;color:#fff;text-shadow:0 0 .5cqw #000,0 0 .5cqw #000;font-style:normal}
+.rr-tubes .tube b{position:absolute;left:0;right:0;bottom:.3cqw;font:900 1.25cqw/1 system-ui,sans-serif;color:#fff;text-shadow:0 0 .4cqw #000,0 0 .4cqw #000}
+@keyframes tubePulse{50%{filter:brightness(1.5)}}
+.rr-pcount{font-size:1.5cqw;color:#ffe9a8;margin-top:.4cqw}
+.rr-fluct{display:flex;align-items:center;gap:.8cqw;margin-top:.5cqw}
+.rr-fluct svg{width:3.4cqw;height:3.4cqw;flex:none}
+.rr-fbar{flex:1;height:1.7cqw;border-radius:1cqw;background:#0a0f33;border:.2cqw solid #5b4fbf;overflow:hidden;position:relative}
+.rr-fbar i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#27d1ff,#a78bff);transition:width .35s}
+.rr-ftxt{font-size:1.4cqw;color:#bfeaff;min-width:6.2cqw;text-align:right}
+.rr-reactors{display:grid;grid-template-columns:repeat(4,1fr);gap:.7cqw;margin-top:.55cqw}
+.rr-reactors .rx{border:.18cqw solid #4a4296;border-radius:.9cqw;padding:.25cqw 0;font-size:.95cqw;line-height:1.05;white-space:nowrap;overflow:hidden;background:#0b1038;color:#8f97d6;transition:all .3s}
+.rr-reactors .rx.on{color:#fff;border-color:#7ffcff;box-shadow:0 0 1cqw #3de8ff;background:#123a6a}
+.rr-reactors .ico{display:grid;gap:.18cqw;justify-content:center;margin:.1cqw auto .15cqw}
+.rr-reactors .ico u{display:block;width:.95cqw;height:.95cqw;background:currentColor;border-radius:.2cqw;opacity:.9}
+.rr-reactors .x2{font-size:1.9cqw;line-height:1.1}
+/* modo vertical 9:16: a moldura aprovada tem outra disposição */
+@media (orientation:portrait){
+ .rr-p1{left:9%;top:16.9%;width:82%;height:7.5%;padding:.8cqw 3cqw;display:flex;flex-direction:column;border-width:.6cqw;border-radius:4cqw}
+ .rr-p2{left:9%;top:24.4%;width:82%;height:10.4%;padding:.8cqw 3cqw;display:flex;flex-direction:column;border-width:.6cqw;border-radius:4cqw}
+ .rr-ptitle{font-size:3.3cqw}
+ .rr-tubes{height:auto;flex:1;gap:2.5cqw;margin-top:.6cqw}
+ .rr-tubes .tube{border-width:.5cqw;border-radius:2cqw}.rr-tubes .tube i{display:none}
+ .rr-tubes .tube b{font-size:2.8cqw;bottom:50%;transform:translateY(50%)}
+ .rr-pcount{position:absolute;right:4.5cqw;top:1cqw;font-size:3cqw;margin:0}
+ .rr-fluct{gap:2cqw;margin-top:.6cqw}.rr-fluct svg{width:6.5cqw;height:6.5cqw}
+ .rr-fbar{height:3.4cqw;border-width:.5cqw}.rr-ftxt{font-size:3cqw;min-width:14cqw}
+ .rr-reactors{gap:1.6cqw;margin-top:.4cqw}
+ .rr-reactors .rx{font-size:2.1cqw;border-width:.4cqw;border-radius:2cqw;padding:.5cqw 0}
+ .rr-reactors .ico{gap:.4cqw;margin:0 auto .2cqw}.rr-reactors .ico u{width:1.5cqw;height:1.5cqw;border-radius:.3cqw}
+ .rr-reactors .ico u[style]{width:3.2cqw!important;height:3.2cqw!important}
+ .rr-reactors .x2{font-size:4cqw}
+}
+</style>
 </head>
 <body>
 <div class="rotate-screen" role="status"><div class="rotate-icon">↻ 📱</div><b>REACTOR RUSH</b><p>Roda o telemóvel para a posição horizontal para jogar.</p></div>
 <div class="app" aria-label="Reactor Rush, jogo original de cascatas em modo livre">
  <div class="rr-landscape-art" aria-hidden="true"><span class="rr-art-left"></span><span class="rr-art-center"></span><span class="rr-art-right"></span></div>
  <header class="top"><button id="settings" aria-label="Configurações">⚙</button><button class="round-btn" id="info" aria-label="Informações">ⓘ</button><div><div class="brand">REACTOR <span>RUSH</span></div><div class="strap">NEON CASCADE • FREE PLAY</div></div><button class="round-btn" id="sound" aria-label="Ativar ou desativar o som">♪</button></header>
- <section class="quantum-panel" aria-label="Medidores e fila quântica"><h2>ENERGIA QUÂNTICA</h2><div id="quantumBars"></div><div class="charge-total" id="chargeTotal">0 / 125</div><h2>FILA DE BÓNUS</h2><div id="queueLive" class="queue-live">SEM BÓNUS</div><div class="giant-stage" id="giantStage">GIGANTE · 5.º NÍVEL</div><h2>SÍMBOLO FLUTUANTE</h2><div class="fluct-wrap"><div id="fluctIcon" class="fluct-icon"></div><span>2 WILDS<br>QUANDO VENCE</span></div><div id="roundCascades" class="round-cascades">CASCATAS 0</div></section><section class="rules-panel"><h2>EFEITOS QUÂNTICOS</h2><p><b>◉ IMPLOSÃO</b><br>3–6 Wilds + elimina vizinhos.</p><p><b>✧ ALTERAÇÃO</b><br>Transforma um tipo de símbolo.</p><p><b>✦ DEMOLIÇÃO</b><br>Elimina criaturas de um olho.</p><p><b>╳ INCISÃO</b><br>Cria um X com Wild no centro.</p></section>
+ <section class="quantum-panel" aria-label="Medidores e fila quântica"><h2>ENERGIA QUÂNTICA</h2><div id="quantumBars"></div><div class="charge-total" id="chargeTotal">0 / 125</div><h2>FILA DE BÓNUS</h2><div id="queueLive" class="queue-live">SEM BÓNUS</div><div class="giant-stage" id="giantStage">GIGANTE · 5.º NÍVEL</div><h2>SÍMBOLO FLUTUANTE</h2><div class="fluct-wrap"><div id="fluctIcon" class="fluct-icon"></div><span>2 WILDS<br>QUANDO VENCE</span></div><div id="roundCascades" class="round-cascades">CASCATAS 0</div><div class="rr-p1" id="rrP1"><div class="rr-ptitle">QUANTUMETER</div><div class="rr-tubes" id="rrTubes"><div class="tube"><i>1</i><b>55</b></div><div class="tube"><i>2</i><b>85</b></div><div class="tube"><i>3</i><b>110</b></div><div class="tube"><i>4</i><b>135</b></div></div><div class="rr-pcount" id="rrCount">0 / 55</div></div><div class="rr-p2" id="rrP2"><div class="rr-ptitle">FLUCTOMETER</div><div class="rr-fluct"><svg viewBox="0 0 60 60" aria-hidden="true"><use id="rrFluctUse" href="#rr-t0"></use></svg><div class="rr-fbar"><i id="rrFluctFill"></i></div><div class="rr-ftxt" id="rrFluctTxt">0 / 11</div></div><div class="rr-reactors" id="rrReactors"><div class="rx"><div class="ico" style="grid-template-columns:repeat(2,auto)"><u></u><u></u><u></u><u></u></div>ENERGOON</div><div class="rx"><div class="ico" style="grid-template-columns:repeat(2,auto)"><u style="width:1.9cqw;height:1.9cqw"></u></div>ENERGOON 2×2</div><div class="rx"><div class="ico" style="grid-template-columns:repeat(3,auto)"><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u><u></u></div>GARGANTOON</div><div class="rx"><div class="x2">×2</div>SOBRECARGA</div></div></div></section><section class="rules-panel"><h2>EFEITOS QUÂNTICOS</h2><p><b>◉ IMPLOSÃO</b><br>3–6 Wilds + elimina vizinhos.</p><p><b>✧ ALTERAÇÃO</b><br>Transforma um tipo de símbolo.</p><p><b>✦ DEMOLIÇÃO</b><br>Elimina criaturas de um olho.</p><p><b>╳ INCISÃO</b><br>Cria um X com Wild no centro.</p></section>
  <div class="meters"><div><div class="meter-title">ENERGIA QUÂNTICA</div><div class="meter-info" id="meterLabel">0/5 CARGAS</div><div class="meter-next" id="nextGiant">GIGANTE EM 5 ATIVAÇÕES</div></div><div class="pips" id="pips"></div></div>
  <main class="arena" id="arena"><div class="grid" id="grid" aria-label="Tabuleiro de 7 por 7 símbolos"></div><div class="overlay" id="overlay" aria-live="polite"><div class="banner-layer" id="bannerLayer"></div><div class="fx-layer" id="fxLayer"></div></div></main>
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V4.0 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V4.0</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V5.0 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V4.0</strong></footer>
 </div>
-<div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais, com ligações ortogonais e Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias tem 18% de probabilidade de receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
+<div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush V5.0 é um jogo de cascatas 7×7 em modo livre, inspirado nas regras públicas do Reactoonz 2.</p><ul><li><b>Grupos:</b> 5 ou mais criaturas iguais ligadas na horizontal ou vertical pagam. Os símbolos premiados desaparecem, os restantes caem e novas criaturas ocupam as lacunas. As cascatas repetem-se até não haver novos prémios.</li><li><b>Fluctometer:</b> em cada ronda, uma criatura de um olho é o símbolo flutuante. Quando forma um grupo premiado deixa um Electric Wild. Com 11 símbolos flutuantes premiados o medidor enche e surgem 1–3 Electric Wilds.</li><li><b>Wilds:</b> os Electric Wilds substituem qualquer criatura e carregam o Quantumeter com cada criatura normal que ajudam a premiar. Os Wilds não carregados surgem nas cascatas, não formam prémios sozinhos e tornam-se Electric Wilds junto de um prémio.</li><li><b>Wild Pair Explosion:</b> quando as cascatas terminam e há 2 ou mais Electric Wilds, os símbolos entre eles e à volta são destruídos (todos, se forem adjacentes). Não pagam, mas carregam o Quantumeter.</li><li><b>Quantumeter:</b> 55 cargas = quatro Energoons 1×1 · 85 = um Energoon 2×2 · 110 = o Gargantoon 3×3 · 135 = Sobrecarga: ×2 em todos os prémios.</li><li><b>Gargantoon:</b> o 3×3 parte-se em dois 2×2 quando participa num prémio e depois em nove Wilds 1×1. O Fluctometer fica desligado depois do Gargantoon.</li></ul><p class="rr-note">Tabela de prémios (múltiplos da aposta por grupo). Valores transcritos de fontes secundárias concordantes; o regulamento oficial do PokerStars não foi acessível ao construir esta versão.</p><div id="payTable"></div><p class="rr-note">Os valores de carga do Quantumeter, a regra do Fluctometer e as prioridades de execução seguem fontes secundárias e partes são interpretação própria; ver REPORT-V5.0.md. Mensagens BIG WIN (10×), MEGA (20×), SUPER (50×), EPIC (100×), QUANTUM (250×) e MAX (1000×) são patamares próprios do Reactor Rush. O RTP teórico oficial do Reactoonz 2 (96,20%) é o alvo de calibração; o RTP observado deste jogo está no relatório.</p><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
 <p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b> · GARGANTOONS: <b id="gargantoonCount">0</b></p><p class="separate"><button id="testGargantoon" type="button" style="background:#593c91;padding:10px;border-radius:8px;font-weight:900">TESTAR GARGANTOON (SEM CRÉDITOS)</button><br>Mostra as três fases; não altera o saldo, prémios ou estatísticas.</p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p class="separate"><b>Novo grafismo horizontal V3.3</b><br><label for="skin33">Selecionar imagem Reactor-Rush-V3.3-horizontal.webp</label><input id="skin33" type="file" accept="image/webp,image/png,image/jpeg" style="display:block;width:100%;margin:8px 0"><span id="skin33Status" role="status">Grafismo anterior ativo</span> <button id="skin33Reset" type="button" style="background:#124d75;padding:6px;border-radius:6px">Repor</button></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="25" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="100" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
+<script src="rr-engine.js?v=50"></script>
 <script>
 (()=>{'use strict';
 const N=7, TYPES=8, BETS=[.05,.10,.20,.40,.60,1,2,5,10], COLORS=['#ef6484','#65e898','#ffb25a','#66d3ff','#be88ff','#ff8570','#a3e077','#ffe377'];
 const GLYPHS=['horns','plant','star','tuft','ball','block','blob','sun'];
 const $=id=>document.getElementById(id);
 const gridEl=$('grid'), pipsEl=$('pips'), msgEl=$('message'), overlay=$('overlay'), fxLayer=$('fxLayer'), bannerLayer=$('bannerLayer'), arena=$('arena');
-pipsEl.innerHTML=Array.from({length:5},()=>'<div class="pip"></div>').join('');
+pipsEl.innerHTML=Array.from({length:4},()=>'<div class="pip"></div>').join('');
 let state={balance:1000,betIndex:2,charged:0,features:0,spins:0,lastWin:0,bestWin:0,bestCascades:0,turbo:false,sound:false,voice:true,music:true,musicVolume:25,sfxVolume:100,lastFeature:'',gargantoonCount:0};
-try{const loaded=JSON.parse(localStorage.getItem('reactor-rush-v1'));if(loaded&&typeof loaded.balance==='number'&&Number.isFinite(loaded.balance))state={...state,...loaded};}catch(e){}
+try{const loaded=JSON.parse(localStorage.getItem('reactor-rush-v5'));if(loaded&&typeof loaded.balance==='number'&&Number.isFinite(loaded.balance))state={...state,...loaded};}catch(e){}
 if(state.audioMixVersion!==36){state.musicVolume=25;state.sfxVolume=100;state.audioMixVersion=36;}
 state.balance=Math.max(0,Number(state.balance)||0);delete state.jackpot;state.charged=0;state.features=Math.max(0,Math.floor(Number(state.features)||0));state.lastFeature=typeof state.lastFeature==='string'?state.lastFeature.slice(0,40):'';state.betIndex=Math.max(0,Math.min(BETS.length-1,Number(state.betIndex)||0));
 let board=[], busy=false, autoLeft=0, cascadeCount=0, won=0, audioCtx=null;
@@ -393,11 +487,7 @@ const ONE_EYED=[0,6], FEATURE_NAMES=['IMPLOSÃO','ALTERAÇÃO','DEMOLIÇÃO','IN
 const money=n=>(Math.round(n*100)/100).toLocaleString('pt-PT',{minimumFractionDigits:2,maximumFractionDigits:2});
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 function rand(n){return Math.floor(Math.random()*n)}
-function save(){try{localStorage.setItem('reactor-rush-v1',JSON.stringify(state));}catch(e){}}
-function randType(){const n=Math.random(); const limits=[.20,.25,.30,.52,.58,.64,.86,1];return limits.findIndex(x=>n<x)}
-function newCell(){const t=randType();return {t,w:false,u:t===floatingType};}
-function wildCell(){return {t:randType(),w:true,u:false}}
-function createBoard(){floatingType=ONE_EYED[rand(ONE_EYED.length)];board=Array.from({length:N},()=>Array.from({length:N},newCell));}
+function save(){try{localStorage.setItem('reactor-rush-v5',JSON.stringify(state));}catch(e){}}
 function faceSVG(t,w){if(w)return `<svg viewBox="0 0 60 60" aria-hidden="true"><defs><radialGradient id="w${t}" cx="35%" cy="26%"><stop stop-color="#fff"/><stop offset=".28" stop-color="#ffdd96"/><stop offset=".58" stop-color="#f76fe9"/><stop offset="1" stop-color="#5b24d6"/></radialGradient></defs><path d="M30 1 38 16 55 8 50 27 59 38 39 40 30 59 20 41 1 35 13 21 10 4 26 17Z" fill="url(#w${t})" stroke="#f8f9ff" stroke-width="2"/><circle cx="30" cy="29" r="11" fill="#fff"/><circle cx="30" cy="29" r="6" fill="#573598"/><circle cx="28" cy="26" r="2.5" fill="#fff"/><path d="M24 45q6 7 12 0" stroke="#fff" stroke-width="2" fill="none"/></svg>`;
  const c=COLORS[t],soft=['#ffe2ec','#d3ffe4','#fff3cb','#e2ffff','#f4e2ff','#ffe0d2','#efffcf','#fffbd7'][t];let accessory='';
  switch(t){case 0:accessory='<path d="M10 20 12 5 24 14M50 20 48 5 36 14" fill="#ff97b9" stroke="#911d61" stroke-width="3"/>';break;
@@ -452,26 +542,20 @@ function gargantoonSVG(r,c,n){
 
 function paint(motions=null){
  const occupied=new Set(),fusions=[];
- if(!motions)for(let r=0;r<N-1;r++)for(let c=0;c<N-1;c++){
-  const a=board[r][c];if(!a||a.w)continue;
-  const positions=[[r,c],[r,c+1],[r+1,c],[r+1,c+1]];
-  if(positions.some(([y,x])=>occupied.has(y*N+x)||board[y][x]?.w||board[y][x]?.t!==a.t))continue;
-  positions.forEach(([y,x])=>occupied.add(y*N+x));fusions.push({r,c,t:a.t});
- }
- if(!motions){const blocks=new Map();for(let r=0;r<N;r++)for(let c=0;c<N;c++){const a=board[r][c];if(a?.g){if(!blocks.has(a.g))blocks.set(a.g,[]);blocks.get(a.g).push([r,c]);}}for(const cells of blocks.values()){const ys=cells.map(p=>p[0]),xs=cells.map(p=>p[1]),y=Math.min(...ys),x=Math.min(...xs),n=Math.max(...ys)-y+1;if(n>=2&&n===Math.max(...xs)-x+1&&cells.length===n*n){cells.forEach(([r,c])=>occupied.add(r*N+c));fusions.push({r:y,c:x,t:'wild',n});}}}
+ if(!motions){const blocks=new Map();for(let r=0;r<N;r++)for(let c=0;c<N;c++){const a=board[r][c];if(a?.g){if(!blocks.has(a.g))blocks.set(a.g,[]);blocks.get(a.g).push([r,c]);}}for(const cells of blocks.values()){const ys=cells.map(p=>p[0]),xs=cells.map(p=>p[1]),y=Math.min(...ys),x=Math.min(...xs),n=Math.max(...ys)-y+1;if(n>=2&&n===Math.max(...xs)-x+1&&cells.length===n*n){cells.forEach(([r,c])=>occupied.add(r*N+c));fusions.push({r:y,c:x,t:'wild',n,k:board[y][x].k});}}}
  const step=gridEl.clientHeight/N,duration=state.turbo?155:390;
  for(let r=0;r<N;r++)for(let c=0;c<N;c++){
   const a=board[r][c],id=r*N+c,m=motions?.get(id),el=tiles[id];
-  const symbol=a.w?'wild':'t'+a.t;
+  const symbol=(a.w||a.u)?'wild':'t'+a.t;
   if(el.dataset.symbol!==symbol){el.firstElementChild.firstElementChild.setAttribute('href','#rr-'+symbol);el.dataset.symbol=symbol;}
-  el.className=`cell${a.w?' wild':''}${a.u?' unstable':''}${occupied.has(id)?' p2x2 merged':''}${m?' dropping':''}${m?.fresh?' fresh':''}`;
+  el.className=`cell${a.w?' wild':''}${a.u?' uncharged':''}${a.k&&a.k!=='n'?' k-'+a.k:''}${occupied.has(id)?' p2x2 merged':''}${m?' dropping':''}${m?.fresh?' fresh':''}`;
   if(m){el.style.setProperty('--from-y',(-Math.round(step*m.steps))+'px');el.style.setProperty('--fall-ms',duration+'ms');el.style.setProperty('--delay-ms',(state.turbo?0:(c%3)*12)+'ms');el.style.setProperty('--appear',m.fresh?'.72':'1');}
  }
  gridEl.querySelectorAll('.fusion').forEach(el=>el.remove());
- if(fusions.length)gridEl.insertAdjacentHTML('beforeend',fusions.map(({r,c,t,n=2})=>t==='wild'?`<div class="fusion rr-gargantoon" data-symbol="gargantoon" style="--gx:${c};--gy:${r};--gn:${n}">${gargantoonSVG(r,c,n)}</div>`:`<div class="fusion" data-symbol="t${t}" style="--gx:${c};--gy:${r};--gn:${n}" aria-hidden="true">${spriteRef('t'+t)}<span class="boost">×2</span></div>`).join(''));
+ if(fusions.length)gridEl.insertAdjacentHTML('beforeend',fusions.map(({r,c,t,n=2,k})=>t==='wild'?`<div class="fusion rr-gargantoon${k==='g2'?' energoon':''}" data-symbol="gargantoon" style="--gx:${c};--gy:${r};--gn:${n}">${gargantoonSVG(r,c,n)}</div>`:`<div class="fusion" data-symbol="t${t}" style="--gx:${c};--gy:${r};--gn:${n}" aria-hidden="true">${spriteRef('t'+t)}<span class="boost">×2</span></div>`).join(''));
 }
 
-function update(){const bet=BETS[state.betIndex];$('balance').textContent=money(state.balance);$('bet').textContent=money(bet);$('lastwin').textContent=money(state.lastWin);$('bestWin').textContent=money(state.bestWin||0);$('bestCascades').textContent=String(state.bestCascades||0);$('lastFeature').textContent=state.lastFeature==='GIGANTE'?'GARGANTOON':state.lastFeature||'—';$('gargantoonCount').textContent=String(state.gargantoonCount||0);$('featureCount').textContent=String(state.features);$('cascades').textContent=String(cascadeCount);document.querySelector('.app').classList.toggle('is-turbo',state.turbo);$('chargeTotal').textContent=state.charged+' / 125';$('quantumBars').innerHTML=Array.from({length:5},(_,i)=>'<div class="qbar"><span>'+(i+1)+'</span><div><i style="--q:'+Math.min(100,Math.max(0,(state.charged-i*CHARGE)/CHARGE*100))+'%"></i></div></div>').join('');$('queueLive').textContent=featureQueue.length?featureQueue.map(f=>f==='GIGANTE'?'GARGANTOON':f).join(' → '):'SEM BÓNUS EM ESPERA';$('giantStage').textContent=giantPhase?'GARGANTOON · FASE '+giantPhase+'/3':(activeFeature==='GIGANTE'?'GARGANTOON':activeFeature||'GARGANTOON · 5.º NÍVEL');$('fluctIcon').dataset.symbol='t'+floatingType;$('roundCascades').textContent='CASCATAS '+cascadeCount;$('spin').disabled=busy||state.balance+1e-5<bet;$('spin').classList.toggle('active',busy);$('spin').setAttribute('aria-label',busy?'Rodada em curso':'Rodar');$('minus').disabled=busy||state.betIndex===0;$('plus').disabled=busy||state.betIndex===BETS.length-1;$('turbo').classList.toggle('sel',state.turbo);$('auto').classList.toggle('sel',autoLeft>0);$('auto').textContent=autoLeft>0?'■ PARAR ('+autoLeft+')':'↻ AUTO ×10';$('sound').textContent=state.sound?'♫':'♪';$('sound').classList.toggle('active',state.sound);}
+function update(){const bet=BETS[state.betIndex];$('balance').textContent=money(state.balance);$('bet').textContent=money(bet);$('lastwin').textContent=money(state.lastWin);$('bestWin').textContent=money(state.bestWin||0);$('bestCascades').textContent=String(state.bestCascades||0);$('lastFeature').textContent=state.lastFeature==='GIGANTE'?'GARGANTOON':state.lastFeature||'—';$('gargantoonCount').textContent=String(state.gargantoonCount||0);$('featureCount').textContent=String(state.features);$('cascades').textContent=String(cascadeCount);document.querySelector('.app').classList.toggle('is-turbo',state.turbo);const nextT=THRESH[Math.min(q.level,3)];$('chargeTotal').textContent=q.charge+' / '+nextT+(q.mult>1?' · ×2':'');$('quantumBars').innerHTML=THRESH.map((T,i)=>{const lo=i?THRESH[i-1]:0;const pct=Math.min(100,Math.max(0,(q.charge-lo)/(T-lo)*100));return '<div class="qbar'+(q.level>i?' on':'')+'"><span>'+(i+1)+'</span><div><i style="--q:'+pct+'%"></i></div></div>'}).join('');pipsEl.querySelectorAll('.pip').forEach((p,i)=>p.classList.toggle('on',q.level>i));$('meterLabel').textContent=q.charge+'/'+nextT+' CARGAS';$('nextGiant').textContent=q.level>=4?'SOBRECARGA ×2 ATIVA':'PRÓXIMO: '+LEVEL_NAMES[Math.min(q.level,3)];$('queueLive').textContent='FLUCTOMETER '+q.fluct+' / '+E.CFG.fluctNeeded+(q.garg?' (DESLIGADO)':'');$('giantStage').textContent=q.level?'NÍVEL '+q.level+' · '+LEVEL_NAMES[q.level-1]:'NÍVEL 0';$('giantLive').textContent=q.level>=4?'SOBRECARGA ×2':'PRÓXIMO NÍVEL EM '+Math.max(0,nextT-q.charge);$('meterCount').textContent=q.charge+'/'+nextT+' CARGAS';rrPanels();$('fluctIcon').dataset.symbol='t'+floatingType;$('roundCascades').textContent='CASCATAS '+cascadeCount;$('spin').disabled=busy||state.balance+1e-5<bet;$('spin').classList.toggle('active',busy);$('spin').setAttribute('aria-label',busy?'Rodada em curso':'Rodar');$('minus').disabled=busy||state.betIndex===0;$('plus').disabled=busy||state.betIndex===BETS.length-1;$('turbo').classList.toggle('sel',state.turbo);$('auto').classList.toggle('sel',autoLeft>0);$('auto').textContent=autoLeft>0?'■ PARAR ('+autoLeft+')':'↻ AUTO ×10';$('sound').textContent=state.sound?'♫':'♪';$('sound').classList.toggle('active',state.sound);}
 function message(s){msgEl.innerHTML=s}
 function prizePulse(amount){
  if(!amount||document.hidden)return;
@@ -480,11 +564,6 @@ function prizePulse(amount){
  for(const id of ['lastwin','balance']){const node=$(id);node.classList.remove('bump');void node.offsetWidth;node.classList.add('bump');}
 }
 
-const CELEBRATIONS={"VITÓRIA!":{"lines":["VITÓRIA!"],"tone":"cyan","say":"Vitória!"},"GRANDE PRÉMIO!":{"lines":["GRANDE","PRÉMIO!"],"tone":"gold","say":"Grande prémio!"},"MEGA GANHO!":{"lines":["MEGA","GANHO!"],"tone":"cyan","say":"Mega ganho!"},"SUPER GANHO!":{"lines":["SUPER","GANHO!"],"tone":"gold","say":"Super ganho!"},"ULTRA GANHO!":{"lines":["ULTRA","GANHO!"],"tone":"pink","say":"Ultra ganho!"},"GARGANTOON!":{"lines":["GARGANTOON!","ATIVADO!"],"tone":"gold","say":"Gargantun ativado!"},"GIANTOONZ!":{"lines":["GIANTOONZ!","DUPLICA PRÉMIO!"],"tone":"gold","say":"Jiantunz! Duplica prémio!"},"IMPLOSÃO":{"lines":["IMPLOSÃO!"],"tone":"cyan","say":"Implosão!"},"ALTERAÇÃO":{"lines":["ALTERAÇÃO!"],"tone":"gold","say":"Alteração!"},"DEMOLIÇÃO":{"lines":["DEMOLIÇÃO!"],"tone":"pink","say":"Demolição!"},"INCISÃO":{"lines":["INCISÃO!"],"tone":"cyan","say":"Incisão!"},"SÍMBOLO FLUTUANTE":{"lines":["SÍMBOLO","FLUTUANTE!"],"tone":"green","say":"Símbolo flutuante!"},"WILDS ATIVADOS":{"lines":["WILDS","ATIVADOS!"],"tone":"gold","say":"Uaildes ativados!"},"INSTABILIDADE":{"lines":["INSTABILIDADE!","WILDS EXTRA!"],"tone":"cyan","say":"Instabilidade! Uaildes extra!"}};
-const RR_CELEBRATION_ART={"GRANDE PRÉMIO!":"grande","MEGA GANHO!":"mega","SUPER GANHO!":"super","ULTRA GANHO!":"ultra","GARGANTOON!":"gargantoon","GIANTOONZ!":"giantoonz","IMPLOSÃO":"implosao","ALTERAÇÃO":"alteracao","DEMOLIÇÃO":"demolicao","INCISÃO":"incisao","SÍMBOLO FLUTUANTE":"flutuante","WILDS ATIVADOS":"wilds","INSTABILIDADE":"instabilidade"};
-let rrBannerTimer=0;
-function banner(key,amount=0,announce=false){const token=String(key),p=CELEBRATIONS[token]||{lines:[token],tone:'cyan'};clearTimeout(rrBannerTimer);const el=document.createElement('div');el.className='banner';el.dataset.tone=p.tone;el.setAttribute('aria-label',p.lines.join(' ')+(amount?' '+money(amount)+' créditos':''));const art=RR_CELEBRATION_ART[token];if(art){el.classList.add('rr-art-banner');const picture=document.createElement('div');picture.className='rr-celebration-art';picture.dataset.art=art;picture.setAttribute('aria-hidden','true');el.appendChild(picture)}else{p.lines.forEach((line,i)=>{const span=document.createElement('span');span.className='rr-letter'+(i?' secondary':'');span.textContent=line;el.appendChild(span)})};if(amount){const val=document.createElement('span');val.className='rr-banner-value';val.textContent=money(amount)+' CR';el.appendChild(val)}bannerLayer.replaceChildren(el);rrBannerTimer=setTimeout(()=>{if(bannerLayer.contains(el))el.remove()},art?2100:1650);if(announce)featureSound(token);}
-function winLabel(amount,bet){const x=amount/bet;return x>=100?'ULTRA GANHO!':x>=50?'SUPER GANHO!':x>=20?'MEGA GANHO!':x>=10?'GRANDE PRÉMIO!':'VITÓRIA!'}
 // V2.0 — original electronic soundtrack and separate audio mixer.
 let musicBus=null,effectBus=null,mixBus=null,voiceDucked=false;
 const trackAudio=new Audio();
@@ -624,131 +703,176 @@ function featureSound(key){if(!audioEngine())return;
 function featureRevealSound(step){if(!audioEngine())return;bubble(0,1.1+Math.min(step,12)*.025,.060);fizz(.075,.026,0,2900,2)}
 function stopVoice(){}
 
-function neighbors(r,c){const arr=[];if(r>0)arr.push([r-1,c]);if(r<N-1)arr.push([r+1,c]);if(c>0)arr.push([r,c-1]);if(c<N-1)arr.push([r,c+1]);return arr;}
-function findGroups(){
- const claimed=new Set(),groups=[];
- // Procurar o grupo mais valioso entre as 8 cores, atribuí-lo e recalcular.
- // Isto permite que Wild ligue grupos, mas impede pagá-lo duas vezes.
- for(let iteration=0;iteration<N*N;iteration++){
-  let best=null;
-  for(let type=0;type<TYPES;type++){
-   const visited=new Set();
-   for(let r=0;r<N;r++)for(let c=0;c<N;c++){
-    const root=r*N+c,a=board[r][c];
-    if(visited.has(root)||claimed.has(root)||!a||a.w||a.t!==type)continue;
-    const queue=[root],cells=[],keys=new Set([root]);visited.add(root);
-    for(let k=0;k<queue.length;k++){
-     const id=queue[k],y=Math.floor(id/N),x=id%N;cells.push([y,x]);
-     for(const [ny,nx] of neighbors(y,x)){
-      const nId=ny*N+nx,n=board[ny][nx];
-      if(!claimed.has(nId)&&!visited.has(nId)&&n&&(n.w||n.t===type)){
-       visited.add(nId);keys.add(nId);queue.push(nId);
-      }
-     }
-    }
-    if(cells.length<5)continue;
-    let doubled=false;
-    for(const [y,x] of cells){
-     if(y<N-1&&x<N-1&&[[y,x],[y+1,x],[y,x+1],[y+1,x+1]].every(([yy,xx])=>keys.has(yy*N+xx)&&!board[yy][xx].w)){doubled=true;break;}
-    }
-    const g={type,cells,doubled};
-    const score=payout(g,BETS[state.betIndex]);
-    if(!best||score>best.score||(score===best.score&&cells.length>best.g.cells.length))best={g,score};
-   }
-  }
-  if(!best)break;
-  groups.push(best.g);
-  for(const [y,x] of best.g.cells)claimed.add(y*N+x);
- }
- return groups;
+function waitMs(n){return sleep(state.turbo||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?Math.round(n*.30):n)}
+const allIds=()=>Array.from({length:N*N},(_,i)=>i);
+/* ===== Reactor Rush V5.0 — reprodução do motor (RREngine) na interface ===== */
+const E=window.RREngine;
+const THRESH=E.CFG.quantumLevels;
+const LEVEL_NAMES=['ENERGOON 1×1 ×4','ENERGOON 2×2','GARGANTOON 3×3','SOBRECARGA ×2'];
+const LEVEL_BANNERS=['ENERGOON ACTIVATED','QUANTUM SURGE','GARGANTOON UNLEASHED','QUANTUM OVERLOAD'];
+/* Patamares de celebração: ESCOLHA PRÓPRIA do Reactor Rush (não documentados oficialmente). */
+const WIN_TIERS=[[1000,'MAX WIN'],[250,'QUANTUM WIN'],[100,'EPIC WIN'],[50,'SUPER WIN'],[20,'MEGA WIN'],[10,'BIG WIN']];
+const winTier=x=>{for(const [m,k] of WIN_TIERS)if(x>=m)return k;return null};
+let q={charge:0,level:0,fluct:0,mult:1,garg:false},lastLevelFx=0;
+const round2=n=>Math.round(n*100)/100;
+function newSeed(){const a=new Uint32Array(1);if(window.crypto&&crypto.getRandomValues)crypto.getRandomValues(a);else a[0]=Math.random()*4294967296;return a[0]}
+const rng=E.makeRng(newSeed());
+function cellFrom(x){
+ if(!x)return {t:0,w:false,u:false,k:'n',g:0};
+ const k=x.k,giant=(k==='G3'||k==='G2'||k==='g2');
+ return {t:k==='n'?x.t:0,w:k!=='n'&&k!=='u',u:k==='u',k,g:giant?x.gid:0};
 }
-function payout(g,bet){const count=g.cells.length;const base=[1.45,1.25,1.10,1,.9,.8,.7,.6][g.type];const size=Math.pow(Math.max(1,count-4),1.42)*.095;return Math.max(.01,Math.round(bet*base*size*(g.doubled?2:1)*100)/100);}
-function fall(remove){
- const motions=new Map();
- for(let c=0;c<N;c++){
-  const keep=[];
-  for(let r=N-1;r>=0;r--)if(!remove.has(r*N+c))keep.push({tile:board[r][c],oldRow:r});
-  const missing=N-keep.length;
-  for(let r=N-1;r>=0;r--){
-   const original=keep[N-1-r];
-   if(original){
-    board[r][c]=original.tile;
-    if(original.oldRow!==r)motions.set(r*N+c,{steps:r-original.oldRow,fresh:false});
-   }else{
-    board[r][c]=newCell();
-    // O novo simbolo nasce acima do tabuleiro. A distancia depende das casas removidas.
-    motions.set(r*N+c,{steps:missing,fresh:true});
-   }
+function boardFromGrid(grid){board=[];for(let r=0;r<N;r++){const row=[];for(let c=0;c<N;c++)row.push(cellFrom(grid[r*N+c]));board.push(row)}}
+function createBoard(){const g=[];const r=E.makeRng(newSeed());for(let i=0;i<N*N;i++)g.push({k:'n',t:Math.floor(r()*8),gid:0});boardFromGrid(g)}
+const keyOf=c=>c?c.k+':'+c.t+':'+(c.gid||0):'-';
+function sparks(host,n,color){
+ if(document.hidden)return;
+ for(let i=0;i<n;i++){const s=document.createElement('i');s.className='rr-spark';
+  s.style.cssText='--dx:'+Math.round((Math.random()-.5)*220)+'px;--dy:'+Math.round((Math.random()-.8)*200)+'px;--c:'+(color||'#7ffcff')+';left:'+(20+Math.random()*60)+'%;top:'+(35+Math.random()*30)+'%';
+  host.appendChild(s);setTimeout(()=>s.remove(),900)}
+}
+function bolt(fromId,toId){
+ const a=tiles[fromId],b=tiles[toId];if(!a||!b||document.hidden)return;
+ const g=gridEl.getBoundingClientRect(),ra=a.getBoundingClientRect(),rb=b.getBoundingClientRect();
+ const x1=ra.left+ra.width/2-g.left,y1=ra.top+ra.height/2-g.top,x2=rb.left+rb.width/2-g.left,y2=rb.top+rb.height/2-g.top;
+ let pts=[[x1,y1]];const n=5;for(let i=1;i<n;i++){const t=i/n;pts.push([x1+(x2-x1)*t+(Math.random()-.5)*ra.width*.7,y1+(y2-y1)*t+(Math.random()-.5)*ra.width*.7])}pts.push([x2,y2]);
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','rr-bolt');svg.setAttribute('viewBox','0 0 '+g.width+' '+g.height);
+ const pl=document.createElementNS('http://www.w3.org/2000/svg','polyline');pl.setAttribute('points',pts.map(p=>p.join(',')).join(' '));svg.appendChild(pl);
+ gridEl.appendChild(svg);setTimeout(()=>svg.remove(),380);
+}
+/* Mensagens 3D sem caixas: letras luminosas, extrusão, partículas, descargas, entrada/saída e contagem animada */
+const BANNER_TONES={'BIG WIN':'cyan','MEGA WIN':'gold','SUPER WIN':'pink','EPIC WIN':'violet','QUANTUM WIN':'plasma','MAX WIN':'max','ENERGOON ACTIVATED':'green','QUANTUM SURGE':'cyan','GARGANTOON UNLEASHED':'violet','QUANTUM OVERLOAD':'pink','ELECTRIC EXPLOSION':'gold'};
+let rrBannerTimer=0,rrCount=0;
+function banner(key,amount=0,announce=false){
+ const token=String(key),tone=BANNER_TONES[token]||'cyan',words=token.split(' ');
+ clearTimeout(rrBannerTimer);cancelAnimationFrame(rrCount);
+ const el=document.createElement('div');el.className='rr3d';el.dataset.tone=tone;el.setAttribute('role','status');
+ el.setAttribute('aria-label',token+(amount?' '+money(amount)+' créditos':''));
+ const big=['BIG WIN','MEGA WIN','SUPER WIN','EPIC WIN','QUANTUM WIN','MAX WIN'].includes(token);
+ el.classList.add(big?'win':'feat');
+ for(const w of words){const line=document.createElement('span');line.className='rr3d-line';
+  [...w].forEach((ch,i)=>{const s=document.createElement('b');s.textContent=ch;s.style.setProperty('--i',i);line.appendChild(s)});el.appendChild(line)}
+ let val=null;if(amount){val=document.createElement('span');val.className='rr3d-val';val.textContent='0,00 CR';el.appendChild(val)}
+ const arc=document.createElementNS('http://www.w3.org/2000/svg','svg');arc.setAttribute('class','rr3d-arc');arc.setAttribute('viewBox','0 0 200 60');arc.innerHTML='<polyline points="0,30 28,12 52,40 80,8 108,44 138,14 166,38 200,22"/>';el.appendChild(arc);
+ bannerLayer.replaceChildren(el);sparks(el,big?26:16,tone==='gold'?'#ffd36b':tone==='pink'?'#ff7fd8':tone==='green'?'#7dffb2':'#7ffcff');
+ const dur=big?2600:1500;
+ if(val){const t0=performance.now(),total=Math.min(dur-500,1500);const step=now=>{const k=Math.min(1,(now-t0)/total);val.textContent=money(amount*(1-Math.pow(1-k,3)))+' CR';if(k<1)rrCount=requestAnimationFrame(step)};rrCount=requestAnimationFrame(step)}
+ rrBannerTimer=setTimeout(()=>{el.classList.add('out');setTimeout(()=>{if(bannerLayer.contains(el))el.remove()},420)},dur);
+ if(announce)featureSound(token);
+}
+const winLabel=(amount,bet)=>winTier(amount/bet);
+
+/* Sons dos reatores (sintetizados; sem vozes) */
+function chargeTick(level,frac){if(!audioEngine())return;rrNote(220*Math.pow(1.5,level)*(1+frac*.5),.07,.032,0);fizz(.05,.018,0,2200+level*500,2)}
+function reactorSound(level){if(!audioEngine())return;
+ if(level===1){for(let i=0;i<4;i++){bubble(i*.07,1.4+i*.1,.07);rrNote(440*(1+i*.2),.12,.05,i*.07)}fizz(.3,.05,0,2600,2)}
+ else if(level===2){creatureTone([[0,180],[.4,420],[1,120]],.5,.11,0,'triangle');for(let i=0;i<5;i++)squeak(.1+i*.06,500+i*120,.05);fizz(.4,.06,.05,1800,1.6)}
+ else if(level===3){creatureTone([[0,60],[.3,110],[.6,58],[1,38]],.9,.17,0,'triangle',900);creatureTone([[0,90],[1,45]],.8,.09,.1,'sine');fizz(.6,.07,.1,700,1.1);[1,1.5,2,3].forEach((m,i)=>rrNote(130*m,.4,.05,.5+i*.09))}
+ else{for(let i=0;i<8;i++){rrNote(330*Math.pow(1.122,i),.14,.05,i*.06)}creatureTone([[0,300],[.5,1400],[1,200]],.6,.09,0,'sawtooth',2200);fizz(.5,.07,0,3200,2.4)}}
+function explosionSound(){if(!audioEngine())return;creatureTone([[0,900],[.2,200],[1,40]],.5,.13,0,'triangle',1400);fizz(.45,.09,0,1200,1.2);for(let i=0;i<4;i++)bubble(.05+i*.05,.7,.06)}
+function bigWinSound(key){if(!audioEngine())return;const n={'BIG WIN':3,'MEGA WIN':4,'SUPER WIN':5,'EPIC WIN':6,'QUANTUM WIN':7,'MAX WIN':9}[key]||3;for(let i=0;i<n;i++){rrNote(262*Math.pow(1.26,i),.22,.05,i*.09);squeak(i*.09,400+i*110,.04)}fizz(.4,.05,0,2800,2)}
+
+/* Reprodução de uma ronda calculada pelo motor */
+function levelMeterFx(level){const a=$('arena');a.dataset.reactor=String(level);a.classList.remove('quantum-burst');void a.offsetWidth;a.classList.add('quantum-burst');setTimeout(()=>a.classList.remove('quantum-burst'),1700)}
+async function playRound(res,bet,demo){
+ const frames=res.frames;let winCells=new Set(),lastGrid=null,earned=0;
+ floatingType=frames[0].fluct;
+ for(let i=0;i<frames.length;i++){
+  const f=frames[i];
+  if(f.type==='start'){
+   boardFromGrid(f.grid);lastGrid=f.grid;
+   const entering=new Map(allIds().map(id=>[id,{steps:N,fresh:true}]));paint(entering);pieceDropSound(null,state.turbo?.14:.365);await sleep(state.turbo?190:480);paint();update();
+  }else if(f.type==='win'){
+   boardFromGrid(f.grid);lastGrid=f.grid;paint();
+   const cells=new Set();let electric=false;
+   for(const c of f.clusters){c.cells.forEach(id=>cells.add(id));if(c.wild)electric=true}
+   cascadeCount=f.cascade;const amount=round2(f.win*bet);earned=round2(earned+amount);if(!demo){won=earned;state.lastWin=won}
+   q={charge:f.charge,level:f.level,fluct:f.fluctCount,mult:f.mult,garg:f.garg};update();
+   for(const id of cells)tiles[id].classList.add('winner');
+   if(electric){const wl=[...cells].filter(id=>lastGrid[id]&&lastGrid[id].k!=='n'&&lastGrid[id].k!=='u');for(const w of wl.slice(0,3)){const o=[...cells].filter(id=>!wl.includes(id));if(o.length)bolt(w,o[Math.floor(Math.random()*o.length)])}arena.classList.add('wild-flash');setTimeout(()=>arena.classList.remove('wild-flash'),420);squeak(0,900,.05)}
+   prizePulse(amount);message((q.mult>1?'✦ ×2 • ':'')+'<strong>+'+money(amount)+' CR</strong> • CASCATA '+cascadeCount);pieceMatchSound(cascadeCount);
+   chargeTick(Math.min(3,q.level),Math.min(1,q.charge/THRESH[Math.min(3,q.level)]));
+   winCells=cells;await waitMs(430);
+  }else if(f.type==='level'){
+   const L=f.level;q.level=L;update();
+   banner(LEVEL_BANNERS[L-1],0,false);reactorSound(L);levelMeterFx(L);state.features++;state.lastFeature=LEVEL_NAMES[L-1];if(L===3)state.gargantoonCount=(Number(state.gargantoonCount)||0)+1;update();
+   await waitMs(L===3?1500:900);
+  }else if(f.type==='explosion'){
+   banner('ELECTRIC EXPLOSION',0,false);explosionSound();arena.classList.add('wild-flash');setTimeout(()=>arena.classList.remove('wild-flash'),500);
+   const gone=[];f.grid.forEach((c,id)=>{if(c===null)gone.push(id)});
+   const wl=f.grid.map((c,id)=>c&&c.k==='e'?id:-1).filter(x=>x>=0);
+   for(const a of wl.slice(0,4))for(const b of gone.slice(0,2))bolt(a,b);
+   boardFromGrid(lastGrid||f.grid);paint();
+   for(const id of gone)tiles[id].classList.add('winner');
+   await waitMs(520);winCells=new Set(gone);lastGrid=f.grid;q.charge=f.charge;q.level=f.level;update();
+  }else if(f.type==='settle'){
+   for(const id of winCells)tiles[id].classList.add('clearing');
+   if(winCells.size)pieceClearSound(winCells.size);
+   await waitMs(145);
+   const perCol=new Array(N).fill(0);winCells.forEach(id=>perCol[id%N]++);
+   const prev=board.map(r=>r.map(c=>keyOf(c)));
+   boardFromGrid(f.grid);
+   const motions=new Map();
+   for(let r=0;r<N;r++)for(let c=0;c<N;c++){const id=r*N+c;if(prev[r][c]!==keyOf(board[r][c])||winCells.has(id))motions.set(id,{steps:Math.max(1,perCol[c]||1),fresh:true})}
+   paint(motions);pieceDropSound(motions,state.turbo?.14:.365);
+   if(f.spawn&&f.spawn.length){sparks(arena,18,'#c88bff');gridEl.querySelectorAll('.rr-gargantoon').forEach(e=>e.classList.add('rrg-enter'));featureRevealSound(0)}
+   await waitMs(475);paint();lastGrid=f.grid;winCells=new Set();
+   if(f.spawn&&f.spawn.some(k=>k==='G3'||k==='G2'||k==='G1'))await waitMs(f.spawn.includes('G3')?1500:700);
   }
  }
- return motions;
+ return earned;
+}
+async function spin(){
+ if(busy||state.balance+1e-5<BETS[state.betIndex])return;
+ musicStart();busy=true;const bet=BETS[state.betIndex];
+ state.balance=round2(state.balance-bet);state.lastWin=0;state.spins++;cascadeCount=0;won=0;q={charge:0,level:0,fluct:0,mult:1,garg:false};
+ createBoard();update();save();message('⚡ A energizar a grelha...');spinLaunchSound();await waitMs(160);
+ const res=E.spin(rng,Object.assign({},E.CFG,{trace:true}));
+ try{await playRound(res,bet,false)}catch(e){console.error(e)}
+ const cap=round2(res.total*bet);if(won>cap+0.005)won=cap;
+ state.lastWin=won;state.balance=round2(state.balance+won);state.bestWin=Math.max(state.bestWin||0,won);state.bestCascades=Math.max(state.bestCascades||0,res.cascades);
+ const tier=won>0?winTier(won/bet):null;
+ if(won>0){if(tier){banner(tier,won,false);bigWinSound(tier);await waitMs(tier==='BIG WIN'?2100:2800)}message('GANHASTE <strong>'+money(won)+' CR</strong> EM '+cascadeCount+' CASCATAS')}else message('Sem prémio nesta ronda.');
+ busy=false;update();save();
+ if(autoLeft>0){autoLeft--;update();if(state.balance+1e-5>=BETS[state.betIndex]){await waitMs(700);if(autoLeft>0)spin()}else{autoLeft=0;update()}}
+}
+/* Teste visual do Gargantoon (sem créditos): limiares reduzidos, não altera saldo nem estatísticas */
+async function demoGargantoon(){
+ if(busy)return;busy=true;autoLeft=0;$('help').hidden=true;
+ const saved={bal:state.balance,last:state.lastWin,feat:state.features,garg:state.gargantoonCount,lf:state.lastFeature,best:state.bestWin,bc:state.bestCascades,msg:msgEl.innerHTML};
+ try{
+  const r=E.makeRng(20260101),cfg=Object.assign({},E.CFG,{trace:true,quantumLevels:[4,8,12,16]});let res=null;
+  for(let i=0;i<4000;i++){const s=E.spin(r,cfg);if(s.counts.garg>0&&s.frames.some(f=>f.type==='settle'&&f.spawn&&f.spawn.includes('G2'))){res=s;break}}
+  if(res){cascadeCount=0;won=0;q={charge:0,level:0,fluct:0,mult:1,garg:false};update();await playRound(res,BETS[state.betIndex],true)}
+  else message('Teste do Gargantoon: não foi encontrada uma ronda de demonstração.');
+ }catch(e){console.error('Gargantoon demo',e)}
+ finally{state.balance=saved.bal;state.lastWin=saved.last;state.features=saved.feat;state.gargantoonCount=saved.garg;state.lastFeature=saved.lf;state.bestWin=saved.best;state.bestCascades=saved.bc;won=0;cascadeCount=0;q={charge:0,level:0,fluct:0,mult:1,garg:false};msgEl.innerHTML=saved.msg;busy=false;createBoard();paint();update()}
+}
+/* Tabela de prémios no menu de informações (valores do motor; fontes secundárias, ver relatório) */
+function buildPayTable(){
+ const host=$('payTable');if(!host)return;
+ const head='<tr><th></th>'+E.TIER_LABELS.map(l=>'<th>'+l+'</th>').join('')+'</tr>';
+ const rows=[7,6,5,4,3,2,1,0].map(t=>'<tr><td class="pt-sym"><svg viewBox="0 0 60 60" aria-hidden="true"><use href="#rr-t'+t+'"></use></svg></td>'+E.PAY[t].map(v=>'<td>'+String(v).replace('.',',')+'×</td>').join('')+'</tr>').join('');
+ host.innerHTML='<table class="paytable">'+head+rows+'</table>';
 }
 
-function addCharge(count){const old=state.charged;state.charged=Math.min(125,old+count);for(let i=Math.floor(old/CHARGE)+1;i<=Math.floor(state.charged/CHARGE);i++){featureQueue.push(i===5?'GIGANTE':FEATURE_NAMES[rand(4)]);quantumChargeSound()}update();}
-function waitMs(n){return sleep(state.turbo||window.matchMedia?.('(prefers-reduced-motion: reduce)').matches?Math.round(n*.30):n)}
-function sample(pool,n){const a=pool.slice();for(let i=0;i<Math.min(n,a.length);i++){const j=i+rand(a.length-i);[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,n)}
-const allIds=()=>Array.from({length:N*N},(_,i)=>i);
-const at=id=>board[Math.floor(id/N)][id%N];
-const put=(id,t)=>{board[Math.floor(id/N)][id%N]=t};
-const normal=t=>({t,w:false,u:t===floatingType});
-const groupWild=g=>({...wildCell(),g});
-function quantumPlan(name){const changes=new Map(),remove=new Set();const ids=allIds();const normals=ids.filter(id=>!at(id).w);
- if(name==='IMPLOSÃO'){const picks=sample(ids,3+rand(4));picks.forEach(id=>changes.set(id,wildCell()));for(const id of picks)for(const [r,c] of neighbors(Math.floor(id/N),id%N)){const n=r*N+c;if(!changes.has(n)&&!at(n).w)remove.add(n)}}
- if(name==='ALTERAÇÃO'){const available=[...new Set(normals.map(id=>at(id).t))],eyes=available.filter(t=>ONE_EYED.includes(t)),pool=eyes.length?eyes:available;if(pool.length){const from=pool[rand(pool.length)],to=(from+1+rand(TYPES-1))%TYPES;normals.filter(id=>at(id).t===from).forEach(id=>changes.set(id,normal(to)))}}
- if(name==='DEMOLIÇÃO'){normals.filter(id=>ONE_EYED.includes(at(id).t)).forEach(id=>remove.add(id))}
- if(name==='INCISÃO'){const t=randType();for(let i=0;i<N;i++){changes.set(i*N+i,normal(t));changes.set(i*N+N-1-i,normal(t))}/* Pontes ortogonais: as diagonais passam a formar um grupo válido. */for(let i=0;i<N-1;i++){changes.set(i*N+i+1,normal(t));changes.set(i*N+N-2-i,normal(t))}changes.set(24,wildCell())}
- if(name==='INSTABILIDADE'){sample(ids,4+rand(5)).forEach(id=>changes.set(id,wildCell()))}
- return {title:name,changes,remove};
+function rrPanels(){
+ document.querySelectorAll('#rrTubes .tube').forEach((t,i)=>{const lo=i?THRESH[i-1]:0,T=THRESH[i];t.style.setProperty('--q',Math.min(100,Math.max(0,(q.charge-lo)/(T-lo)*100))+'%');t.classList.toggle('on',q.level>i)});
+ const c=$('rrCount');if(c)c.textContent=q.charge+' / '+THRESH[Math.min(q.level,3)]+(q.mult>1?' · ×2 ATIVO':'');
+ const f=$('rrFluctFill');if(f){f.style.width=Math.min(100,q.fluct/E.CFG.fluctNeeded*100)+'%';$('rrFluctTxt').textContent=q.garg?'DESLIGADO':q.fluct+' / '+E.CFG.fluctNeeded;$('rrFluctUse').setAttribute('href','#rr-t'+floatingType)}
+ document.querySelectorAll('#rrReactors .rx').forEach((x,i)=>x.classList.toggle('on',q.level>i));
 }
-function giantPlan(phase){const changes=new Map();const remove=new Set(allIds().filter(id=>at(id).g));const squares=n=>{let a=[];for(let r=0;r<=N-n;r++)for(let c=0;c<=N-n;c++){let ids=[];for(let y=r;y<r+n;y++)for(let x=c;x<c+n;x++)ids.push(y*N+x);a.push(ids)}return a};
- if(phase===1){const row=N-3,col=Math.max(0,Math.min(N-3,gargLandingCol)),g=++giantSerial;
- for(let y=row;y<row+3;y++)for(let x=col;x<col+3;x++)changes.set(y*N+x,groupWild(g));}
- if(phase===2){const pool=squares(2).filter(ids=>Math.floor(ids[0]/N)===N-2);
- const anchor=pool.find(ids=>ids[0]===(N-2)*N+Math.min(N-2,gargLandingCol))||pool[0];
- const others=pool.filter(ids=>ids.every(i=>!anchor.includes(i)));
- for(const block of [anchor,others[rand(others.length)]]){const g=++giantSerial;for(const id of block)changes.set(id,groupWild(g))}}
- if(phase===3){sample(allIds(),9).forEach(id=>changes.set(id,wildCell()))}
- for(const id of changes.keys())remove.delete(id);
- return {title:'GIGANTE · '+phase+'/3',changes,remove};
+
+/* Botões circulares verdadeiramente circulares: lado = menor dimensão, centrado na área original */
+function squareButtons(){
+ ['spin','info','sound','menu','minus','plus'].forEach(id=>{const e=document.getElementById(id);if(!e)return;
+  e.style.left=e.style.top=e.style.width=e.style.height='';e.style.borderRadius='50%';
+  const cs=getComputedStyle(e);if(cs.position!=='absolute'&&cs.position!=='fixed')return;
+  const w=e.offsetWidth,h=e.offsetHeight,s=Math.min(w,h);if(!s||w===h)return;
+  e.style.left=(e.offsetLeft+(w-s)/2)+'px';e.style.top=(e.offsetTop+(h-s)/2)+'px';e.style.width=s+'px';e.style.height=s+'px'});
 }
-/* V4.0: descender and Wild trail. */
-async function gargantoonDescent(){
- const col=rand(N-2);gargLandingCol=col;
- const walker=document.createElement('div');walker.className='rrg-descender';walker.innerHTML=gargantoonSVG(-1,col,3);
- walker.style.width=(300/N)+'%';walker.style.height=(300/N)+'%';walker.style.left=(col*100/N)+'%';walker.style.top=(-300/N)+'%';
- walker.style.setProperty('--garg-step',state.turbo?'155ms':'300ms');gridEl.appendChild(walker);
- try{banner('GARGANTOON!');message('👾 <strong>GARGANTOON</strong> A DESCER...');await sleep(70);
- for(let top=-2;top<=N-3;top++){walker.style.top=(top*100/N)+'%';const row=top+2;
- await sleep(state.turbo?170:330);
- if(row>=0&&row<N){const options=(row<N-3?[col,col+1,col+2]:[col-1,col+3].filter(c=>c>=0&&c<N));
- const candidates=options.filter(c=>!board[row][c].w);
- if(candidates.length){const chosen=sample(candidates,row<N-3&&Math.random()<.3?2:1);
- for(const c of chosen)board[row][c]=wildCell();paint();for(const c of chosen)tiles[row*N+c].classList.add('quantum-reveal');bubble(0,.75+row*.08,.05);}}}
- await sleep(state.turbo?160:420);
- }finally{walker.remove();}
-}
-async function animateFall(removals){if(!removals.size)return;const aliens=[...gridEl.querySelectorAll('.rr-gargantoon')];let splitting=false;for(const alien of aliens){const x=Number(alien.style.getPropertyValue('--gx')),y=Number(alien.style.getPropertyValue('--gy')),n=Number(alien.style.getPropertyValue('--gn'));if([...removals].some(id=>Math.floor(id/N)>=y&&Math.floor(id/N)<y+n&&id%N>=x&&id%N<x+n)){alien.classList.add('rrg-split');splitting=true}}if(splitting){squeak(0,320,.08);await sleep(480);}for(const i of removals)tiles[i].classList.add('clearing');pieceClearSound(removals.size);await sleep(state.turbo?45:145);const motions=fall(removals);paint(motions);pieceDropSound(motions,state.turbo?.14:.365);await sleep(state.turbo?190:475);paint();}
-async function revealPlan(plan){banner(plan.title.startsWith('GIGANTE · 1/')?'GARGANTOON!':plan.title);message('⚡ <strong>'+plan.title+'</strong>');arena.classList.add('quantum-burst');const entries=[...plan.changes];for(let k=0;k<entries.length;k+=4){for(const [id,t] of entries.slice(k,k+4))put(id,t);paint();for(const [id] of entries.slice(k,k+4))tiles[id].classList.add('quantum-reveal');featureRevealSound(k);await waitMs(150)}paint();await animateFall(plan.remove);if(plan.title.startsWith('GIGANTE ·')){gridEl.querySelectorAll('.rr-gargantoon').forEach(el=>el.classList.add('rrg-enter'));await sleep(plan.title.endsWith('1/3')?2200:1450);}arena.classList.remove('quantum-burst');}
-async function runFeature(name){activeFeature=name;state.lastFeature=name;state.features++;update();const key=name==='GIGANTE'?'GARGANTOON!':name;featureSound(key);if(name==='GIGANTE'){state.gargantoonCount=(Number(state.gargantoonCount)||0)+1;giantPhase=1;update();await gargantoonDescent();await revealPlan(giantPlan(1))}else await revealPlan(quantumPlan(name));activeFeature='';update();}
-async function settle(){let cycles=0,initial=true;while(cycles++<200){
- const groups=findGroups();
- if(!groups.length){
-  if(initial){initial=false;if(Math.random()<.18){await runFeature('INSTABILIDADE');continue}}
-  if(giantPhase===1||giantPhase===2){giantPhase++;update();const previous=new Set(allIds().filter(id=>at(id).g));await animateFall(previous);await revealPlan(giantPlan(giantPhase));continue}
-  if(giantPhase===3){giantPhase=0;update()}
-  if(featureQueue.length){await runFeature(featureQueue.shift());continue}
-  return won;
- }
- initial=false;cascadeCount++;let total=0,doubled=false;const removals=new Set();let marked=false;for(const g of groups){total+=payout(g,BETS[state.betIndex]);if(g.doubled)doubled=true;for(const [r,c] of g.cells){const id=r*N+c;removals.add(id);if(!at(id).w&&at(id).t===floatingType)marked=true;}}
- total=Math.round(total*100)/100;won=Math.round((won+total)*100)/100;state.lastWin=won;state.bestCascades=Math.max(state.bestCascades||0,cascadeCount);addCharge(removals.size);prizePulse(total);for(const i of removals)tiles[i].classList.add('winner');message((doubled?'✦ GIGANTE ×2 • ':'')+'<strong>+'+money(total)+' CR</strong> • CASCATA '+cascadeCount);pieceMatchSound(cascadeCount);await waitMs(410);
- if(doubled){banner('GIANTOONZ!',0,true);await waitMs(720)}if(marked){banner('SÍMBOLO FLUTUANTE',0,true);const keep=sample([...removals],2);for(const id of keep){put(id,wildCell());removals.delete(id)}paint();for(const id of keep)tiles[id].classList.add('quantum-reveal');await waitMs(320);banner('WILDS ATIVADOS',0,true);await waitMs(320)}
- await animateFall(removals);
- }
- message('Limite de segurança da ronda atingido');return won;
-}
-async function spin(){if(busy||state.balance+1e-5<BETS[state.betIndex])return;musicStart();busy=true;const bet=BETS[state.betIndex];state.balance=Math.round((state.balance-bet)*100)/100;state.lastWin=0;state.spins++;cascadeCount=0;won=0;state.charged=0;featureQueue=[];giantPhase=0;activeFeature='';createBoard();update();save();message('⚡ A energizar a grelha...');spinLaunchSound();await waitMs(160);const entering=new Map(allIds().map(id=>[id,{steps:N,fresh:true}]));paint(entering);pieceDropSound(null,state.turbo?.14:.365);await sleep(state.turbo?190:480);paint();
- try{await settle()}catch(e){console.error(e)}
- state.balance=Math.round((state.balance+won)*100)/100;state.bestWin=Math.max(state.bestWin||0,won);if(won>0){banner(winLabel(won,bet),won,true);message('GANHASTE <strong>'+money(won)+' CR</strong> EM '+cascadeCount+' CASCATAS')}else message('Sem prémio nesta ronda.');featureQueue=[];giantPhase=0;activeFeature='';busy=false;update();save();if(autoLeft>0){autoLeft--;update();if(state.balance+1e-5>=BETS[state.betIndex]){await waitMs(700);if(autoLeft>0)spin()}else{autoLeft=0;update()}}}
+let sqT=0;const sqSoon=()=>{clearTimeout(sqT);sqT=setTimeout(squareButtons,60)};
+addEventListener('resize',sqSoon);addEventListener('orientationchange',sqSoon);
 
 $('topup').addEventListener('click',()=>{if(busy)return;state.balance=Math.round((state.balance+1000)*100)/100;update();save();message('⚡ ADICIONADOS <strong>1.000,00 CR</strong> VIRTUAIS');sound(520,100,'triangle');});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){autoLeft=0;stopVoice();musicStop();update();if(audioCtx?.state==='running')audioCtx.suspend().catch(()=>{});}});
@@ -779,24 +903,7 @@ $('skin33').addEventListener('change',()=>{const file=$('skin33').files[0];if(!f
 $('skin33Reset').addEventListener('click',()=>{document.documentElement.classList.remove('rr33');try{localStorage.removeItem(rr33key)}catch(e){}$('skin33Status').textContent='Grafismo anterior ativo'});
 
 
-// V3.6: independent, non-paying visual test of the three Gargantoon stages.
-$('testGargantoon').addEventListener('click',async()=>{
- if(busy)return;
- const previous={board:board.map(row=>row.map(tile=>({...tile}))),floatingType,giantSerial,charged:state.charged,activeFeature,giantPhase,queue:featureQueue.slice(),message:msgEl.innerHTML};
- busy=true;autoLeft=0;$('help').hidden=true;state.charged=125;featureQueue=[];activeFeature='GIGANTE';
- try{
-  createBoard();paint();
-  await gargantoonDescent();
-  for(let phase=1;phase<=3;phase++){
-   giantPhase=phase;update();
-   if(phase>1)await animateFall(new Set(allIds().filter(id=>at(id).g)));
-   featureSound('GARGANTOON!');await revealPlan(giantPlan(phase));await sleep(650);
-  }
- }catch(e){console.error('Gargantoon visual test',e)}
- finally{
-  board=previous.board;floatingType=previous.floatingType;giantSerial=previous.giantSerial;state.charged=previous.charged;activeFeature=previous.activeFeature;giantPhase=previous.giantPhase;featureQueue=previous.queue;busy=false;bannerLayer.replaceChildren();paint();update();message('Teste do Gargantoon concluído · saldo inalterado');
- }
-});
+$('testGargantoon').addEventListener('click',()=>demoGargantoon());
 
 restoreTrack();
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&audioAllowed())musicStart()});
@@ -838,7 +945,8 @@ document.addEventListener('wheel',e=>{if(e.ctrlKey||e.metaKey||!rrModalArea(e.ta
 document.addEventListener('click',e=>{if(rrModalOpen()?rrModalArea(e.target):rrGameButton(e.target))return;rrCancel(e);e.stopImmediatePropagation()},true);
 
 document.addEventListener('pointerdown',e=>{if(e.isPrimary!==false&&rrAudioControl(e.target)&&audioAllowed())musicStart()},{passive:true});
-createBoard();paint();update();
+createBoard();paint();update();buildPayTable();squareButtons();setTimeout(squareButtons,400);
+if(/[?&]rrtest\b/.test(location.search))window.__rr={banner,winTier,E,state:()=>state,spin:()=>spin(),demoGargantoon,keys:Object.keys(BANNER_TONES)};
 })();
 </script>
 </body>

@@ -54,3 +54,11 @@ Parameter note: with equal symbol weights and sourced rules, hit rate was 16 % a
 - Get the PDF tables -> replace `baseWin`/`SIZE_GROWTH`, set `minCluster`, thresholds; re-run `node Reactor-Rush/sim/run-sim.js --calibrate --rounds 4000000 --seed 111`, set `payScale`, validate on new seeds.
 - Integrate: give the engine an event-recording mode (steps: win clusters, removals, falls, zaps, spawns) so `index.html` only animates events; keep approved art, layout and audio untouched; then browser-test.
 - Before editing `index.html`: `git fetch` and re-read this log.
+
+## Session 2 (Claude, 2026-11-26) — renderer integration, on branch `reactor-rush-v5-renderer` (NOT merged to main)
+
+I worked in parallel before seeing the session-1 engine on main. Result: a second, independent engine (`rr-engine.js`) wired into `index.html`, plus `rr-sim.js`, `tests/engine-tests.js` (22 pass), `tests/ui-tests.py` (25 pass, Chrome headless only), `REPORT-V5.0.md`, and a V4.0 backup in `backup-V4.0/`. `engine/engine.js` and `sim/run-sim.js` from session 1 are untouched.
+
+**Decision for the owner (not mine to make):** two engines now exist. `rr-engine.js` is wired into the renderer (traced frames, 4 reactor levels, Gargantoon splitting, Wild Pair Explosion, unboxed 3D messages, pay table menu, portrait/landscape panels), but its own observed RTP is 97.47 % (95 % CI 96.37–98.57 %, 20M rounds, seeds 101/202/303/404) and its pay table, weights and Fluctometer/explosion rules are secondary-source/own tuning, not official. Session-1 engine has the closer RTP (95.6–95.8 %) but is not yet rendered. Options: (a) merge this branch and later swap the engine behind the same frame format, (b) port event tracing to `engine/engine.js` and re-use the renderer from this branch.
+
+Not done / not verified: Safari and real iPhone, audio by ear, official PDF (still HTTP 403 here), live GitHub Pages check. Main and the published stable version were not changed.
