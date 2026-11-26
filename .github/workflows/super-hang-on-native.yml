@@ -1,14 +1,16 @@
-name: Super Hang-On native core
+name: Super Hang-On native NRO
 on:
   workflow_dispatch:
   push:
     paths:
       - '.github/workflows/super-hang-on-native.yml'
+      - 'Super-Hang-On/switch-native/**'
 jobs:
   core:
     runs-on: ubuntu-latest
     container: devkitpro/devkita64
     steps:
+      - uses: actions/checkout@v4
       - name: Compile Genesis Plus GX ARM64 static core
         shell: bash
         run: |
@@ -24,8 +26,19 @@ jobs:
           find . -maxdepth 2 -name '*libretro*.a' -exec cp {} ../out/ \;
           test -n "$(find ../out -name '*.a' -print -quit)"
           cp LICENSE.txt source-commit.txt ../out/
+          cd ..
+          SRC=Super-Hang-On/switch-native
+          LIB=$(find out -name '*libretro*.a' -print -quit)
+          HEADER=$(find core -name libretro.h -print -quit)
+          test -n "$HEADER"
+          aarch64-none-elf-gcc -O3 -march=armv8-a -mtune=cortex-a57 -fPIE -I"$(dirname "$HEADER")" -I"$DEVKITPRO/libnx/include" -specs="$DEVKITPRO/libnx/switch.specs" "$SRC/main.c" "$SRC/video.c" "$SRC/audio.c" -L"$DEVKITPRO/libnx/lib" -Wl,--start-group "$LIB" -lnx -lm -lstdc++ -Wl,--end-group -o game.elf
+          nacptool --create 'Super Hang-On' 'MegaDrive NX' '1.0' game.nacp
+          mkdir -p package/switch/Super-Hang-On
+          elf2nro game.elf package/switch/Super-Hang-On/Super-Hang-On.nro --nacp=game.nacp
+          cp out/LICENSE.txt out/source-commit.txt package/
+          printf '%s\n' 'Extract to SD root. Put your unzipped Mega Drive ROM at switch/Super-Hang-On/game.bin. Launch Super-Hang-On.nro from hbmenu. No RetroArch required.' > package/README.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: Genesis-Plus-GX-native-core
-          path: out/
+          name: Super-Hang-On-Standalone
+          path: package/
           if-no-files-found: error
