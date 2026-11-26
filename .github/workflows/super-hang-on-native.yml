@@ -1,0 +1,31 @@
+name: Super Hang-On native core
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/super-hang-on-native.yml'
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64
+    steps:
+      - name: Compile Genesis Plus GX ARM64 static core
+        shell: bash
+        run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITA64="$DEVKITPRO/devkitA64"
+          export PATH="$DEVKITA64/bin:$DEVKITPRO/tools/bin:$PATH"
+          git clone --depth 1 https://github.com/libretro/Genesis-Plus-GX.git core
+          cd core
+          git rev-parse HEAD > source-commit.txt
+          make -f Makefile.libretro platform=libnx -j2
+          find . -name '*.a' -o -name '*.so'
+          mkdir -p ../out
+          find . -maxdepth 2 -name '*libretro*.a' -exec cp {} ../out/ \;
+          test -n "$(find ../out -name '*.a' -print -quit)"
+          cp LICENSE.txt source-commit.txt ../out/
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Genesis-Plus-GX-native-core
+          path: out/
+          if-no-files-found: error
