@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"/>
 <meta name="theme-color" content="#080b25" />
-<title>Reactor Rush V3.8 — Slot de Cascatas</title>
+<title>Reactor Rush V4.0 — Slot de Cascatas</title>
 <style>
 :root{color-scheme:dark;--gold:#ffcc6c;--cyan:#51fff2;--purple:#cb66ff;--bg:#070923;--panel:#121638;--edge:rgba(115,174,255,.26);--board: min(96vw,43svh,440px);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-synthesis:none}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;width:100%;background:#05071a;color:#f4f7ff;overflow-x:hidden}body{background:radial-gradient(ellipse 85% 38% at 50% 15%,#272266 0,transparent 77%),radial-gradient(ellipse 60% 36% at 50% 86%,#042b44 0,transparent 85%),#070923}
@@ -313,7 +313,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 }
 
 
-/* V3.8 — living Gargantoon, not a stretched Wild texture. */
+/* V4.0 — living Gargantoon, not a stretched Wild texture. */
 .app .grid .fusion.rr-gargantoon{background:radial-gradient(ellipse,#6a2a9a 0%,#20124c 72%,#0d102b 100%)!important;border:1px solid #d2a5ff;border-radius:12%;box-shadow:inset 0 0 10px #a955ff,0 0 13px #bb5fff99;display:grid;place-items:center;overflow:hidden}
 .app .grid .fusion.rr-gargantoon>svg.rrg-alien{display:block;opacity:1!important;width:100%;height:100%;filter:none;overflow:visible}
 .rrg-body{transform-box:fill-box;transform-origin:50% 90%;animation:rrgBreath 1.45s ease-in-out infinite}
@@ -331,7 +331,7 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 @media(prefers-reduced-motion:reduce){.rrg-body,.rrg-eye,.rrg-pupil,.app .grid .fusion.rr-gargantoon{animation:none!important}}
 
 
-/* V3.8: animated 3x3 Gargantoon enters from above and descends. */
+/* V4.0: animated 3x3 Gargantoon enters from above and descends. */
 .app .grid .rrg-descender{position:absolute;z-index:19;pointer-events:none;aspect-ratio:1;background:radial-gradient(ellipse,#a447ec20 15%,#5a34ff11 65%,transparent 78%);border-radius:18%;overflow:visible;transition:top var(--garg-step,310ms) cubic-bezier(.22,.83,.25,1)}
 .app .grid .rrg-descender svg.rrg-alien{display:block;width:100%;height:100%;opacity:1!important;overflow:visible;filter:none;animation:rrgWalk 480ms ease-in-out infinite}
 .app .grid .rrg-descender::after{content:'';position:absolute;inset:16% 7%;border-radius:45%;border:1px solid #e9b5ff55;box-shadow:0 0 14px #c253ff88;pointer-events:none}
@@ -351,6 +351,16 @@ html.rr-skin body{background:radial-gradient(ellipse at center,#24184e,#080518 8
 <link rel="stylesheet" href="./approved-skins.css?v=30">
 <link rel="stylesheet" href="./celebration-art.css?v=30">
 
+<style id="rr-proportional-v40">
+@media (orientation:landscape){
+html.rr-skin body{display:flex!important;align-items:center!important;justify-content:center!important;background:radial-gradient(ellipse,#26174c,#080518 85%)}
+html.rr-skin body .app{width:var(--rr-fit-w, min(100vw,177.777778vh))!important;height:var(--rr-fit-h,min(100vh,56.25vw))!important;max-width:none!important;flex:0 0 auto!important;background-size:contain!important;background-repeat:no-repeat!important;background-position:center!important}
+html.rr-skin body .app .rr-landscape-art{display:none!important}
+}
+</style>
+<script>
+(function(){function fit(){var v=window.visualViewport;var w=v?v.width:innerWidth,h=v?v.height:innerHeight;var a=document.documentElement.classList.contains('rr33')?177.6833/100:16/9;var fw=Math.min(w,h*a);document.documentElement.style.setProperty('--rr-fit-w',fw+'px');document.documentElement.style.setProperty('--rr-fit-h',fw/a+'px');}fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);if(window.visualViewport)visualViewport.addEventListener('resize',fit);new MutationObserver(fit).observe(document.documentElement,{attributes:true,attributeFilter:['class']});})();
+</script>
 </head>
 <body>
 <div class="rotate-screen" role="status"><div class="rotate-icon">↻ 📱</div><b>REACTOR RUSH</b><p>Roda o telemóvel para a posição horizontal para jogar.</p></div>
@@ -363,7 +373,7 @@ html.rr-skin body{background:radial-gradient(ellipse at center,#24184e,#080518 8
  <div class="message" id="message" aria-live="polite">Liga <strong>5 ou mais</strong> criaturas iguais!</div>
  <div class="status"><div class="stat"><span class="lab">SALDO</span><span class="num" id="balance">1000,00</span></div><div class="stat"><span class="lab">ÚLTIMO PRÉMIO</span><span class="num gold" id="lastwin">0,00</span></div><div class="stat"><span class="lab">CASCATAS</span><span class="num cyan" id="cascades">0</span><span class="mini-multi" id="multi">MULTI ×1</span></div></div>
  <div class="controlbar"><div class="betgroup"><div class="betlabel">APOSTA (CR)</div><div class="betbuttons"><button id="minus" aria-label="Diminuir aposta">−</button><span id="bet" class="betvalue">0,20</span><button id="plus" aria-label="Aumentar aposta">+</button></div></div><button class="spin" id="spin" aria-label="Rodar"><svg viewBox="0 0 48 48" fill="none"><path d="M35 15A16 16 0 1 0 40 28" stroke="#073d57" stroke-width="5" stroke-linecap="round"/><path d="M34 5v12H22" stroke="#073d57" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="others"><button id="turbo" class="smallcontrol">⚡ TURBO</button><button id="auto" class="smallcontrol">↻ AUTO ×10</button></div></div>
- <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V3.8 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V3.8</strong></footer>
+ <span class="live-giant" id="giantLive">GIGANTE EM 5 ATIVAÇÕES</span><span class="meter-count" id="meterCount">0/5 CARGAS</span><span class="counter-virtual" id="cascadeLive">CASCATAS 0 · CRÉDITOS VIRTUAIS</span><span class="version-top">V4.0 • FREE PLAY</span><footer class="fine"><span>ORIGINAL • SEM DINHEIRO REAL</span><button id="topup" class="topup" aria-label="Adicionar mil créditos virtuais">+1.000 CR</button><strong>V4.0</strong></footer>
 </div>
 <div class="help" id="help" hidden><div class="window" role="dialog" aria-modal="true" aria-label="Regras"><h2>⚡ Como jogar</h2><p>Reactor Rush é um jogo de cascatas 7×7 em modo livre.</p><ul><li>Grupos de 5 ou mais símbolos iguais ligados horizontal ou verticalmente ganham. Os símbolos vencedores desaparecem e os restantes caem.</li><li>Cada 25 posições vencedoras carrega um dos cinco níveis. Os primeiros quatro colocam um efeito aleatório na fila; o quinto coloca o Gigante. Os efeitos só começam quando não há mais vitórias.</li><li>Implosão cria 3–6 Wilds e elimina vizinhos; Alteração transforma um tipo de símbolo; Demolição elimina criaturas de um olho; Incisão forma um X de símbolos iguais, com ligações ortogonais e Wild no centro.</li><li>O Gigante passa de um Wild 3×3 para dois Wilds 2×2 e depois nove Wilds individuais, com cascatas entre fases.</li><li>Um quadrado 2×2 de criaturas iguais duplica o prémio do grupo. O tipo flutuante, escolhido entre os símbolos de um olho, deixa dois Wilds quando participa numa vitória.</li><li>Uma ronda inicialmente sem vitórias tem 18% de probabilidade de receber 4–8 Wilds. O medidor volta a zero no fim da ronda.</li><li>Todos os prémios são acumulados e creditados no fim da ronda. Os valores e probabilidades são próprios deste protótipo, não certificados como os do Reactoonz.</li></ul><p class="separate"><b>Free Play:</b> créditos exclusivamente virtuais, sem depósitos ou levantamentos.</p>
 <p class="separate">⚡ ÚLTIMO BÓNUS: <b id="lastFeature">—</b> · ATIVAÇÕES: <b id="featureCount">0</b> · GARGANTOONS: <b id="gargantoonCount">0</b></p><p class="separate"><button id="testGargantoon" type="button" style="background:#593c91;padding:10px;border-radius:8px;font-weight:900">TESTAR GARGANTOON (SEM CRÉDITOS)</button><br>Mostra as três fases; não altera o saldo, prémios ou estatísticas.</p><p class="separate">🏆 MELHOR PRÉMIO: <b id="bestWin">0,00</b> CR · RECORDE: <b id="bestCascades">0</b> CASCATAS</p><p class="separate"><b>Efeitos das criaturas</b> · Sem voz falada <button id="voicePreview" type="button" style="background:#124d75;padding:7px 10px;border-radius:6px">TESTAR SONS</button></p><p class="separate"><label><input id="musicToggle" type="checkbox" checked> Música de fundo</label></p><p><b>Quantum Arcade</b> · <span id="trackStatus" role="status">A verificar a faixa…</span></p><p><label for="trackFile">Carregar Quantum Arcade.mp3</label><input id="trackFile" type="file" accept="audio/mpeg,audio/mp3,.mp3,audio/*" style="display:block;max-width:100%;margin-top:6px"></p><p class="separate"><b>Grafismo horizontal e vertical</b><br><label for="skinFile">Carregar pacote de molduras V3.1 (.css)</label><input id="skinFile" type="file" accept=".css,text/css,text/plain" style="display:block;width:100%;margin-top:8px"><span id="skinStatus" role="status">Molduras horizontal e vertical incluídas</span></p><p class="separate"><b>Novo grafismo horizontal V3.3</b><br><label for="skin33">Selecionar imagem Reactor-Rush-V3.3-horizontal.webp</label><input id="skin33" type="file" accept="image/webp,image/png,image/jpeg" style="display:block;width:100%;margin:8px 0"><span id="skin33Status" role="status">Grafismo anterior ativo</span> <button id="skin33Reset" type="button" style="background:#124d75;padding:6px;border-radius:6px">Repor</button></p><p><label for="musicVolume">Volume da música <b id="musicPct"></b></label><input id="musicVolume" type="range" min="0" max="100" value="25" style="width:100%;accent-color:#46dfff"></p><p><label for="sfxVolume">Volume das peças e efeitos <b id="sfxPct"></b></label><input id="sfxVolume" type="range" min="0" max="100" value="100" style="width:100%;accent-color:#46dfff"></p><button class="close" id="close">VOLTAR AO JOGO</button></div></div>
@@ -701,7 +711,7 @@ function giantPlan(phase){const changes=new Map();const remove=new Set(allIds().
  for(const id of changes.keys())remove.delete(id);
  return {title:'GIGANTE · '+phase+'/3',changes,remove};
 }
-/* V3.8: descender and Wild trail. */
+/* V4.0: descender and Wild trail. */
 async function gargantoonDescent(){
  const col=rand(N-2);gargLandingCol=col;
  const walker=document.createElement('div');walker.className='rrg-descender';walker.innerHTML=gargantoonSVG(-1,col,3);
