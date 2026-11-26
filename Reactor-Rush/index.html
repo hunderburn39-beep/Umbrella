@@ -337,6 +337,16 @@ html,body{overscroll-behavior:none;overflow:hidden;touch-action:pan-y;-webkit-te
 .app .grid .rrg-descender::after{content:'';position:absolute;inset:16% 7%;border-radius:45%;border:1px solid #e9b5ff55;box-shadow:0 0 14px #c253ff88;pointer-events:none}
 @keyframes rrgWalk{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-2%) rotate(1deg)}}
 @media(prefers-reduced-motion:reduce){.app .grid .rrg-descender svg.rrg-alien{animation:none}}
+
+/* Landscape: preserve original artwork proportions and control alignment. */
+@media (orientation:landscape){
+html.rr-skin body{background:radial-gradient(ellipse at center,#24184e,#080518 85%)}
+.rr-skin:not(.rr33) .app{width:min(100vw,177.777778dvh);height:min(100dvh,56.25vw);flex:none;background-image:var(--rr-landscape);background-size:contain;background-repeat:no-repeat;--rr-side:68.8cqh;--rr-left:25.3cqw;--rr-right:66.4cqw;--rr-rw:33.6cqw}
+.rr-skin:not(.rr33) .app .rr-landscape-art{display:none}
+.rr-skin:not(.rr33) .app .arena{left:calc(45.85cqw - 34.4cqh);top:9.7%;width:68.8cqh;height:68.8cqh}
+.rr-skin:not(.rr33) .app .message{left:25.3%;width:41.1%}
+.rr-skin.rr33 .app{flex:none;background-size:contain}
+}
 </style>
 <link rel="stylesheet" href="./approved-skins.css?v=30">
 <link rel="stylesheet" href="./celebration-art.css?v=30">
