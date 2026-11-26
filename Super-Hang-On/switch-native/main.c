@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "libretro.h"
+#ifdef SHO_EMBED_ROM
+extern const unsigned char sho_rom_start[],sho_rom_end[];
+#endif
 extern bool sho_video_init(void);
 extern void sho_video_close(void);
 extern bool sho_video_format(enum retro_pixel_format);
@@ -52,12 +55,20 @@ static int16_t input(unsigned p,unsigned d,unsigned i,unsigned id){
 }
 int main(void){
     const char *path="sdmc:/switch/Super-Hang-On/game.bin";
+#ifdef SHO_EMBED_ROM
+    long n=(long)((uintptr_t)sho_rom_end-(uintptr_t)sho_rom_start);
+    if(n!=524288)return 1;
+    void *rom=malloc((size_t)n);
+    if(!rom)return 1;
+    __builtin_memcpy(rom,sho_rom_start,(size_t)n);
+#else
     FILE *f=fopen(path,"rb");if(!f)return 1;
     if(fseek(f,0,SEEK_END)){fclose(f);return 1;}
     long n=ftell(f);rewind(f);
     if(n<=0||n>32*1024*1024){fclose(f);return 1;}
     void *rom=malloc((size_t)n);
     if(!rom||fread(rom,1,(size_t)n,f)!=(size_t)n){free(rom);fclose(f);return 1;}fclose(f);
+#endif
     padConfigureInput(1,HidNpadStyleSet_NpadStandard);padInitializeDefault(&pad);
     if(!sho_video_init()){free(rom);return 1;}
     retro_set_environment(environment);
