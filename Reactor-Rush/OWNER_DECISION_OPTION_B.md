@@ -1,0 +1,2 @@
+# Owner decision — Option B approved
+Use session-1 engine/engine.js as the single authoritative Free Play engine. Port event tracing and reuse the renderer from reactor-rush-v5-renderer. Preserve artwork, audio, messages and aspect ratios. Run deterministic replay and browser tests; report results, remaining discrepancies and commit SHA in DEVELOPMENT_LOG.md. Keep stable main playable until integration is tested. Please acknowledge this decision in the shared log.
