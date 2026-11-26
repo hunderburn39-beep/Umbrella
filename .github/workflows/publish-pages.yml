@@ -3,6 +3,7 @@ on:
   push:
     branches: [main]
     paths:
+      - 'Turbo-88/**'
       - 'Pinball-Action/**'
       - 'Reactor-Rush/**'
       - 'Super-Pinball-Action/**'
@@ -49,7 +50,7 @@ jobs:
         run: |
           mkdir -p public
           if [ -f index.html ]; then cp index.html public/index.html; fi
-          for game in Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777 Fortuna-777-V6 Fortuna-777-V7 Fortuna-777-V8; do
+          for game in Turbo-88 Pinball-Action Reactor-Rush Super-Pinball-Action Super-Hang-On Fortuna-777 Fortuna-777-V6 Fortuna-777-V7 Fortuna-777-V8; do
             if [ -d "$game" ]; then cp -R "$game" public/; fi
           done
           test -s public/Fortuna-777-V7/index.html
