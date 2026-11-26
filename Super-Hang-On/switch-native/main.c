@@ -19,8 +19,10 @@ static bool environment(unsigned cmd,void *data){
     default:return false;
     }
 }
-static void audio(int16_t l,int16_t r){(void)l;(void)r;}
-static size_t batch(const int16_t *s,size_t n){(void)s;return n;}
+extern bool sho_audio_init(double);
+extern void sho_audio_sample(int16_t,int16_t);
+extern size_t sho_audio_batch(const int16_t *,size_t);
+extern void sho_audio_close(void);
 static void poll(void){padUpdate(&pad);}
 static int16_t input(unsigned p,unsigned d,unsigned i,unsigned id){
     (void)i;if(p||d!=RETRO_DEVICE_JOYPAD)return 0;
@@ -49,18 +51,22 @@ int main(void){
     if(!sho_video_init()){free(rom);return 1;}
     retro_set_environment(environment);
     retro_set_video_refresh(sho_video_refresh);
-    retro_set_audio_sample(audio);retro_set_audio_sample_batch(batch);
+    retro_set_audio_sample(sho_audio_sample);retro_set_audio_sample_batch(sho_audio_batch);
     retro_set_input_poll(poll);retro_set_input_state(input);
     retro_init();
     struct retro_game_info game={.path=path,.data=rom,.size=(size_t)n,.meta=NULL};
     bool loaded=retro_load_game(&game);
     if(loaded){
+        struct retro_system_av_info av;
+        retro_get_system_av_info(&av);
+        sho_audio_init(av.timing.sample_rate);
         retro_set_controller_port_device(0,RETRO_DEVICE_JOYPAD);
         while(appletMainLoop()){
             padUpdate(&pad);
             if(padGetButtonsDown(&pad)&HidNpadButton_Minus)break;
             retro_run();
         }
+        sho_audio_close();
         retro_unload_game();
     }
     retro_deinit();sho_video_close();free(rom);return loaded?0:1;
