@@ -1,0 +1,58 @@
+{
+  "generatedAt": "2026-11-26T07:08:31.525Z",
+  "node": "v22.23.5",
+  "engine": "Reactor-Rush/engine/engine.js",
+  "rounds": 2000000,
+  "seed": 424242,
+  "chunk": 50000,
+  "workers": 4,
+  "config": {
+    "payScale": 1.2258,
+    "minCluster": 5,
+    "maxWin": 5083
+  },
+  "referenceRtp": 0.962,
+  "rtp": 0.9584094783582587,
+  "standardError": 0.003157197795650108,
+  "ci95": [
+    0.9522213706787845,
+    0.9645975860377329
+  ],
+  "perRoundSd": 4.4649519417028225,
+  "deltaVsReference": -0.003590521641741229,
+  "referenceInsideCi95": true,
+  "hitRate": 0.4885615,
+  "maxWin": 247.41792360000002,
+  "capHits": 0,
+  "avgCascades": 1.4470575,
+  "featureRates": {
+    "fluctometerAwardsPerRound": 0.591146,
+    "quantumeterLevels": {
+      "L1": 0.0292155,
+      "L2": 0.009721,
+      "L3": 0.0045175,
+      "L4": 0.005211
+    },
+    "roundsWithGargantoon": 0.0097285,
+    "gargantoonSplits3to2x2": 0.0097285,
+    "gargantoonSplits2to1x1": 0.019457,
+    "pairExplosionsPerRound": 0.153351,
+    "zapsPerRound": 1.367694,
+    "unchargedBecameElectricPerRound": 0.710385
+  },
+  "winBuckets": {
+    "0": 1022877,
+    "0-1x": 698060,
+    "1-5x": 206823,
+    "5-20x": 52819,
+    "20-100x": 19080,
+    "100-500x": 341,
+    "500x+": 0
+  },
+  "elapsedSeconds": 22.106,
+  "caveats": [
+    "Paytable and several mechanics are interpretations, not the original; see engine/ASSUMPTIONS.md.",
+    "The 95% interval is a normal approximation from per-round variance; wins are heavy-tailed, so it may be optimistic.",
+    "Agreement or disagreement with 96.20% says nothing about the original game probabilities."
+  ]
+}
