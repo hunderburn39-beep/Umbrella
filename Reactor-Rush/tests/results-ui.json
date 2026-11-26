@@ -1,0 +1,127 @@
+[
+ {
+  "test": "Carrega com 49 células",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "test": "Grelha quadrada (horizontal)",
+  "ok": true,
+  "detail": "[268.3125, 268.3125]"
+ },
+ {
+  "test": "Botões circulares com largura=altura",
+  "ok": true,
+  "detail": "[['info', 35, 35], ['sound', 35, 35], ['minus', 26, 26], ['plus', 26, 26], ['spin', 78, 78]]"
+ },
+ {
+  "test": "11 mensagens definidas",
+  "ok": true,
+  "detail": "['BIG WIN', 'MEGA WIN', 'SUPER WIN', 'EPIC WIN', 'QUANTUM WIN', 'MAX WIN', 'ENERGOON ACTIVATED', 'QUANTUM SURGE', 'GARGANTOON UNLEASHED', 'QUANTUM OVERLOAD', 'ELECTRIC EXPLOSION']"
+ },
+ {
+  "test": "Mensagem BIG WIN sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('BIGWIN115,05 CR', 138, 268)"
+ },
+ {
+  "test": "Mensagem MEGA WIN sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('MEGAWIN115,17 CR', 139, 268)"
+ },
+ {
+  "test": "Mensagem SUPER WIN sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('SUPERWIN115,42 CR', 149, 268)"
+ },
+ {
+  "test": "Mensagem EPIC WIN sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('EPICWIN115,17 CR', 138, 268)"
+ },
+ {
+  "test": "Mensagem QUANTUM WIN sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('QUANTUMWIN115,37 CR', 243, 268)"
+ },
+ {
+  "test": "Mensagem MAX WIN sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('MAXWIN115,59 CR', 138, 268)"
+ },
+ {
+  "test": "Mensagem ENERGOON ACTIVATED sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('ENERGOONACTIVATED', 209, 268)"
+ },
+ {
+  "test": "Mensagem QUANTUM SURGE sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('QUANTUMSURGE', 184, 268)"
+ },
+ {
+  "test": "Mensagem GARGANTOON UNLEASHED sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('GARGANTOONUNLEASHED', 256, 268)"
+ },
+ {
+  "test": "Mensagem QUANTUM OVERLOAD sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('QUANTUMOVERLOAD', 194, 268)"
+ },
+ {
+  "test": "Mensagem ELECTRIC EXPLOSION sem caixa e dentro da grelha",
+  "ok": true,
+  "detail": "('ELECTRICEXPLOSION', 201, 268)"
+ },
+ {
+  "test": "Patamares 10/20/50/100/250/1000",
+  "ok": true,
+  "detail": "[None, 'BIG WIN', 'MEGA WIN', 'SUPER WIN', 'EPIC WIN', 'QUANTUM WIN', 'MAX WIN']"
+ },
+ {
+  "test": "Menu de informações: tabela com 8 símbolos",
+  "ok": true,
+  "detail": "(9, 8)"
+ },
+ {
+  "test": "60 rondas sem erros JS",
+  "ok": true,
+  "detail": "[]"
+ },
+ {
+  "test": "Contador de rondas",
+  "ok": true,
+  "detail": "60"
+ },
+ {
+  "test": "Saldo válido e finito",
+  "ok": true,
+  "detail": "989.58"
+ },
+ {
+  "test": "Maior long task < 400 ms (Chrome headless)",
+  "ok": true,
+  "detail": "68"
+ },
+ {
+  "test": "Retrato: grelha quadrada ou aviso de rotação",
+  "ok": true,
+  "detail": "[280.40625, 280.40625]"
+ },
+ {
+  "test": "Regresso a horizontal mantém grelha quadrada",
+  "ok": true,
+  "detail": "[268.3125, 268.3125]"
+ },
+ {
+  "test": "16:9 desktop: grelha quadrada",
+  "ok": true,
+  "detail": "[495.359375, 495.359375]"
+ },
+ {
+  "test": "Demo Gargantoon não altera saldo e sem erros",
+  "ok": true,
+  "detail": "(989.58, 989.58, [])"
+ }
+]

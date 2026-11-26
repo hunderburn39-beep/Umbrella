@@ -1,0 +1,56 @@
+{
+  "rounds": 5000000,
+  "seed": 404,
+  "seconds": 80.007,
+  "rtpObserved": 0.9934838300015906,
+  "ci95": [
+    0.9710112740289326,
+    1.0159563859742484
+  ],
+  "stdDev": 25.637838154608183,
+  "volatilityIndex": 25.637838154608183,
+  "hitFrequency": 0.447496,
+  "maxWinObserved": 2657.5,
+  "largestCluster": 35,
+  "distribution": {
+    "sem prémio": 2762520,
+    "0-1x (excl.0)": 2100849,
+    "1-2x": 101789,
+    "2-5x": 18417,
+    "5-10x": 2347,
+    "10-50x": 1203,
+    "50-100x": 3684,
+    "100-500x": 6882,
+    "500x+": 2309
+  },
+  "featureTotals": {
+    "electric": 1206490,
+    "energoon1": 26755,
+    "energoon2": 16892,
+    "garg": 13348,
+    "pairExp": 107939,
+    "overload": 13348,
+    "fluctFill": 69080,
+    "uncharged": 783447,
+    "clusters": 4309523,
+    "cascades": 3346714
+  },
+  "roundsWithFeature": {
+    "electric": 808516,
+    "energoon1": 26755,
+    "energoon2": 16892,
+    "garg": 13348,
+    "pairExp": 47676,
+    "overload": 13348,
+    "fluctFill": 60686
+  },
+  "roundsWithFeaturePct": {
+    "electric": 0.1617032,
+    "energoon1": 0.005351,
+    "energoon2": 0.0033784,
+    "garg": 0.0026696,
+    "pairExp": 0.0095352,
+    "overload": 0.0026696,
+    "fluctFill": 0.0121372
+  }
+}

@@ -1,0 +1,118 @@
+{
+  "generated": "2026-11-26T21:21:53.167Z",
+  "node": "v22.23.5",
+  "total": 22,
+  "failed": 0,
+  "results": [
+    {
+      "test": "Tabela: todos os símbolos e tamanhos 5–49 pagam o escalão correto",
+      "ok": true,
+      "detail": "360 combinações verificadas"
+    },
+    {
+      "test": "Tabela: 8 símbolos, 8 escalões, valores não decrescentes e iguais à fonte",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Tabela: tier() mapeia 5..15+ corretamente",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Deteção de grupos: motor = oráculo independente em 30 000 tabuleiros (com Wilds)",
+      "ok": true,
+      "detail": "16657 tabuleiros com ganho, 0 divergências"
+    },
+    {
+      "test": "Wild carregado (Electric) substitui e liga grupos; Wild não carregado não ganha nem liga",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Wild não carregado junto de um ganho torna-se Electric",
+      "ok": true,
+      "detail": "1 Electric após o ganho"
+    },
+    {
+      "test": "Reator 1 (Energoon 1×1): ativação individual → 4 Energoons",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Reatores 1+2 em simultâneo → 4 Energoons 1×1 e um 2×2",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Reatores 1+2+3 → Gargantoon 3×3 (9 células)",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Reator 4 (Sobrecarga ×2): multiplicador aplicado a todos os prémios seguintes",
+      "ok": true,
+      "detail": "22631 grupos pagos com ×2 verificados"
+    },
+    {
+      "test": "Gargantoon: 3×3 → dois 2×2 → nove 1×1 (cada fase só após ser premiado)",
+      "ok": true,
+      "detail": "{\"g3\":1,\"g2\":1,\"g1\":1}"
+    },
+    {
+      "test": "Energoon 2×2 e restantes Wilds gigantes mantêm-se sem sobreposição (grelha válida)",
+      "ok": true,
+      "detail": "18214 fotogramas verificados"
+    },
+    {
+      "test": "Fluctometer: grupo do símbolo flutuante deixa Electric Wild; outro símbolo não",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Fluctometer cheio (11) acrescenta 1–3 Electric Wilds",
+      "ok": true,
+      "detail": "3 Electric (1 por grupo + 1–3)"
+    },
+    {
+      "test": "Wild Pair Explosion: Electric adjacentes removem todos os não-Wilds; Wilds mantêm-se",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Wild Pair Explosion: Electric afastados destroem apenas o retângulo entre/à volta",
+      "ok": true,
+      "detail": "restam 29 normais"
+    },
+    {
+      "test": "Sem Wild Pair Explosion com menos de 2 Electric Wilds",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Cascatas consecutivas: win→settle alternam; total = soma dos ganhos",
+      "ok": true,
+      "detail": "máx 17 cascatas; 1739 rondas com ≥3"
+    },
+    {
+      "test": "Dois ou mais grupos simultâneos são todos pagos na mesma cascata",
+      "ok": true,
+      "detail": "2 grupos"
+    },
+    {
+      "test": "Aposta = 1: nenhum prémio excede o teto, grelha sempre 49 células, sem NaN",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Reprodutibilidade: mesma semente → mesmos resultados; sementes diferentes divergem",
+      "ok": true,
+      "detail": "ok"
+    },
+    {
+      "test": "Sem funcionalidades antigas: nenhum jackpot, nenhum \"doubled/giantoonz\" no motor",
+      "ok": true,
+      "detail": "ok"
+    }
+  ]
+}
