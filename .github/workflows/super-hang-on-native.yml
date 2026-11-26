@@ -20,6 +20,9 @@ jobs:
           git clone --depth 1 https://github.com/libretro/Genesis-Plus-GX.git core
           cd core
           git rev-parse HEAD > source-commit.txt
+          # Static cores normally omit common file/VFS helpers supplied by RetroArch.
+          # This standalone frontend must include the core's bundled helpers.
+          sed -i 's/^ifneq ($(STATIC_LINKING), 1)$/ifneq ($(STATIC_LINKING), standalone_disabled)/' libretro/Makefile.common
           make -f Makefile.libretro platform=libnx -j2
           find . -name '*.a' -o -name '*.so'
           mkdir -p ../out
