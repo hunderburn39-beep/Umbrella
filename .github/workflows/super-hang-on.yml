@@ -12,7 +12,12 @@ jobs:
       - name: Build launcher
         shell: bash
         run: |
+          export DEVKITPRO=/opt/devkitpro
+          export DEVKITA64="$DEVKITPRO/devkitA64"
           export PATH="$DEVKITPRO/tools/bin:$DEVKITA64/bin:$PATH"
+          command -v aarch64-none-elf-gcc
+          command -v nacptool
+          command -v elf2nro
           cat > main.c <<'EOF'
           #include <switch.h>
           #include <stdio.h>
