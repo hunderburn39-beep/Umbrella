@@ -1,0 +1,43 @@
+name: Super Hang-On launcher
+on:
+  push:
+    paths:
+      - '.github/workflows/super-hang-on.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: devkitpro/devkita64
+    steps:
+      - name: Build launcher
+        shell: bash
+        run: |
+          export PATH="$DEVKITPRO/tools/bin:$DEVKITA64/bin:$PATH"
+          cat > main.c <<'EOF'
+          #include <switch.h>
+          #include <stdio.h>
+          #include <unistd.h>
+          int main(void) {
+            const char *core="sdmc:/retroarch/cores/genesis_plus_gx_libretro_libnx.nro";
+            const char *rom="sdmc:/switch/Super-Hang-On/game.bin";
+            if(access(core,R_OK)==0 && access(rom,R_OK)==0) {
+              envSetNextLoad(core,"sdmc:/retroarch/cores/genesis_plus_gx_libretro_libnx.nro sdmc:/switch/Super-Hang-On/game.bin");
+              return 0;
+            }
+            consoleInit(NULL);
+            puts("RetroArch core or game.bin missing. Press + to exit.");
+            PadState pad;
+            padConfigureInput(1,HidNpadStyleSet_NpadStandard);
+            padInitializeDefault(&pad);
+            while(appletMainLoop()){padUpdate(&pad);if(padGetButtonsDown(&pad)&HidNpadButton_Plus)break;consoleUpdate(NULL);}
+            consoleExit(NULL);
+            return 0;
+          }
+          EOF
+          aarch64-none-elf-gcc -O2 -march=armv8-a -mtune=cortex-a57 -fPIE -I"$DEVKITPRO/libnx/include" -specs="$DEVKITPRO/libnx/switch.specs" main.c -L"$DEVKITPRO/libnx/lib" -lnx -o launcher.elf
+          nacptool --create "Super Hang-On" "MegaDrive NX Next" "1.0" launcher.nacp
+          elf2nro launcher.elf Super-Hang-On.nro --nacp=launcher.nacp
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Super-Hang-On
+          path: Super-Hang-On.nro
