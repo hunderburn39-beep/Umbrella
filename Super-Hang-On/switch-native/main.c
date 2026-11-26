@@ -23,21 +23,32 @@ extern bool sho_audio_init(double);
 extern void sho_audio_sample(int16_t,int16_t);
 extern size_t sho_audio_batch(const int16_t *,size_t);
 extern void sho_audio_close(void);
-static void poll(void){padUpdate(&pad);}
+static u64 held;
+static HidAnalogStickState stick;
+static void poll(void){
+    padUpdate(&pad);
+    held=padGetButtons(&pad);
+    stick=padGetStickPos(&pad,0);
+}
 static int16_t input(unsigned p,unsigned d,unsigned i,unsigned id){
-    (void)i;if(p||d!=RETRO_DEVICE_JOYPAD)return 0;
-    u64 k=0;
+    (void)i;
+    if(p||d!=RETRO_DEVICE_JOYPAD)return 0;
     switch(id){
-    case RETRO_DEVICE_ID_JOYPAD_UP:k=HidNpadButton_Up;break;
-    case RETRO_DEVICE_ID_JOYPAD_DOWN:k=HidNpadButton_Down;break;
-    case RETRO_DEVICE_ID_JOYPAD_LEFT:k=HidNpadButton_Left;break;
-    case RETRO_DEVICE_ID_JOYPAD_RIGHT:k=HidNpadButton_Right;break;
-    case RETRO_DEVICE_ID_JOYPAD_B:k=HidNpadButton_B;break;
-    case RETRO_DEVICE_ID_JOYPAD_A:k=HidNpadButton_A;break;
-    case RETRO_DEVICE_ID_JOYPAD_Y:k=HidNpadButton_Y;break;
-    case RETRO_DEVICE_ID_JOYPAD_START:k=HidNpadButton_Plus;break;
+    case RETRO_DEVICE_ID_JOYPAD_UP:return !!(held&HidNpadButton_Up)||stick.y>8192;
+    case RETRO_DEVICE_ID_JOYPAD_DOWN:return !!(held&HidNpadButton_Down)||stick.y< -8192;
+    case RETRO_DEVICE_ID_JOYPAD_LEFT:return !!(held&HidNpadButton_Left)||stick.x< -8192;
+    case RETRO_DEVICE_ID_JOYPAD_RIGHT:return !!(held&HidNpadButton_Right)||stick.x>8192;
+    /* Genesis Plus GX maps RetroPad Y/B/A to Mega Drive A/B/C. */
+    case RETRO_DEVICE_ID_JOYPAD_Y:return !!(held&(HidNpadButton_Y|HidNpadButton_ZL));
+    case RETRO_DEVICE_ID_JOYPAD_B:return !!(held&(HidNpadButton_B|HidNpadButton_ZR));
+    case RETRO_DEVICE_ID_JOYPAD_A:return !!(held&(HidNpadButton_A|HidNpadButton_R));
+    case RETRO_DEVICE_ID_JOYPAD_START:return !!(held&HidNpadButton_Plus);
+    case RETRO_DEVICE_ID_JOYPAD_X:return !!(held&HidNpadButton_X);
+    case RETRO_DEVICE_ID_JOYPAD_L:return !!(held&HidNpadButton_L);
+    case RETRO_DEVICE_ID_JOYPAD_R:return !!(held&HidNpadButton_R);
+    case RETRO_DEVICE_ID_JOYPAD_SELECT:return !!(held&HidNpadButton_Minus);
+    default:return 0;
     }
-    return !!(padGetButtons(&pad)&k);
 }
 int main(void){
     const char *path="sdmc:/switch/Super-Hang-On/game.bin";
@@ -63,7 +74,7 @@ int main(void){
         retro_set_controller_port_device(0,RETRO_DEVICE_JOYPAD);
         while(appletMainLoop()){
             padUpdate(&pad);
-            if(padGetButtonsDown(&pad)&HidNpadButton_Minus)break;
+            if((padGetButtons(&pad)&(HidNpadButton_Plus|HidNpadButton_Minus))==(HidNpadButton_Plus|HidNpadButton_Minus))break;
             retro_run();
         }
         sho_audio_close();
