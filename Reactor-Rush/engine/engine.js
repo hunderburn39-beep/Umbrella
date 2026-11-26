@@ -91,6 +91,31 @@
     return lv;
   }
 
+  // ---------- event trace (renderer support; never touches the RNG) ----------
+  // Renderer cell format: {k,t,gid,size}. k: 'n' regular, 'u' Uncharged, 'e' Electric,
+  // 'g1' Energoon 1x1, 'g2' Energoon 2x2, 'G3'/'G2'/'G1' Gargantoon 3x3/2x2/1x1.
+  // t is the SPRITE index 0..7 = 7 - engine symbol (engine 0 = best, sprite 7 = best).
+  function traceCell(st, i) {
+    const v = st.g[i], id = st.bid[i], b = id ? st.blocks.get(id) : null;
+    if (v < 8) return { k: 'n', t: 7 - v, gid: 0, size: 1 };
+    if (v === U) return { k: 'u', t: -1, gid: 0, size: 1 };
+    if (v === EL) return { k: 'e', t: -1, gid: 0, size: 1 };
+    if (v === EN) return b && b.size === 2 ? { k: 'g2', t: -1, gid: id, size: 2 } : { k: 'g1', t: -1, gid: 0, size: 1 };
+    return b && b.size === 3 ? { k: 'G3', t: -1, gid: id, size: 3 } : b && b.size === 2 ? { k: 'G2', t: -1, gid: id, size: 2 } : { k: 'G1', t: -1, gid: 0, size: 1 };
+  }
+  function traceGrid(st, hole) {
+    const o = new Array(CELLS);
+    for (let i = 0; i < CELLS; i++) o[i] = hole && hole[i] ? null : traceCell(st, i);
+    return o;
+  }
+  function frame(st, type, extra) {
+    if (!st.trace) return null;
+    const f = extra || {};
+    f.type = type; f.qm = st.qm; f.level = levelFor(st.qm, st.cfg); f.fl = st.fl; f.flMax = st.cfg.fluctThreshold;
+    f.ovc = st.overcharge; f.garg = st.qmDisabled; f.total = st.total;
+    st.trace.push(f); return f;
+  }
+
   // ---------- state ----------
   function makeState(cfg, rng, grid) {
     const st = {
@@ -197,6 +222,7 @@
   function resolveStep(st, clusters) {
     const cfg = st.cfg, g = st.g, bid = st.bid, rm = st.rm, rng = st.rng;
     rm.fill(0);
+    const tracing = !!st.trace, preGrid = tracing ? traceGrid(st) : null, tclusters = tracing ? [] : null, spawn = tracing ? [] : null;
     let stepWin = 0, flCount = 0;
     const winMask = new Uint8Array(CELLS), hit = new Set(), electricUsed = [];
     for (const cl of clusters) {
@@ -208,10 +234,14 @@
         else if (v === EN) { if (bid[i]) hit.add(bid[i]); else rm[i] = 1; }
         else if (v === GA) { hasG = true; if (bid[i]) hit.add(bid[i]); else rm[i] = 1; }
       }
-      stepWin += clusterPay(cl.t, cl.cells.length, cfg) * (st.overcharge && hasG ? 2 : 1);
+      const cpay = clusterPay(cl.t, cl.cells.length, cfg) * (st.overcharge && hasG ? 2 : 1);
+      stepWin += cpay;
+      if (tracing) { let wild = false; for (const i of cl.cells) if (g[i] >= 8) wild = true; tclusters.push({ type: 7 - cl.t, size: cl.cells.length, pay: cpay, cells: cl.cells.slice(), wild, gargX2: st.overcharge && hasG }); }
     }
     st.total += stepWin; st.cascades++;
-    if (st.total >= cfg.maxWin) { st.total = cfg.maxWin; st.capped = true; return stepWin; }
+    let wf = null;
+    if (tracing) wf = frame(st, 'win', { grid: preGrid, clusters: tclusters, win: stepWin, cascade: st.cascades, zap: [], pendingStats: null });
+    if (st.total >= cfg.maxWin) { st.total = cfg.maxWin; st.capped = true; if (wf) { wf.total = st.total; wf.capped = true; } return stepWin; }
 
     // Uncharged Wilds next to a winning cluster become Electric. Order: before removal.
     for (let i = 0; i < CELLS; i++) {
@@ -240,10 +270,11 @@
       if (!present) break;
       let pick = rng.int(present), type = 0;
       for (let t = 0; t < TYPES; t++) if (counts[t] && pick-- === 0) { type = t; break; }
-      let n = 0; for (let i = 0; i < CELLS; i++) if (g[i] === type && !rm[i]) { rm[i] = 1; n++; }
+      let n = 0; for (let i = 0; i < CELLS; i++) if (g[i] === type && !rm[i]) { rm[i] = 1; n++; if (wf) wf.zap.push(i); }
       st.stats.zaps++; st.stats.zapped += n;
       if (!st.qmDisabled) st.qm += n;
     }
+    if (wf) { wf.qm = st.qm; wf.fl = st.fl; wf.level = levelFor(st.qm, cfg); wf.total = st.total; }
     gravityRefill(st);
 
     // Uncharged wild may appear after a cascade. [UNVERIFIED rate]
@@ -251,13 +282,15 @@
       const cell = randomFreeCells(st, 1, v => v < 8)[0]; if (cell !== undefined) g[cell] = U;
     }
     // Gargantoon splitting: 3x3 -> two 2x2, 2x2 -> nine 1x1.
-    for (let k = 0; k < split3; k++) { st.stats.splits3++; placeRandomBlock(st, 2, GA); placeRandomBlock(st, 2, GA); }
-    for (let k = 0; k < split2; k++) { st.stats.splits2++; for (const i of randomFreeCells(st, 9)) g[i] = GA; }
+    for (let k = 0; k < split3; k++) { st.stats.splits3++; placeRandomBlock(st, 2, GA); placeRandomBlock(st, 2, GA); if (spawn) spawn.push('G2', 'G2'); }
+    for (let k = 0; k < split2; k++) { st.stats.splits2++; for (const i of randomFreeCells(st, 9)) g[i] = GA; if (spawn) spawn.push('G1'); }
     // Fluctometer award: 1..fluctWildsMax Electric Wilds per full charge.
     while (!st.flDisabled && st.fl >= cfg.fluctThreshold) {
       st.fl -= cfg.fluctThreshold; st.stats.flAwards++;
       for (const i of randomFreeCells(st, 1 + rng.int(cfg.fluctWildsMax), v => v < 8)) g[i] = EL;
+      if (spawn) spawn.push('fluct');
     }
+    if (tracing) frame(st, 'settle', { grid: traceGrid(st), cascade: st.cascades, spawn });
     return stepWin;
   }
 
@@ -266,12 +299,14 @@
     const lv = levelFor(st.qm, st.cfg);
     if (st.qmDisabled || lv === 0) return false;
     st.stats.qmL[lv - 1]++;
+    if (st.trace) frame(st, 'level', { grid: traceGrid(st), reactor: lv });
     if (lv === 1) { for (const i of randomFreeCells(st, 4, v => v < 8)) st.g[i] = EN; st.qm = 0; }
     else if (lv === 2) { placeRandomBlock(st, 2, EN); st.qm = 0; }
     else {
       placeRandomBlock(st, 3, GA);
       st.qmDisabled = true; st.flDisabled = true; st.stats.garg = true; st.overcharge = lv === 4;
     }
+    if (st.trace) frame(st, 'settle', { grid: traceGrid(st), cascade: st.cascades, spawn: [lv === 1 ? 'g1' : lv === 2 ? 'g2' : 'G3'], reactor: lv });
     return true;
   }
 
@@ -292,7 +327,9 @@
     st.rm[a] = 1; st.rm[b] = 1;
     st.stats.explosions++;
     if (!st.qmDisabled) st.qm += n;
+    if (st.trace) frame(st, 'explosion', { grid: traceGrid(st, st.rm), removed: n, pair: [a, b], electric: el.concat([a, b]) });
     gravityRefill(st);
+    if (st.trace) frame(st, 'settle', { grid: traceGrid(st), cascade: st.cascades, spawn: [], afterExplosion: true });
     return true;
   }
 
@@ -303,6 +340,16 @@
     const x = rng.next(); let k = 0; while (k < cfg.startUnchargedCum.length - 1 && x >= cfg.startUnchargedCum[k]) k++;
     for (const i of randomFreeCells(st, k)) st.g[i] = U;
     st.fType = rng.next() < cfg.pFluct ? 4 + rng.int(4) : -1; // low-paying symbols only
+  }
+
+  // Same round as playRound (identical RNG consumption) plus a frame list for the renderer.
+  function playRoundTrace(rng, userCfg) {
+    const cfg = userCfg || DEFAULTS, st = makeState(cfg, rng);
+    st.trace = [];
+    startRound(st);
+    frame(st, 'start', { grid: traceGrid(st), fluct: st.fType < 0 ? -1 : 7 - st.fType });
+    runToRest(st);
+    const r = summarize(st); r.frames = st.trace; return r;
   }
 
   function playRound(rng, userCfg) {
@@ -375,7 +422,7 @@
 
   return {
     N, CELLS, TYPES, U, EL, EN, GA, QM_LEVELS, DEFAULTS,
-    createRng, clusterPay, levelFor, playRound, simulate, mergeAgg, rtpStats,
+    createRng, clusterPay, levelFor, playRound, playRoundTrace, simulate, mergeAgg, rtpStats,
     _test: { makeState, findClusters, resolveStep, gravityRefill, runQuantumeter, runPairExplosion, startRound, runToRest, setBlock, blockFits, placeRandomBlock },
   };
 });

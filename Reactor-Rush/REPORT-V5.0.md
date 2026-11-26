@@ -1,48 +1,33 @@
-# Reactor Rush V5.0 — Relatório técnico
+# Reactor Rush V5.0 — Relatório técnico (opção B: motor único `engine/engine.js`)
 
 Modo Free Play, créditos exclusivamente virtuais. Referência: Reactoonz 2 (Play'n GO).
 
-## 1. Limitações e o que NÃO está confirmado (ler primeiro)
+## 1. Limitações (ler primeiro)
+* **O regulamento oficial do PokerStars não foi lido** (HTTP 403 em todas as sessões). A **tabela de prémios é original e provisória deste projeto**, não a oficial. Limiares do Quantumeter (55/85/110/135) vêm de fontes secundárias; muitas regras de pormenor são interpretação própria (ver `engine/ASSUMPTIONS.md`).
+* **A matemática não é a do original.** O RTP observado só diz respeito a este jogo.
+* **Volatilidade muito menor que a referência:** maior prémio observado ≈ 270× (4M rondas) contra um máximo declarado de 5083×. Os patamares MAX WIN (1000×) e QUANTUM WIN (250×) quase nunca aparecem em jogo real.
+* **Safari e iPhone não foram testados.** Só Chrome headless (Linux). O áudio não foi ouvido (só validado quanto a erros).
+* Patamares das mensagens BIG/MEGA/SUPER/EPIC/QUANTUM/MAX (10/20/50/100/250/1000×) são escolha própria.
 
-* **O regulamento oficial do PokerStars não foi lido.** O PDF indicado não pôde ser obtido neste ambiente. As regras e a tabela de prémios foram reconstruídas a partir de fontes secundárias (casinorange.com, allslotsonline.casino, páginas de revisão), concordantes entre si, mas **não são o documento oficial**. Devem ser confrontadas com o PDF antes de se afirmar fidelidade.
-* **A matemática não é a do jogo original.** Pesos dos símbolos, probabilidade de Wilds não carregados e mecânica detalhada do Fluctometer, Wild Pair Explosion e prioridades de execução são **interpretação própria**, calibrada para aproximar o RTP alvo.
-* **RTP observado: 97,47%** (IC 95%: 96,37%–98,57%) em 20 000 000 de rondas. O alvo 96,20% **não foi demonstrado**: fica fora do intervalo. O RTP teórico oficial do Reactoonz 2 (96,20%) é só um alvo de calibração. Desvio-padrão por ronda ≈ 25,1× a aposta; para um IC de ±0,2% seriam precisas centenas de milhões de rondas.
-* **Safari/iPhone não foram testados.** Só Chrome headless (Playwright, Linux). Compatibilidade de áudio com Safari iOS segue boas práticas (AudioContext iniciado em gesto do utilizador) mas **não está verificada**. O áudio não foi ouvido; os sons só foram validados quanto a ausência de erros.
-* Patamares de celebração (BIG 10×, MEGA 20×, SUPER 50×, EPIC 100×, QUANTUM 250×, MAX 1000×) são **escolha própria**; não há patamares oficiais documentados.
-* Limiares do Quantumeter (55/85/110/135) e Fluctometer (11 símbolos, 1–3 Wilds): de fontes secundárias; não verificados no regulamento.
+## 2. Arquitetura
+* `engine/engine.js` — único motor (sem DOM/áudio), PRNG com semente. Novo: `playRoundTrace(rng,cfg)` devolve a mesma ronda que `playRound` (mesmo consumo do RNG) mais uma lista de fotogramas (`start`, `win`, `level`, `explosion`, `settle`).
+* `index.html` — apenas anima os fotogramas; não contém lógica de jogo. Mensagens 3D sem caixas, tabela de prémios, painéis Quantumeter/Fluctometer (horizontal e vertical), botões circulares corrigidos.
+* `sim/run-sim.js` — simulador reproduzível (inalterado). `archive/rr-engine-alt/` — o motor alternativo da sessão 2, arquivado, sem uso.
+* Preservados: `Quantum Arcade.mp3`, imagens e CSS aprovados. Backup V4.0 em `backup-V4.0/`.
 
-## 2. Alterações
+## 3. Testes
+* `node --test tests/engine.test.js tests/trace.test.js`: **22/22** (16 da sessão 1 + 6 novos: o modo de registo não altera a ronda em 20 000 rondas e mantém o RNG sincronizado; repetição determinística; fotogramas bem formados e soma dos ganhos = total; os 4 níveis de reator; Gargantoon 9/4 células; ×2 só com peça de Gargantoon).
+* `python3 tests/ui-tests.py`: **37/37** em Chrome headless — 49 células; grelha quadrada em horizontal, vertical e 16:9; botões circulares; 11 mensagens sem caixa; patamares; menu com tabela; **repetição determinística na interface** (12 sementes, incluindo explosões e os 4 reatores: saldo final = resultado do motor, tolerância 0,01 por arredondamentos por cascata); 60 rondas sem erros JavaScript; long task < 400 ms; demo Gargantoon sem alterar saldo.
+* **Não testado:** Safari, iPhone real, áudio ao ouvido, zoom/gestos em ecrã tátil, GitHub Pages (o ambiente do Claude não alcança github.io).
 
-* Novo `rr-engine.js`: motor puro (sem DOM/áudio), grelha 7×7, 8 símbolos, grupos ortogonais ≥5, cascatas, Wilds, reatores, PRNG com semente (mulberry32).
-* Novo `rr-sim.js`: simulador independente e reproduzível (`node rr-sim.js rondas semente saída.json`).
-* `index.html`: lógica antiga substituída por reprodução das rondas do motor; removidos mecanismos antigos incompatíveis (Quantum Leap, fila de funcionalidades, jackpot); novos painéis Quantumeter/Fluctometer em horizontal e vertical; mensagens 3D sem caixas (11); menu de informações com tabela de prémios e explicação das funcionalidades; botões circulares corrigidos para lado = altura.
-* Preservados: música `Quantum Arcade.mp3`, imagens de fundo e CSS de skins aprovados.
-* Backup: `Reactor-Rush/backup-V4.0/`.
+## 4. RTP e simulação (motor `engine/engine.js`)
+| Execução | Rondas | Semente | RTP | IC 95% |
+|---|---|---|---|---|
+| Sessão 1 | 2 000 000 | 424242 | 95,84% | 95,22–96,46% |
+| Sessão 1 | 2 000 000 | 90210 | 95,64% | 95,02–96,26% |
+| **Verificação independente (esta sessão)** | **4 000 000** | **20261127** | **95,997%** | **95,56–96,44%** |
 
-## 3. Funcionalidades implementadas
+Frequência de prémio 48,9%; Gargantoon em ≈0,98% das rondas; explosões 0,15/ronda; maior prémio 268×. O IC é uma aproximação normal; os prémios têm cauda pesada, por isso pode ser otimista. `payScale` (1,2258) foi calibrado na semente 111; as validações usaram sementes diferentes. O RTP de referência 96,20% está dentro dos intervalos, mas isto não prova nada sobre o jogo original.
 
-Quantumeter (4 níveis), Fluctometer, Electric Wilds, Wilds não carregados, Wild Pair Explosion, Energoon 1×1 (×4), Energoon 2×2, Gargantoon 3×3 com divisão 3×3 → dois 2×2 → nove 1×1, Sobrecarga ×2. Animação/som individual por reator e relâmpagos entre Wilds.
-
-## 4. Testes
-
-* `node tests/engine-tests.js`: **22/22** (tabela completa 8 símbolos × tamanhos 5–49; mapeamento de escalões; deteção de grupos contra oráculo independente em 30 000 tabuleiros; Wilds; reatores 1–4 individuais e simultâneos; Gargantoon e divisões; multiplicador ×2; Fluctometer; Wild Pair Explosion; cascatas; reprodutibilidade; ausência de jackpot). Resultados em `tests/results-engine.json`.
-* `python3 tests/ui-tests.py`: **25/25** em Chrome headless (49 células; grelha quadrada em horizontal, vertical e 16:9; botões circulares; 11 mensagens sem caixa; patamares; menu; 60 rondas em turbo sem erros JavaScript; saldo; long task < 400 ms; demo do Gargantoon sem alterar saldo). Resultados em `tests/results-ui.json`.
-* **Não testado:** Safari, iPhone real, qualidade/mistura do áudio ao ouvido, gestos de zoom em ecrã tátil, ativação de todos os cenários em jogo real (cobertos por testes do motor, não por rondas na interface).
-
-## 5. Simulação
-
-| Execução | Rondas | Semente | RTP |
-|---|---|---|---|
-| 1 | 5 000 000 | 101 | 96,23% |
-| 2 | 5 000 000 | 202 | 98,14% |
-| 3 | 5 000 000 | 303 | 96,18% |
-| 4 | 5 000 000 | 404 | 99,35% |
-| **Total** | **20 000 000** | | **97,47% (96,37–98,57)** |
-
-Execução de 1 000 000 (semente 20260101): 99,29% (94,32–104,25). Frequência de prémio: 44,77%. Maior prémio observado: 2972×. Rondas com Electric Wild 16,2%; Energoon 1×1 0,53%; Energoon 2×2 0,34%; Gargantoon 0,27%; Sobrecarga ×2 0,27%; Wild Pair Explosion 0,95%; Fluctometer cheio 1,2%. Distribuição completa em `sim/pooled-20M.json`.
-
-A calibração de pesos foi feita com as mesmas sementes de simulação, por isso há risco de sobreajuste; as execuções finais usaram sementes diferentes das de calibração.
-
-## 6. Pendências
-
-Validar regras contra o PDF oficial; testar em Safari/iPhone; ouvir e afinar o áudio; recalibrar para aproximar 96,20% com um IC mais estreito.
+## 5. Pendências
+Safari/iPhone; ouvir o áudio; PDF oficial (tabela real e volatilidade); verificar o URL do Pages.
