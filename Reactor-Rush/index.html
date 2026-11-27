@@ -454,6 +454,21 @@ html.rr-skin body .app .rr-landscape-art{display:none!important}
  .rr-reactors .x2{font-size:4cqw}
 }
 
+/* Fit reactor badges inside the existing panel without moving the board. */
+.rr-p2{display:flex;flex-direction:column;container-type:size}
+.rr-p2 .rr-ptitle{flex:none;font-size:min(1.75cqw,20cqh)}
+.rr-p2 .rr-fluct{flex:1;min-height:0;margin-top:1cqh}
+.rr-p2 .rr-fluct svg{width:auto;height:100%;max-height:30cqh;aspect-ratio:1}
+.rr-p2 .rr-reactors{flex:1.2;min-height:0;margin-top:2cqh}
+.rr-p2 .rx{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0;padding:0;font-size:min(3cqw,11cqh);line-height:1.05}
+.rr-p2 .ico{gap:1cqh;margin:0 auto 1cqh}
+.rr-p2 .ico u{width:7cqh;height:7cqh;border-radius:1cqh}
+.rr-p2 .ico u[style]{width:15cqh!important;height:15cqh!important}
+.rr-p2 .x2{font-size:20cqh;line-height:1}
+.rr-p2 .rr-fbar{height:16cqh}
+.rr-p2 .rr-ftxt{font-size:min(4cqw,16cqh)}
+@media(orientation:portrait){.rr-p2 .rr-ptitle{font-size:min(4cqw,20cqh)}}
+
 .pt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}.paytable{min-width:420px;font-size:10px}
 </style>
 </head>
