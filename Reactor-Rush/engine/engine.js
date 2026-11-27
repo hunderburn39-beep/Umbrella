@@ -417,9 +417,64 @@
     return { rtp: mean, se, ci95: [mean - 1.96 * se, mean + 1.96 * se], sd: Math.sqrt(variance), hitRate: a.hits / a.n };
   }
 
+  // ---------- house reserve ("limite rígido"), Free Play only ----------
+  // Optional layer on top of the plain engine; playRound / playRoundTrace / simulate are untouched.
+  // Rule: the total paid in a session never exceeds rtpCap x the total wagered in that session, so the
+  // house keeps at least (1 - rtpCap) of everything wagered at every moment. Before a round the engine
+  // computes the largest win the reserve can pay; a drawn round that would pay more is discarded and the
+  // next draw from the same RNG stream is used (rejection sampling). Rounds are therefore NOT independent
+  // draws: the outcome depends on the session balance. This must be disclosed to the player.
+  function createGovernor(opts) {
+    const o = Object.assign({ rtpCap: 0.94, slack: 0, maxAttempts: 10000 }, opts);
+    return { rtpCap: o.rtpCap, slack: o.slack, maxAttempts: o.maxAttempts, bets: 0, paid: 0, rounds: 0, rerolls: 0 };
+  }
+  // Largest win, in credits, that keeps paid <= rtpCap x bets after this bet is placed.
+  function governorAllowance(g, bet) {
+    return Math.max(0, g.rtpCap * (g.bets + bet) - g.paid - g.slack);
+  }
+  function playGovernedRound(rng, g, bet, userCfg, withTrace) {
+    const allowance = governorAllowance(g, bet);
+    let r, attempts = 0;
+    do {
+      r = withTrace ? playRoundTrace(rng, userCfg) : playRound(rng, userCfg);
+      attempts++;
+    } while (r.win > 0 && r.win * bet > allowance - 1e-9 && attempts < g.maxAttempts);
+    if (r.win > 0 && r.win * bet > allowance - 1e-9) throw new Error('governor: no admissible round found');
+    g.bets += bet; g.rounds++; g.rerolls += attempts - 1;
+    r.governor = { attempts, allowance };
+    return r;
+  }
+  // Call once per round with the credits actually paid to the player (after any rounding).
+  function governorSettle(g, paidCredits) { g.paid += paidCredits; }
+
+  // Independent sessions of `sessionLen` rounds each (bet = 1), every session with a fresh reserve.
+  function simulateGoverned(sessions, sessionLen, seed, userCfg, govOpts) {
+    const cfg = userCfg || DEFAULTS, rng = createRng(seed);
+    const out = { sessions, sessionLen, rounds: 0, paid: 0, sumSq: 0, hits: 0, maxWin: 0, rerolls: 0,
+      invariantViolations: 0, playerAheadSessions: 0, playerAheadMoments: 0, sessRtpSum: 0, sessRtpSumSq: 0, sessRtpMin: Infinity, sessRtpMax: -Infinity,
+      buckets: { '0': 0, '0-1x': 0, '1-5x': 0, '5-20x': 0, '20-100x': 0, '100-500x': 0, '500x+': 0 } };
+    for (let s = 0; s < sessions; s++) {
+      const g = createGovernor(govOpts);
+      for (let i = 0; i < sessionLen; i++) {
+        const r = playGovernedRound(rng, g, 1, cfg, false), w = r.win;
+        governorSettle(g, w);
+        out.rounds++; out.paid += w; out.sumSq += w * w; if (w > 0) out.hits++; if (w > out.maxWin) out.maxWin = w;
+        if (g.paid > g.rtpCap * g.bets + 1e-9) out.invariantViolations++;
+        if (g.paid > g.bets) out.playerAheadMoments++;
+        const b = out.buckets; w === 0 ? b['0']++ : w < 1 ? b['0-1x']++ : w < 5 ? b['1-5x']++ : w < 20 ? b['5-20x']++ : w < 100 ? b['20-100x']++ : w < 500 ? b['100-500x']++ : b['500x+']++;
+      }
+      const sr = g.paid / g.bets;
+      if (g.paid > g.bets) out.playerAheadSessions++;
+      out.rerolls += g.rerolls; out.sessRtpSum += sr; out.sessRtpSumSq += sr * sr;
+      if (sr < out.sessRtpMin) out.sessRtpMin = sr; if (sr > out.sessRtpMax) out.sessRtpMax = sr;
+    }
+    return out;
+  }
+
   return {
     N, CELLS, TYPES, U, EL, EN, GA, QM_LEVELS, DEFAULTS,
     createRng, clusterPay, levelFor, playRound, playRoundTrace, simulate, mergeAgg, rtpStats,
+    createGovernor, governorAllowance, playGovernedRound, governorSettle, simulateGoverned,
     _test: { makeState, findClusters, resolveStep, gravityRefill, runQuantumeter, runPairExplosion, startRound, runToRest, setBlock, blockFits, placeRandomBlock },
   };
 });

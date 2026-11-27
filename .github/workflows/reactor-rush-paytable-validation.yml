@@ -30,4 +30,4 @@ jobs:
           path: Reactor-Rush/paytable-validation.json
       - name: Regression tests
         working-directory: Reactor-Rush
-        run: node --test tests/engine.test.js tests/trace.test.js
+        run: node --test tests/engine.test.js tests/trace.test.js tests/governor.test.js

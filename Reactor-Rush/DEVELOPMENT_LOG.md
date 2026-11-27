@@ -104,3 +104,21 @@ RTP is about 11 pts above target while the documented paytable must stay unchang
 - RTP 94.00 % not reached; tuning plan above awaits a decision.
 - The Actions run for this branch will re-run on push; its result is not known yet.
 - Nothing was pushed to `main`.
+
+## Session 4b (Claude, 2026-11-27) — house reserve ("limite rígido", session balance), same branch, NOT merged to main
+**Owner request:** the house must always have a return, never a loss; adjust by balance. Owner chose: **hard limit** and **balance of the current session** (resets when the page is opened or reloaded).
+**Rule implemented:** per session, total paid ≤ 0.94 × total wagered at every moment, so the house keeps at least 6 % of everything wagered. Before each round the engine computes the largest win the reserve can pay; a drawn round that would pay more is discarded and the next draw from the same RNG stream is used (rejection sampling). The plain engine (`playRound`, `playRoundTrace`, `simulate`) and the documented paytable are unchanged.
+**Honest description of what this is:** rounds are no longer independent draws; the outcome depends on the session balance, and large wins can only appear when the reserve covers them. This is disclosed in the info menu ("Regra da casa (Free Play)"). It is not a claim of equivalence with any original game. Free Play only, no real money.
+**Files:** `engine/engine.js` (new: `createGovernor`, `governorAllowance`, `playGovernedRound`, `governorSettle`, `simulateGoverned`), `index.html` (spin uses `playGovernedRound` and settles the credited win; info-menu note; engine script cache `?v=52`; test hook `__rr.gov`), `tests/governor.test.js` (new, 9 tests), `tests/ui-tests.py` (replay test uses the governed engine; new reserve check), `sim/run-governor.js` (new), workflow regression step now also runs `tests/governor.test.js`.
+**Tests executed:** `node --test tests/engine.test.js tests/trace.test.js tests/governor.test.js` 31/31; `python3 tests/ui-tests.py` 38/38 (Chrome headless only). Not run: Safari, iPhone, audio by ear, GitHub Pages.
+**Guarantee checked in simulation:** 0 rounds with paid > 0.94 × wagered and 0 rounds with the player ahead, in 7 000 000 simulated rounds, plus 100 000 rounds with mixed bets in the unit tests and 30 000 rounds with 0.05 bets and cent rounding.
+**Simulation (bet 1, independent sessions with a fresh reserve; interval on session RTPs, normal approximation):**
+| session length | sessions × rounds | effective RTP | 95 % CI | session RTP min–max | per-round SD | max win | rerolls/round |
+|---|---|---|---|---|---|---|---|
+| 100 | 10 000 × 1 000 000 | 48.41 % | 48.11–48.71 % | 11.6–93.3 % | 1.82 | 68.7x | 0.013 |
+| 1 000 | 4 000 × 4 000 000 | 76.60 % | 76.31–76.90 % | 43.3–93.9 % | 4.47 | 269.1x | 0.003 |
+| 10 000 | 200 × 2 000 000 | 89.48 % | 89.07–89.90 % | 77.1–93.9 % | 6.17 | 1 020.7x | 0.0008 |
+Files: `sim/results-governor-len100-1M.json`, `sim/results-governor-len1000-4M.json`, `sim/results-governor-len10000-2M.json` (seeds 20261130, 20261129, 20261131).
+**Result vs target:** the 94.00 % RTP target is **not met** as a player-facing figure. The reserve caps RTP at 94 % but, with this volatile engine, the effective RTP is far lower in realistic sessions (about 48 % at 100 rounds, 77 % at 1 000, 89 % at 10 000) because the large wins that make up most of the raw 105 % RTP are rejected while the reserve is small. The "house never loses" guarantee holds; "RTP 94 %" does not.
+**Options (owner decision, not applied):** (a) lower the raw volatility (symbol weights, wild rates, Quantumeter charging, a lower `maxWin`) so more of the RTP comes from small and medium wins that the reserve can pay, then re-measure; (b) raise `rtpCap` above 0.94, which lowers the guaranteed house margin; (c) accept the reserve as is and describe the game honestly as a session-limited payout. Option (a) is the one that moves effective RTP toward 94 % without weakening the guarantee.
+**Remaining:** decision on (a)/(b)/(c); Actions run for this commit; browser/iPhone/audio checks; nothing pushed to `main`.
