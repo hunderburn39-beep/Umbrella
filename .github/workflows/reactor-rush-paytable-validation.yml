@@ -1,0 +1,33 @@
+name: Reactor Rush paytable validation
+on:
+  push:
+    branches: [reactor-rush-paytable-validation]
+  workflow_dispatch:
+jobs:
+  simulation:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate payout tiers and simulate four million rounds
+        working-directory: Reactor-Rush
+        run: |
+          node <<'JS' | tee paytable-validation.json
+          const E = require('./engine/engine.js');
+          const assert = require('node:assert/strict');
+          const table = [[1,2,3,5,8,20,50,500],[.8,1,2,3,4,10,20,200],[.6,.8,1,2,3,5,10,100],[.5,.7,1,1.5,2,3,6,60],[.15,.2,.4,.6,.8,1,3,10],[.15,.2,.4,.6,.8,1,3,10],[.1,.15,.2,.3,.6,.8,1,3],[.1,.15,.2,.3,.6,.8,1,3]];
+          for(let t=0;t<8;t++) for(let n=5;n<=49;n++) assert.equal(E.clusterPay(t,n,E.DEFAULTS),table[t][n>=15?7:n>=12?6:n>=10?5:n-5]);
+          const seeds=[271126,271127,271128,271129];
+          const a=E.mergeAgg(seeds.map(s=>E.simulate(1000000,s)));
+          console.log(JSON.stringify({seeds,payoutChecks:360,aggregate:a,statistics:E.rtpStats(a)},null,2));
+          JS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: paytable-validation
+          path: Reactor-Rush/paytable-validation.json
+      - name: Regression tests
+        working-directory: Reactor-Rush
+        run: node --test tests/engine.test.js tests/trace.test.js
