@@ -33,7 +33,7 @@ async def main():
             await pg.wait_for_timeout(1800)
         # repetição determinística: mesma semente -> o saldo final da interface = resultado do motor
         for seed in (3333,555555,1,5,19,20,104,171,454,668,316,499):
-            r=await pg.evaluate("""async (seed)=>{const R=window.__rr,E=R.E;const bet=R.betNow();const exp=E.playRoundTrace(E.createRng(seed),E.DEFAULTS);
+            r=await pg.evaluate("""async (seed)=>{const R=window.__rr,E=R.E;const bet=R.betNow();const g0=Object.assign({},R.gov());const exp=E.playGovernedRound(E.createRng(seed),g0,bet,E.DEFAULTS,true);
               R.setSeed(seed);const b0=R.state().balance;await R.spin();const b1=R.state().balance;return {exp:Math.round(exp.win*bet*100)/100,got:Math.round((b1-b0+bet)*100)/100,casc:exp.cascades}}""",seed)
             rec('Repetição determinística semente '+str(seed)+' (motor = interface)',abs(r['exp']-r['got'])<0.011,r)
         # tiers
@@ -54,6 +54,8 @@ async def main():
         st=await pg.evaluate("window.__rr.state()")
         rec('60 rondas sem erros JS',not errs,errs[:3]); rec('Contador de rondas',st['spins']>=60,st['spins'])
         rec('Saldo válido e finito',isinstance(st['balance'],(int,float)) and st['balance']>=0,st['balance'])
+        gv=await pg.evaluate("(()=>{const g=window.__rr.gov();return {bets:g.bets,paid:g.paid,cap:g.rtpCap,rounds:g.rounds}})()")
+        rec('Reserva da casa: total pago <= 94% do apostado',gv['rounds']>=60 and gv['paid']<=gv['cap']*gv['bets']+1e-9,gv)
         lt=await pg.evaluate("window.__lt"); rec('Maior long task < 400 ms (Chrome headless)',lt<400,round(lt))
         # orientação
         await pg.set_viewport_size({'width':390,'height':844}); await pg.wait_for_timeout(800); await pg.screenshot(path=SHOTS+'/portrait.png')

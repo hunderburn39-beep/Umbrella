@@ -71,3 +71,54 @@ Not done / not verified: Safari and real iPhone, audio by ear, official PDF (sti
 **Discrepancies / not verified:** Safari and iPhone untested; audio not listened to; official PDF still 403 (paytable is this project's own, labelled provisional in the info menu); GitHub Pages not checked from my environment; volatility far below reference (max 268x vs 5083x) so top celebration tiers (QUANTUM 250x, MAX 1000x) are almost never reached. Level 4 "x2" in this engine applies only to wins containing a Gargantoon piece.
 **Process note:** before this decision I had merged my alternate-engine renderer into main (9ee99bf2). Main therefore briefly played `rr-engine.js`; the branch `reactor-rush-option-b` replaces it with the engine in this log.
 - **Merged to main:** feature commit 4c57f9fb, merge commit f371b63b.
+
+## Session 4 (Claude, 2026-11-27) — V5.1 paytable validation, branch `reactor-rush-paytable-validation` (NOT merged to main)
+Author: Claude (Sonnet 5.5) · Base: branch head bd4baaad · Commit with these changes: see git history of this branch (this entry is part of it).
+**New target (owner):** RTP 94.00 %, Free Play only. **The target is NOT met** (see results); nothing was tuned in this session.
+
+### Why the previous run failed
+Actions run 45928565440 (commit bd4baaad, workflow "Reactor Rush paytable validation") ended in failure. The page shows only "Process completed with exit code 1" and an artifact `paytable-validation` (628 bytes); logs need a GitHub sign-in and were not readable here. Reproduced locally: the failing step is the regression test `payout is monotonic in cluster size and in symbol rank` (21/22), which required a **strictly** higher payout for every extra cluster size, while the documented table pays the same value inside the tiers 10–11, 12–14 and 15+. This is a test error, not an engine error.
+
+### Changes (only tests and simulation report; engine, paytable, `index.html`, art, music and sounds untouched)
+- `tests/engine.test.js`: the progression test now accepts **equal** values inside the same tier (5, 6, 7, 8, 9, 10–11, 12–14, 15+), requires a strictly higher value when a new tier starts, and for symbol rank requires non-increasing payouts (the documented table has equal values for symbols 5/6 and 7/8, and 3/4 at size 7) with the top symbol always above the bottom one.
+- `sim/run-sim.js`: report now carries `targetRtp` 0.94, `deltaVsTarget`, `targetInsideCi95` and `volatilityIndexSd` (per-round standard deviation in bets). No change to the simulation itself.
+- New result file `sim/results-v5.1-validation-seed20261128-4M.json`.
+
+### Tests actually executed (Node v22.23.5)
+- `node --test tests/engine.test.js tests/trace.test.js`: **22/22 pass** (was 21/22).
+- Paytable check, 8 symbols × cluster sizes 5–49 against the documented table: **360/360** (same script as the workflow, run locally).
+- Not run this session: `tests/ui-tests.py` (browser), Safari/iPhone, audio by ear, GitHub Pages. No render code was changed.
+
+### 4 000 000-round validation (virtual bet = 1, Free Play, seed not used before)
+Command: `node sim/run-sim.js --rounds 4000000 --seed 20261128 --workers 4 --out sim/results-v5.1-validation-seed20261128-4M.json` (47 s).
+- **RTP 105.349 %**, SE 0.556 pts, 95 % CI **[104.259 %, 106.439 %]**. 94.00 % is outside the interval (+11.35 pts); 96.20 % also outside.
+- **Volatility:** standard deviation of the win per round **11.12 bets**; hit rate 48.84 %; highest win 1 423.4x (cap 5 083x never hit); 415 rounds ≥ 500x, 3 632 in 100–500x, 32 174 in 20–100x, 75 379 in 5–20x, 361 348 in 1–5x, 1 480 669 in 0–1x, 2 046 383 zero-win rounds. Average 1.45 cascades per round.
+- Features per round: Fluctometer awards 0.591, Quantumeter L1 2.93 % / L2 0.96 % / L3 0.46 % / L4 0.52 %, Gargantoon 0.97 %, Pair Explosion 0.153.
+- Cross-check, same script as the workflow (seeds 271126–271129, 1 000 000 each): RTP **106.0083 %**, SE 0.569 pts, CI [104.893 %, 107.124 %], SD 11.38, hit rate 48.86 %, max 1 415x. This reproduces the figure the owner reported. The two runs differ by 0.66 pts, which is within sampling noise.
+- Caveats: the interval is a normal approximation from per-round variance and wins are heavy-tailed, so it may be optimistic. This is the RTP of this project's own engine with the documented paytable, not evidence about the original game. The RTP rose from about 96 % (session 3, with a provisional paytable and a global payScale) to about 105–106 % after the documented Austrian paytable replaced it; the engine has no payScale any more.
+
+### Open problem and options (decision for the owner, not applied)
+RTP is about 11 pts above target while the documented paytable must stay unchanged. Reaching 94 % therefore has to come from the non-paytable parameters, for example symbol weights, wild-source rates (`startUnchargedCum`, `pUnchargedAfterCascade`), Fluctometer threshold or Quantumeter charging, followed by a recalibration on a large seed and a fresh validation on other seeds. A uniform payout multiplier (about 0.892) would also work but would change the documented table, so it was not used.
+
+### Remaining / blockers
+- RTP 94.00 % not reached; tuning plan above awaits a decision.
+- The Actions run for this branch will re-run on push; its result is not known yet.
+- Nothing was pushed to `main`.
+
+## Session 4b (Claude, 2026-11-27) — house reserve ("limite rígido", session balance), same branch, NOT merged to main
+**Owner request:** the house must always have a return, never a loss; adjust by balance. Owner chose: **hard limit** and **balance of the current session** (resets when the page is opened or reloaded).
+**Rule implemented:** per session, total paid ≤ 0.94 × total wagered at every moment, so the house keeps at least 6 % of everything wagered. Before each round the engine computes the largest win the reserve can pay; a drawn round that would pay more is discarded and the next draw from the same RNG stream is used (rejection sampling). The plain engine (`playRound`, `playRoundTrace`, `simulate`) and the documented paytable are unchanged.
+**Honest description of what this is:** rounds are no longer independent draws; the outcome depends on the session balance, and large wins can only appear when the reserve covers them. This is disclosed in the info menu ("Regra da casa (Free Play)"). It is not a claim of equivalence with any original game. Free Play only, no real money.
+**Files:** `engine/engine.js` (new: `createGovernor`, `governorAllowance`, `playGovernedRound`, `governorSettle`, `simulateGoverned`), `index.html` (spin uses `playGovernedRound` and settles the credited win; info-menu note; engine script cache `?v=52`; test hook `__rr.gov`), `tests/governor.test.js` (new, 9 tests), `tests/ui-tests.py` (replay test uses the governed engine; new reserve check), `sim/run-governor.js` (new), workflow regression step now also runs `tests/governor.test.js`.
+**Tests executed:** `node --test tests/engine.test.js tests/trace.test.js tests/governor.test.js` 31/31; `python3 tests/ui-tests.py` 38/38 (Chrome headless only). Not run: Safari, iPhone, audio by ear, GitHub Pages.
+**Guarantee checked in simulation:** 0 rounds with paid > 0.94 × wagered and 0 rounds with the player ahead, in 7 000 000 simulated rounds, plus 100 000 rounds with mixed bets in the unit tests and 30 000 rounds with 0.05 bets and cent rounding.
+**Simulation (bet 1, independent sessions with a fresh reserve; interval on session RTPs, normal approximation):**
+| session length | sessions × rounds | effective RTP | 95 % CI | session RTP min–max | per-round SD | max win | rerolls/round |
+|---|---|---|---|---|---|---|---|
+| 100 | 10 000 × 1 000 000 | 48.41 % | 48.11–48.71 % | 11.6–93.3 % | 1.82 | 68.7x | 0.013 |
+| 1 000 | 4 000 × 4 000 000 | 76.60 % | 76.31–76.90 % | 43.3–93.9 % | 4.47 | 269.1x | 0.003 |
+| 10 000 | 200 × 2 000 000 | 89.48 % | 89.07–89.90 % | 77.1–93.9 % | 6.17 | 1 020.7x | 0.0008 |
+Files: `sim/results-governor-len100-1M.json`, `sim/results-governor-len1000-4M.json`, `sim/results-governor-len10000-2M.json` (seeds 20261130, 20261129, 20261131).
+**Result vs target:** the 94.00 % RTP target is **not met** as a player-facing figure. The reserve caps RTP at 94 % but, with this volatile engine, the effective RTP is far lower in realistic sessions (about 48 % at 100 rounds, 77 % at 1 000, 89 % at 10 000) because the large wins that make up most of the raw 105 % RTP are rejected while the reserve is small. The "house never loses" guarantee holds; "RTP 94 %" does not.
+**Options (owner decision, not applied):** (a) lower the raw volatility (symbol weights, wild rates, Quantumeter charging, a lower `maxWin`) so more of the RTP comes from small and medium wins that the reserve can pay, then re-measure; (b) raise `rtpCap` above 0.94, which lowers the guaranteed house margin; (c) accept the reserve as is and describe the game honestly as a session-limited payout. Option (a) is the one that moves effective RTP toward 94 % without weakening the guarantee.
+**Remaining:** decision on (a)/(b)/(c); Actions run for this commit; browser/iPhone/audio checks; nothing pushed to `main`.

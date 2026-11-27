@@ -10,9 +10,8 @@
  * wrote this file (host not on the network allowlist). Mechanics below follow public
  * secondary descriptions (casinos.com, slotcatalog.com). Every rule that is an
  * interpretation, or that no source states, is tagged  [UNVERIFIED]  and is
- * listed in engine/ASSUMPTIONS.md. The PAYTABLE is original to this project:
- * no source gave the real one. Nothing here claims to reproduce the original
- * probabilities or RTP.
+ * listed in engine/ASSUMPTIONS.md. PAYTABLE follows published Austrian rules.
+ * Original probabilities and RTP are not established; recalibration is pending.
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -28,13 +27,12 @@
   const GA = 11; // Gargantoon Wild (3x3 / 2x2 blocks, or 1x1 pieces)
 
   const QM_LEVELS = [55, 85, 110, 135];          // from both secondary sources
-  const SIZE_GROWTH = [1, 1.5, 2.2, 3.2, 4.6, 6.8, 10, 15, 23, 36, 60]; // sizes 5..15, original
+  // Published Austrian Reactoonz 2 rules (2025-02-20), evi.gv.at/b/pi/bmg-5sn.
+  const PAYTABLE = [[1,2,3,5,8,20,50,500],[.8,1,2,3,4,10,20,200],[.6,.8,1,2,3,5,10,100],[.5,.7,1,1.5,2,3,6,60],[.15,.2,.4,.6,.8,1,3,10],[.15,.2,.4,.6,.8,1,3,10],[.1,.15,.2,.3,.6,.8,1,3],[.1,.15,.2,.3,.6,.8,1,3]];
 
   const DEFAULTS = {
     minCluster: 5,                 // [UNVERIFIED] slotcatalog says 5, casinos.com says 3
     maxWin: 5083,                  // x bet, stated by both sources
-    payScale: 1.2258,              // single global factor: 0.962 / 0.78480 (calibration seed 111, 4M rounds, sim/calibration-seed111-4M.json)
-    baseWin: [0.50, 0.40, 0.32, 0.26, 0.20, 0.16, 0.13, 0.10], // pay for a 5-cluster, original
     // Original tuning. With equal weights and the rules below, 5-clusters were rare (16% hit rate)
     // and the Quantumeter never reached level 1 in 100k rounds, so low symbols are weighted
     // heavier and wild sources are more frequent. Chosen by looking at feature frequencies
@@ -78,10 +76,9 @@
 
   // ---------- paytable ----------
   function clusterPay(type, size, cfg) {
-    let g = SIZE_GROWTH[Math.min(size, 15) - 5];
-    if (g === undefined) g = SIZE_GROWTH[0] * Math.max(0.2, size / 5); // sizes below 5 (only if minCluster<5)
-    if (size > 15) g *= 1 + (size - 15) * 0.35;
-    return cfg.baseWin[type] * g * cfg.payScale;
+    if (!Number.isInteger(size) || size < 5 || !PAYTABLE[type]) return 0;
+    const tier = size >= 15 ? 7 : size >= 12 ? 6 : size >= 10 ? 5 : size - 5;
+    return PAYTABLE[type][tier];
   }
 
   function levelFor(charge, cfg) {
@@ -420,9 +417,64 @@
     return { rtp: mean, se, ci95: [mean - 1.96 * se, mean + 1.96 * se], sd: Math.sqrt(variance), hitRate: a.hits / a.n };
   }
 
+  // ---------- house reserve ("limite rígido"), Free Play only ----------
+  // Optional layer on top of the plain engine; playRound / playRoundTrace / simulate are untouched.
+  // Rule: the total paid in a session never exceeds rtpCap x the total wagered in that session, so the
+  // house keeps at least (1 - rtpCap) of everything wagered at every moment. Before a round the engine
+  // computes the largest win the reserve can pay; a drawn round that would pay more is discarded and the
+  // next draw from the same RNG stream is used (rejection sampling). Rounds are therefore NOT independent
+  // draws: the outcome depends on the session balance. This must be disclosed to the player.
+  function createGovernor(opts) {
+    const o = Object.assign({ rtpCap: 0.94, slack: 0, maxAttempts: 10000 }, opts);
+    return { rtpCap: o.rtpCap, slack: o.slack, maxAttempts: o.maxAttempts, bets: 0, paid: 0, rounds: 0, rerolls: 0 };
+  }
+  // Largest win, in credits, that keeps paid <= rtpCap x bets after this bet is placed.
+  function governorAllowance(g, bet) {
+    return Math.max(0, g.rtpCap * (g.bets + bet) - g.paid - g.slack);
+  }
+  function playGovernedRound(rng, g, bet, userCfg, withTrace) {
+    const allowance = governorAllowance(g, bet);
+    let r, attempts = 0;
+    do {
+      r = withTrace ? playRoundTrace(rng, userCfg) : playRound(rng, userCfg);
+      attempts++;
+    } while (r.win > 0 && r.win * bet > allowance - 1e-9 && attempts < g.maxAttempts);
+    if (r.win > 0 && r.win * bet > allowance - 1e-9) throw new Error('governor: no admissible round found');
+    g.bets += bet; g.rounds++; g.rerolls += attempts - 1;
+    r.governor = { attempts, allowance };
+    return r;
+  }
+  // Call once per round with the credits actually paid to the player (after any rounding).
+  function governorSettle(g, paidCredits) { g.paid += paidCredits; }
+
+  // Independent sessions of `sessionLen` rounds each (bet = 1), every session with a fresh reserve.
+  function simulateGoverned(sessions, sessionLen, seed, userCfg, govOpts) {
+    const cfg = userCfg || DEFAULTS, rng = createRng(seed);
+    const out = { sessions, sessionLen, rounds: 0, paid: 0, sumSq: 0, hits: 0, maxWin: 0, rerolls: 0,
+      invariantViolations: 0, playerAheadSessions: 0, playerAheadMoments: 0, sessRtpSum: 0, sessRtpSumSq: 0, sessRtpMin: Infinity, sessRtpMax: -Infinity,
+      buckets: { '0': 0, '0-1x': 0, '1-5x': 0, '5-20x': 0, '20-100x': 0, '100-500x': 0, '500x+': 0 } };
+    for (let s = 0; s < sessions; s++) {
+      const g = createGovernor(govOpts);
+      for (let i = 0; i < sessionLen; i++) {
+        const r = playGovernedRound(rng, g, 1, cfg, false), w = r.win;
+        governorSettle(g, w);
+        out.rounds++; out.paid += w; out.sumSq += w * w; if (w > 0) out.hits++; if (w > out.maxWin) out.maxWin = w;
+        if (g.paid > g.rtpCap * g.bets + 1e-9) out.invariantViolations++;
+        if (g.paid > g.bets) out.playerAheadMoments++;
+        const b = out.buckets; w === 0 ? b['0']++ : w < 1 ? b['0-1x']++ : w < 5 ? b['1-5x']++ : w < 20 ? b['5-20x']++ : w < 100 ? b['20-100x']++ : w < 500 ? b['100-500x']++ : b['500x+']++;
+      }
+      const sr = g.paid / g.bets;
+      if (g.paid > g.bets) out.playerAheadSessions++;
+      out.rerolls += g.rerolls; out.sessRtpSum += sr; out.sessRtpSumSq += sr * sr;
+      if (sr < out.sessRtpMin) out.sessRtpMin = sr; if (sr > out.sessRtpMax) out.sessRtpMax = sr;
+    }
+    return out;
+  }
+
   return {
     N, CELLS, TYPES, U, EL, EN, GA, QM_LEVELS, DEFAULTS,
     createRng, clusterPay, levelFor, playRound, playRoundTrace, simulate, mergeAgg, rtpStats,
+    createGovernor, governorAllowance, playGovernedRound, governorSettle, simulateGoverned,
     _test: { makeState, findClusters, resolveStep, gravityRefill, runQuantumeter, runPairExplosion, startRound, runToRest, setBlock, blockFits, placeRandomBlock },
   };
 });
