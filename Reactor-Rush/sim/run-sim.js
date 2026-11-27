@@ -15,6 +15,7 @@ const path = require('node:path');
 const E = require('../engine/engine.js');
 
 const CHUNK = 50000;
+const TARGET = 0.94; // V5.1 target RTP (Free Play only)
 
 if (process.argv[2] === '--worker') {
   process.on('message', ({ rounds, seed, cfg }) => {
@@ -43,8 +44,11 @@ async function main() {
     engine: 'Reactor-Rush/engine/engine.js', rounds: agg.n, seed, chunk: CHUNK, workers,
     config: { payScale: Object.assign({}, E.DEFAULTS, cfg).payScale, minCluster: E.DEFAULTS.minCluster, maxWin: E.DEFAULTS.maxWin },
     referenceRtp: 0.962,
+    targetRtp: TARGET,
     rtp: st.rtp, standardError: st.se, ci95: st.ci95, perRoundSd: st.sd,
+    volatilityIndexSd: st.sd, // standard deviation of the win per round, in units of the bet
     deltaVsReference: st.rtp - 0.962, referenceInsideCi95: st.ci95[0] <= 0.962 && 0.962 <= st.ci95[1],
+    deltaVsTarget: st.rtp - TARGET, targetInsideCi95: st.ci95[0] <= TARGET && TARGET <= st.ci95[1],
     hitRate: st.hitRate, maxWin: agg.maxWin, capHits: agg.capHits,
     avgCascades: agg.cascades / agg.n,
     featureRates: {

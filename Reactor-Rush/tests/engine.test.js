@@ -54,10 +54,20 @@ test('cluster threshold is 5 and wilds bridge, uncharged blocks', () => {
   assert.equal(new Set(cells).size, cells.length);
 });
 
-test('payout is monotonic in cluster size and in symbol rank', () => {
+test('payout never decreases with cluster size and never increases with symbol rank', () => {
   const c = cfg();
-  for (let t = 0; t < 8; t++) for (let s = 5; s < 49; s++) assert.ok(E.clusterPay(t, s + 1, c) > E.clusterPay(t, s, c), `t${t} s${s}`);
-  for (let t = 0; t < 7; t++) assert.ok(E.clusterPay(t, 9, c) > E.clusterPay(t + 1, 9, c));
+  // documented size tiers: 5, 6, 7, 8, 9, 10-11, 12-14, 15+ (equal values inside a tier are allowed)
+  const tierOf = s => (s >= 15 ? 7 : s >= 12 ? 6 : s >= 10 ? 5 : s - 5);
+  for (let t = 0; t < 8; t++) for (let s = 5; s < 49; s++) {
+    const a = E.clusterPay(t, s, c), b = E.clusterPay(t, s + 1, c);
+    if (tierOf(s) === tierOf(s + 1)) assert.equal(b, a, `t${t} s${s}: equal inside a tier`);
+    else assert.ok(b > a, `t${t} s${s}: strictly higher when a new tier starts`);
+  }
+  // symbols of neighbouring rank may share a value (e.g. 5/6 and 7/8 in the documented table), never rise
+  for (let s = 5; s <= 49; s++) {
+    for (let t = 0; t < 7; t++) assert.ok(E.clusterPay(t, s, c) >= E.clusterPay(t + 1, s, c), `size ${s} rank ${t}`);
+    assert.ok(E.clusterPay(0, s, c) > E.clusterPay(7, s, c), `size ${s}: top symbol pays more than bottom`);
+  }
 });
 
 test('Quantumeter levels sit at 55 / 85 / 110 / 135', () => {
