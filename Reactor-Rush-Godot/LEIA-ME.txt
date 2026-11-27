@@ -1,0 +1,19 @@
+REACTOR RUSH V5.1 — PROJETO GODOT
+=================================
+
+1. Instala o Godot 4.3 (ou mais recente), versão "Standard" (não a .NET): https://godotengine.org/download
+2. Abre o Godot > Importar > escolhe o ficheiro project.godot desta pasta > Importar e Editar.
+   Na primeira vez o Godot importa as imagens e a música (demora alguns segundos).
+3. Para JOGAR com o motor verdadeiro (regras, prémios e reserva da casa de 94%):
+   a) Editor > Gerir Modelos de Exportação > Transferir e Instalar (só na primeira vez).
+   b) No canto superior direito, carrega no ícone de "Implementação Remota / Executar no navegador" (escudo HTML5)
+      ou em Projeto > Exportar > Web > Exportar Projeto e serve a pasta exportada por HTTP.
+   O motor (engine.js) e a ponte (rr_bridge.js) já vão embutidos na exportação Web.
+4. O botão Executar normal (F5) abre o jogo no editor em PRÉ-VISUALIZAÇÃO: mostra a grelha e os painéis,
+   mas não tem motor e não paga prémios. É de propósito: a matemática validada só existe em JavaScript.
+
+Se mudares Reactor-Rush/engine/engine.js ou web/rr_bridge.js, corre: python3 ci/make_head_include.py
+
+Ficheiros principais: scripts/main.gd (layout, HUD, rondas), scripts/board.gd (grelha e cascatas),
+scripts/quantum_panel.gd e scripts/fluct_panel.gd (reatores animados), scripts/sfx.gd (som).
+Free Play: créditos virtuais, sem dinheiro real.

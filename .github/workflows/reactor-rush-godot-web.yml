@@ -55,7 +55,7 @@ jobs:
           ls -la build/web
           test -s build/web/index.wasm
           test -s build/web/index.pck
-          grep -q 'engine.js' build/web/index.html
+          grep -q 'RREngine' build/web/index.html
       - uses: actions/upload-artifact@v4
         with:
           name: reactor-rush-godot-web
