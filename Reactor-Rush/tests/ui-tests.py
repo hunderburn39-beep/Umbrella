@@ -16,8 +16,8 @@ async def main():
         await pg.goto(URL); await pg.wait_for_timeout(1500)
         rec('Carrega com 49 células',await pg.evaluate("document.querySelectorAll('#grid .cell').length")==49)
         # geometria
-        g=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect();return [r.width,r.height]})()")
-        rec('Grelha quadrada (horizontal)',abs(g[0]-g[1])<=1.5,g)
+        g=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect(),a=document.getElementById('arena').getBoundingClientRect(),c=document.querySelector('#grid .cell');return [r.width,r.height,a.width,a.height,c?getComputedStyle(c).backgroundSize:'']})()")
+        rec('Grelha preenche a moldura (horizontal)',abs(g[0]-g[2])<=1.5 and abs(g[1]-g[3])<=1.5 and 0.8<=g[0]/g[1]<=1.2 and g[4]=='contain',g)
         circ=await pg.evaluate("""[...document.querySelectorAll('#spin,#info,#sound,#menu,#minus,#plus')].map(e=>[e.id,e.offsetWidth,e.offsetHeight]).filter(x=>x[1]>0)""")
         rec('Botões circulares com largura=altura',all(abs(w-h)<=1.5 for _,w,h in circ),circ)
         # mensagens
@@ -59,14 +59,16 @@ async def main():
         lt=await pg.evaluate("window.__lt"); rec('Maior long task < 400 ms (Chrome headless)',lt<400,round(lt))
         # orientação
         await pg.set_viewport_size({'width':390,'height':844}); await pg.wait_for_timeout(800); await pg.screenshot(path=SHOTS+'/portrait.png')
-        g2=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect();return [r.width,r.height]})()")
-        rec('Retrato: grelha quadrada ou aviso de rotação',(g2[0]>0 and abs(g2[0]-g2[1])<=1.5) or g2[0]==0,g2)
+        g2=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect(),a=document.getElementById('arena').getBoundingClientRect(),c=document.querySelector('#grid .cell');return [r.width,r.height,a.width,a.height,c?getComputedStyle(c).backgroundSize:'']})()")
+        rec('Retrato: grelha preenche a moldura ou aviso de rotação',(g2[0]>0 and abs(g2[0]-g2[2])<=1.5 and abs(g2[1]-g2[3])<=1.5 and 0.8<=g2[0]/g2[1]<=1.2 and g2[4]=='contain') or g2[0]==0,g2)
         await pg.set_viewport_size({'width':844,'height':390}); await pg.wait_for_timeout(800)
-        g3=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect();return [r.width,r.height]})()")
-        rec('Regresso a horizontal mantém grelha quadrada',abs(g3[0]-g3[1])<=1.5,g3)
+        g3=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect(),a=document.getElementById('arena').getBoundingClientRect(),c=document.querySelector('#grid .cell');return [r.width,r.height,a.width,a.height,c?getComputedStyle(c).backgroundSize:'']})()")
+        rec('Regresso a horizontal: grelha preenche a moldura',abs(g3[0]-g3[2])<=1.5 and abs(g3[1]-g3[3])<=1.5 and 0.8<=g3[0]/g3[1]<=1.2 and g3[4]=='contain',g3)
         await pg.set_viewport_size({'width':1280,'height':720}); await pg.wait_for_timeout(600)
-        g4=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect();return [r.width,r.height]})()")
-        rec('16:9 desktop: grelha quadrada',abs(g4[0]-g4[1])<=1.5,g4)
+        g4=await pg.evaluate("(()=>{const r=document.getElementById('grid').getBoundingClientRect(),a=document.getElementById('arena').getBoundingClientRect(),c=document.querySelector('#grid .cell');return [r.width,r.height,a.width,a.height,c?getComputedStyle(c).backgroundSize:'']})()")
+        rec('16:9 desktop: grelha preenche a moldura',abs(g4[0]-g4[2])<=1.5 and abs(g4[1]-g4[3])<=1.5 and 0.8<=g4[0]/g4[1]<=1.2 and g4[4]=='contain',g4)
+        art=await pg.evaluate("[document.querySelectorAll('#rrP1 .rq-bg svg').length,document.querySelectorAll('#rrTubes .tube .rq-core').length,document.querySelectorAll('#rrP2 .rq-bg svg').length,document.querySelectorAll('#rrReactors .rq-pod').length,!!document.querySelector('#rrP2 .rq-portal')]")
+        rec('Arte animada dos reatores presente (Quantumeter e Fluctometer)',art==[1,4,1,4,True],art)
         # demo Gargantoon
         await pg.set_viewport_size({'width':844,'height':390}); await pg.wait_for_timeout(500)
         bal=await pg.evaluate("window.__rr.state().balance")

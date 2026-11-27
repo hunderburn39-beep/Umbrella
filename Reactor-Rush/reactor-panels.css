@@ -1,0 +1,119 @@
+/* Reactor Rush V5.1 — animated reactor art for the QUANTUMETER and FLUCTOMETER panels,
+   and the board fitted to the frame opening. Original design for this project (not taken from any other game).
+   Layered on top of the existing panels: no element is removed; decoration nodes are added by reactor-panels.js. */
+
+/* ---------- shared panel chamber ---------- */
+.rr-p1,.rr-p2{isolation:isolate}
+.rq-bg{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:hidden;border-radius:inherit}
+.rq-bg svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.rq-bg .spin{transform-box:fill-box;transform-origin:center;animation:rqSpin 18s linear infinite}
+.rq-bg .spin.rev{animation-duration:26s;animation-direction:reverse}
+.rq-bg .flow{animation:rqFlow 2.6s linear infinite}
+.rq-bg .flow.slow{animation-duration:4.2s}
+.rq-bg .blink{animation:rqBlink 1.8s ease-in-out infinite}
+.rq-bg .blink.d1{animation-delay:-.6s}.rq-bg .blink.d2{animation-delay:-1.2s}
+.rq-bg .breath{transform-box:fill-box;transform-origin:center;animation:rqBreath 3.2s ease-in-out infinite}
+.rq-bg:after{content:"";position:absolute;top:0;bottom:0;width:35%;left:-40%;background:linear-gradient(100deg,transparent,#7ff3ff14 45%,#ffffff1c 50%,#7ff3ff14 55%,transparent);animation:rqSweep 7s ease-in-out infinite}
+.rr-p1 .rr-ptitle,.rr-p2 .rr-ptitle{position:relative}
+@keyframes rqSpin{to{transform:rotate(360deg)}}
+@keyframes rqFlow{to{stroke-dashoffset:-400}}
+@keyframes rqBlink{50%{opacity:.25}}
+@keyframes rqBreath{50%{transform:scale(1.08);opacity:.75}}
+@keyframes rqSweep{0%,35%{left:-40%}75%,100%{left:110%}}
+
+/* ---------- QUANTUMETER: four containment tubes ---------- */
+.rr-tubes .tube{isolation:isolate;background:linear-gradient(90deg,#060a26,#0d1544 45%,#060a26);border-color:#6a5bd6;
+ --c1:#1fc5ff;--c2:#9ff6ff;--glow:#3de8ff;--qn:0}
+.rr-tubes .tube:nth-child(2){--c1:#25d777;--c2:#b6ffd3;--glow:#6dffb0}
+.rr-tubes .tube:nth-child(3){--c1:#8a3dff;--c2:#e0b7ff;--glow:#c070ff}
+.rr-tubes .tube:nth-child(4){--c1:#ff4fc3;--c2:#ffe27a;--glow:#ff6fd8}
+.rr-tubes .tube:before{z-index:1;background:
+  radial-gradient(circle at 30% 70%,#ffffff55 0 .12cqw,transparent .2cqw) 0 0/1.3cqw 1.6cqw,
+  linear-gradient(0deg,var(--c1),var(--c2))!important;
+ box-shadow:0 0 1cqw var(--glow)!important;opacity:.92;animation:rqRise 2.4s linear infinite}
+.rr-tubes .tube:after{content:"";position:absolute;z-index:2;left:-50%;width:200%;height:.9cqw;bottom:calc(var(--q) - .45cqw);
+ background:radial-gradient(ellipse at 50% 100%,var(--c2) 0 45%,transparent 48%) 0 0/1.6cqw 100% repeat-x;
+ opacity:min(1,calc(var(--qn) * 25));transition:bottom .4s ease;animation:rqWave 1.6s linear infinite;pointer-events:none}
+@keyframes rqRise{to{background-position:0 -1.6cqw,0 0}}
+@keyframes rqWave{to{transform:translateX(1.6cqw)}}
+.rq-core{position:absolute;z-index:3;left:50%;top:52%;width:72%;aspect-ratio:1;translate:-50% -50%;pointer-events:none;
+ scale:calc(.45 + var(--qn) * .55);opacity:calc(.18 + var(--qn) * .82);transition:scale .4s,opacity .4s}
+.rq-core:before{content:"";position:absolute;inset:0;border-radius:50%;
+ background:radial-gradient(circle,#fff 0 12%,var(--c2) 22%,var(--c1) 42%,transparent 70%);animation:rqPulse 1.4s ease-in-out infinite}
+.rq-core:after{content:"";position:absolute;inset:8%;border-radius:50%;border:.14cqw dashed var(--c2);opacity:.7;animation:rqSpin 5s linear infinite}
+@keyframes rqPulse{50%{transform:scale(.86);opacity:.8}}
+.rq-glass{position:absolute;z-index:5;inset:0;pointer-events:none;border-radius:inherit;
+ background:linear-gradient(90deg,transparent 12%,#ffffff2e 18%,transparent 26%,transparent 70%,#ffffff14 76%,transparent 82%),
+ repeating-linear-gradient(0deg,transparent 0 18%,#ffffff12 18% 19%)}
+.rq-cap{position:absolute;z-index:6;left:-1px;right:-1px;height:15%;pointer-events:none;
+ background:linear-gradient(180deg,#9aa6e8,#4b4f9a 45%,#262a63);box-shadow:inset 0 .12cqw 0 #ffffff66,0 0 .5cqw #000a}
+.rq-cap.top{top:-1px;border-radius:1cqw 1cqw .2cqw .2cqw}
+.rq-cap.bot{bottom:-1px;border-radius:.2cqw .2cqw .7cqw .7cqw}
+.rq-cap:after{content:"";position:absolute;left:30%;right:30%;top:40%;height:20%;border-radius:1cqw;background:var(--c1);box-shadow:0 0 .6cqw var(--glow);opacity:calc(.3 + var(--qn) * .7)}
+.rr-tubes .tube i,.rr-tubes .tube b{z-index:7}
+.rr-tubes .tube i{top:.15cqw;font-size:1.05cqw;color:#fff}
+.rr-tubes .tube b{bottom:.1cqw;font-size:1.0cqw;color:#ffe9a8}
+.rq-arc{position:absolute;z-index:4;inset:8% 0;width:100%;height:84%;opacity:0;pointer-events:none}
+.rq-arc polyline{fill:none;stroke:#fff;stroke-width:1.6;stroke-linejoin:round;filter:drop-shadow(0 0 2px var(--glow))}
+.rr-tubes .tube.on .rq-arc{animation:rqZap .5s steps(2) infinite}
+.rr-tubes .tube.on .rq-arc polyline:nth-child(2){animation:rqZap .5s steps(2) -.25s infinite}
+.rr-tubes .tube.on{border-color:var(--c2);box-shadow:inset 0 0 .8cqw #000,0 0 1.2cqw var(--glow)}
+@keyframes rqZap{0%{opacity:.95}50%{opacity:.1}100%{opacity:.8}}
+
+/* ---------- FLUCTOMETER ---------- */
+.rr-fluct{position:relative}
+.rq-portal{position:absolute;left:-.25cqw;top:50%;width:4.5cqw;aspect-ratio:1;translate:0 -50%;pointer-events:none;border-radius:50%;
+ background:radial-gradient(circle,#7ff3ff55,#3a1d8f33 55%,transparent 70%)}
+.rq-portal:before,.rq-portal:after{content:"";position:absolute;inset:0;border-radius:50%;border:.2cqw solid transparent;border-top-color:#7ff3ff;border-bottom-color:#c070ff;animation:rqSpin 2.4s linear infinite}
+.rq-portal:after{inset:14%;border-top-color:#ffe27a;border-bottom-color:transparent;border-left-color:#ff6fd8;animation-duration:3.6s;animation-direction:reverse}
+.rr-fluct svg{position:relative;z-index:1}
+.rr-fbar{background:linear-gradient(180deg,#050822,#0e1546 50%,#050822);box-shadow:inset 0 0 .6cqw #000}
+.rr-fbar:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
+ background:linear-gradient(180deg,#ffffff38,transparent 40%),repeating-linear-gradient(90deg,transparent 0 9.9%,#ffffff22 9.9% 10%)}
+.rr-fbar i{background:repeating-linear-gradient(115deg,#ffffff40 0 .45cqw,transparent .45cqw 1.3cqw) 0 0/2.75cqw 100%,linear-gradient(90deg,#27d1ff,#a78bff 70%,#ff6fd8)!important;
+ box-shadow:0 0 .9cqw #3de8ff;animation:rqStream .8s linear infinite}
+.rr-fbar i:after{content:"";position:absolute;right:-.5cqw;top:50%;width:1.4cqw;aspect-ratio:1;translate:0 -50%;border-radius:50%;
+ background:radial-gradient(circle,#fff 0 20%,#9ff6ff 40%,transparent 70%);animation:rqSpark .35s steps(2) infinite}
+@keyframes rqStream{to{background-position:2.75cqw 0,0 0}}
+@keyframes rqSpark{50%{opacity:.35;transform:scale(.7)}}
+
+/* reactor pods (ENERGOON, ENERGOON 2x2, GARGANTOON, x2) */
+.rr-reactors .rx{position:relative;isolation:isolate;--c1:#1fc5ff;--glow:#3de8ff}
+.rr-reactors .rx:nth-child(2){--c1:#25d777;--glow:#6dffb0}
+.rr-reactors .rx:nth-child(3){--c1:#8a3dff;--glow:#c070ff}
+.rr-reactors .rx:nth-child(4){--c1:#ff4fc3;--glow:#ffe27a}
+.rq-pod{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.rq-pod svg{width:100%;height:100%;display:block}
+.rq-pod .ring{fill:none;stroke:var(--c1);stroke-width:1.4;stroke-dasharray:5 4;opacity:.45;transform-box:fill-box;transform-origin:center;animation:rqSpin 9s linear infinite}
+.rq-pod .ring2{fill:none;stroke:var(--glow);stroke-width:.8;stroke-dasharray:2 6;opacity:.35;transform-box:fill-box;transform-origin:center;animation:rqSpin 14s linear infinite reverse}
+.rq-pod .core{fill:var(--c1);opacity:.18;transform-box:fill-box;transform-origin:center}
+.rr-reactors .rx.on .rq-pod .core{opacity:.75;animation:rqBreath .9s ease-in-out infinite}
+.rr-reactors .rx.on .rq-pod .ring{opacity:1;animation-duration:2.2s}
+.rr-reactors .rx.on .rq-pod .ring2{opacity:.9;animation-duration:3.4s}
+.rr-reactors .rx.on{background:#0e2350;border-color:var(--glow);box-shadow:0 0 1cqw var(--glow)}
+
+@media(orientation:portrait){
+ .rq-portal{width:8.4cqw;left:-.6cqw}
+ .rr-tubes .tube i{display:none}
+ .rr-tubes .tube b{font-size:2.6cqw;color:#fff;bottom:50%;transform:translateY(50%)}
+ .rq-cap{display:none}
+ .rq-core{width:auto;height:120%;top:50%}
+ .rr-fbar i:after{width:3cqw;right:-1cqw}
+ .rr-tubes .tube:after{height:1.6cqw;bottom:calc(var(--q) - .8cqw);background-size:2.6cqw 100%}
+}
+
+/* ---------- board fills the frame opening (approved skin only; uploaded rr33 skin untouched) ---------- */
+@media (orientation:landscape){
+ html.rr-skin:not(.rr33) .app .arena{left:25.45cqw;top:9.3cqh;width:40.65cqw;height:69.7cqh;aspect-ratio:auto}
+}
+@media (orientation:portrait){
+ html.rr-skin:not(.rr33) .app .arena{display:block}
+}
+html.rr-skin:not(.rr33) .app .arena .grid,html.rr-skin:not(.rr33) .app .grid{width:100%;height:100%;max-height:none;aspect-ratio:auto;margin:0}
+html.rr-skin:not(.rr33) .app .arena .cell{aspect-ratio:auto}
+html.rr-skin:not(.rr33) .app .cell{background-size:contain}
+
+@media(prefers-reduced-motion:reduce){
+ .rq-bg *,.rq-bg:after,.rr-tubes .tube:before,.rr-tubes .tube:after,.rq-core:before,.rq-core:after,.rq-portal:before,.rq-portal:after,
+ .rr-fbar i,.rr-fbar i:after,.rq-pod *,.rr-tubes .tube.on .rq-arc,.rr-tubes .tube.on .rq-arc polyline{animation:none!important}
+}

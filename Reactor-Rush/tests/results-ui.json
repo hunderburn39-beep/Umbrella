@@ -5,9 +5,9 @@
   "detail": ""
  },
  {
-  "test": "Grelha quadrada (horizontal)",
+  "test": "Grelha preenche a moldura (horizontal)",
   "ok": true,
-  "detail": "[268.3125, 268.3125]"
+  "detail": "[281.828125, 271.828125, 281.828125, 271.828125, 'contain']"
  },
  {
   "test": "Botões circulares com largura=altura",
@@ -22,57 +22,57 @@
  {
   "test": "Mensagem BIG WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('BIGWIN115,58 CR', 138, 268)"
+  "detail": "('BIGWIN115,61 CR', 138, 282)"
  },
  {
   "test": "Mensagem MEGA WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MEGAWIN115,56 CR', 139, 268)"
+  "detail": "('MEGAWIN115,07 CR', 139, 282)"
  },
  {
   "test": "Mensagem SUPER WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('SUPERWIN115,61 CR', 149, 268)"
+  "detail": "('SUPERWIN115,18 CR', 149, 282)"
  },
  {
   "test": "Mensagem EPIC WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('EPICWIN115,60 CR', 138, 268)"
+  "detail": "('EPICWIN115,20 CR', 138, 282)"
  },
  {
   "test": "Mensagem QUANTUM WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('QUANTUMWIN115,62 CR', 243, 268)"
+  "detail": "('QUANTUMWIN115,48 CR', 243, 282)"
  },
  {
   "test": "Mensagem MAX WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MAXWIN115,56 CR', 138, 268)"
+  "detail": "('MAXWIN115,55 CR', 138, 282)"
  },
  {
   "test": "Mensagem ENERGOON ACTIVATED sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('ENERGOONACTIVATED', 209, 268)"
+  "detail": "('ENERGOONACTIVATED', 209, 282)"
  },
  {
   "test": "Mensagem QUANTUM SURGE sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('QUANTUMSURGE', 184, 268)"
+  "detail": "('QUANTUMSURGE', 184, 282)"
  },
  {
   "test": "Mensagem GARGANTOON UNLEASHED sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('GARGANTOONUNLEASHED', 256, 268)"
+  "detail": "('GARGANTOONUNLEASHED', 256, 282)"
  },
  {
   "test": "Mensagem QUANTUM OVERLOAD sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('QUANTUMOVERLOAD', 194, 268)"
+  "detail": "('QUANTUMOVERLOAD', 194, 282)"
  },
  {
   "test": "Mensagem ELECTRIC EXPLOSION sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('ELECTRICEXPLOSION', 201, 268)"
+  "detail": "('ELECTRICEXPLOSION', 201, 282)"
  },
  {
   "test": "Repetição determinística semente 3333 (motor = interface)",
@@ -170,19 +170,24 @@
   "detail": "0"
  },
  {
-  "test": "Retrato: grelha quadrada ou aviso de rotação",
+  "test": "Retrato: grelha preenche a moldura ou aviso de rotação",
   "ok": true,
-  "detail": "[280.40625, 280.40625]"
+  "detail": "[280.40625, 318.1875, 280.40625, 318.1875, 'contain']"
  },
  {
-  "test": "Regresso a horizontal mantém grelha quadrada",
+  "test": "Regresso a horizontal: grelha preenche a moldura",
   "ok": true,
-  "detail": "[268.3125, 268.3125]"
+  "detail": "[281.828125, 271.828125, 281.828125, 271.828125, 'contain']"
  },
  {
-  "test": "16:9 desktop: grelha quadrada",
+  "test": "16:9 desktop: grelha preenche a moldura",
   "ok": true,
-  "detail": "[495.359375, 495.359375]"
+  "detail": "[520.3125, 501.828125, 520.3125, 501.828125, 'contain']"
+ },
+ {
+  "test": "Arte animada dos reatores presente (Quantumeter e Fluctometer)",
+  "ok": true,
+  "detail": "[1, 4, 1, 4, True]"
  },
  {
   "test": "Demo Gargantoon não altera saldo e sem erros",

@@ -161,3 +161,15 @@ Raw engine without the reserve (reference only, never used by the game): 4 000 0
 - The interval is narrow because session RTPs are tightly bounded by the cap; it describes this engine, not the original game.
 ### Remaining
 - Safari / iPhone / audio / GitHub Pages checks; owner review of the low-volatility feel; merge to `main` only on the owner's instruction.
+
+## Session 5 (Claude, 2026-11-27) — animated reactor art for QUANTUMETER / FLUCTOMETER; board fills the frame (branch only)
+**Owner request:** the two meters only showed numbers; give them an animated reactor background, and make the pieces fill the central frame, without changing what already exists.
+**Design note:** the owner asked to use the original game as reference. Claude did **not** copy the original's artwork or layout; the reactor art is an original design for this project (generic sci-fi containment tubes, rings, conduits).
+**Added (nothing removed, no ids changed, no gameplay change):**
+- `reactor-panels.css` and `reactor-panels.js` (linked from `index.html`). The script only appends `aria-hidden` decoration nodes.
+- QUANTUMETER: animated chamber behind the panel (hex lattice, two counter-rotating containment rings, breathing core, conduits with flowing light, status lamps, light sweep). Each of the four tubes is now a glass capsule with metal caps, plasma fill with rising bubbles and a moving surface wave, a reactor core that grows and brightens with the charge, and electric arcs when the level is reached. Level numbers and thresholds stay (on the caps; centred in portrait).
+- FLUCTOMETER: circuit traces with travelling pulses and a slow turbine behind the panel; spinning portal ring behind the floating symbol; the bar is an energy conduit with streaming plasma and a spark at the fill head; the four reactor pods (ENERGOON, ENERGOON 2×2, GARGANTOON, ×2) have a core and two rotating rings that light up when active.
+- `index.html`: one line in the meter update also sets `--qn` (charge 0–1) next to the existing `--q`, used by the core and wave.
+- All new animations stop under `prefers-reduced-motion`.
+**Board:** in landscape the arena now covers the frame opening (left 25.45 cqw, top 9.3 cqh, 40.65 cqw × 69.7 cqh; was a 68.8 cqh square), in portrait the grid now fills the full arena height (was a square leaving empty bands). Cells are no longer forced square; symbol images use `background-size: contain`, so they are not stretched. Only the approved skin; the uploaded `rr33` skin is untouched.
+**Tests:** `tests/ui-tests.py` 39/39 (Chrome headless). The four "grelha quadrada" checks were replaced by "grelha preenche a moldura" checks (grid = arena box, aspect 0.8–1.2, contain); one new check that the reactor art is present. Longest task 0 ms. Engine unchanged (31/31 last run). Not checked: Safari, iPhone, audio, GitHub Pages.
