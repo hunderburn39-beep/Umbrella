@@ -10,9 +10,8 @@
  * wrote this file (host not on the network allowlist). Mechanics below follow public
  * secondary descriptions (casinos.com, slotcatalog.com). Every rule that is an
  * interpretation, or that no source states, is tagged  [UNVERIFIED]  and is
- * listed in engine/ASSUMPTIONS.md. The PAYTABLE is original to this project:
- * no source gave the real one. Nothing here claims to reproduce the original
- * probabilities or RTP.
+ * listed in engine/ASSUMPTIONS.md. PAYTABLE follows published Austrian rules.
+ * Original probabilities and RTP are not established; recalibration is pending.
  */
 (function (root, factory) {
   if (typeof module === 'object' && module.exports) module.exports = factory();
@@ -28,13 +27,12 @@
   const GA = 11; // Gargantoon Wild (3x3 / 2x2 blocks, or 1x1 pieces)
 
   const QM_LEVELS = [55, 85, 110, 135];          // from both secondary sources
-  const SIZE_GROWTH = [1, 1.5, 2.2, 3.2, 4.6, 6.8, 10, 15, 23, 36, 60]; // sizes 5..15, original
+  // Published Austrian Reactoonz 2 rules (2025-02-20), evi.gv.at/b/pi/bmg-5sn.
+  const PAYTABLE = [[1,2,3,5,8,20,50,500],[.8,1,2,3,4,10,20,200],[.6,.8,1,2,3,5,10,100],[.5,.7,1,1.5,2,3,6,60],[.15,.2,.4,.6,.8,1,3,10],[.15,.2,.4,.6,.8,1,3,10],[.1,.15,.2,.3,.6,.8,1,3],[.1,.15,.2,.3,.6,.8,1,3]];
 
   const DEFAULTS = {
     minCluster: 5,                 // [UNVERIFIED] slotcatalog says 5, casinos.com says 3
     maxWin: 5083,                  // x bet, stated by both sources
-    payScale: 1.2258,              // single global factor: 0.962 / 0.78480 (calibration seed 111, 4M rounds, sim/calibration-seed111-4M.json)
-    baseWin: [0.50, 0.40, 0.32, 0.26, 0.20, 0.16, 0.13, 0.10], // pay for a 5-cluster, original
     // Original tuning. With equal weights and the rules below, 5-clusters were rare (16% hit rate)
     // and the Quantumeter never reached level 1 in 100k rounds, so low symbols are weighted
     // heavier and wild sources are more frequent. Chosen by looking at feature frequencies
@@ -78,10 +76,9 @@
 
   // ---------- paytable ----------
   function clusterPay(type, size, cfg) {
-    let g = SIZE_GROWTH[Math.min(size, 15) - 5];
-    if (g === undefined) g = SIZE_GROWTH[0] * Math.max(0.2, size / 5); // sizes below 5 (only if minCluster<5)
-    if (size > 15) g *= 1 + (size - 15) * 0.35;
-    return cfg.baseWin[type] * g * cfg.payScale;
+    if (!Number.isInteger(size) || size < 5 || !PAYTABLE[type]) return 0;
+    const tier = size >= 15 ? 7 : size >= 12 ? 6 : size >= 10 ? 5 : size - 5;
+    return PAYTABLE[type][tier];
   }
 
   function levelFor(charge, cfg) {
