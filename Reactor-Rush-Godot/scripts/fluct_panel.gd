@@ -126,7 +126,8 @@ func _layout() -> void:
 	_place(txt, Rect2(size.x * 0.79, th, size.x * 0.19, r1), int(r1 * 0.42))
 	for i in 4:
 		var pr := _pod_rect(i)
-		_place(pod_labels[i], Rect2(pr.position.x + 2, pr.position.y + pr.size.y * 0.6, pr.size.x - 4, pr.size.y * 0.38), int(pr.size.y * 0.24))
+		var fit := (pr.size.x - 8.0) / (float(NAMES[i].length()) * 0.6)
+		_place(pod_labels[i], Rect2(pr.position.x + 2, pr.position.y + pr.size.y * 0.6, pr.size.x - 4, pr.size.y * 0.38), int(minf(pr.size.y * 0.24, fit)))
 	var p3 := _pod_rect(3)
 	_place(x2, Rect2(p3.position.x, p3.position.y + p3.size.y * 0.05, p3.size.x, p3.size.y * 0.55), int(p3.size.y * 0.42))
 

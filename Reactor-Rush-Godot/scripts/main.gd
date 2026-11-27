@@ -113,6 +113,9 @@ func _relayout() -> void:
 	var vp := get_viewport_rect().size
 	portrait = vp.y > vp.x
 	design = PORT if portrait else LAND
+	if portrait:
+		# like the HTML version, tall phones stretch the portrait artwork vertically (limited to +30%)
+		design.y = PORT.y * clampf((vp.y / vp.x) / (PORT.y / PORT.x), 1.0, 1.3)
 	var s := minf(vp.x / design.x, vp.y / design.y)
 	stage.scale = Vector2(s, s)
 	stage.position = (vp - design * s) * 0.5
