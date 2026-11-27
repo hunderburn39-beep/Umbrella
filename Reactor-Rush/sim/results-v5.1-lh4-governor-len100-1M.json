@@ -1,0 +1,54 @@
+{
+  "generatedAt": "2026-11-27T19:36:39.668Z",
+  "node": "v22.23.5",
+  "engine": "Reactor-Rush/engine/engine.js (house reserve layer)",
+  "mode": "Free Play, virtual bet = 1",
+  "sessions": 10000,
+  "sessionLength": 100,
+  "rounds": 1000000,
+  "seed": 20261202,
+  "rtpCap": 0.94,
+  "targetRtp": 0.94,
+  "effectiveRtp": 0.8533788999995839,
+  "sessionRtp": {
+    "mean": 0.8533789000000039,
+    "sd": 0.05589414101917026,
+    "se": 0.0005589414101917025,
+    "ci95": [
+      0.8522833748360282,
+      0.8544744251639796
+    ],
+    "min": 0.5690000000000002,
+    "max": 0.9395000000000002
+  },
+  "deltaVsTarget": -0.08662110000041601,
+  "volatility": {
+    "perRoundSdInBets": 1.7025661710375377,
+    "sessionRtpSd": 0.05589414101917026,
+    "maxWin": 34.550000000000004
+  },
+  "hitRate": 0.622112,
+  "rerollsPerRound": 0.155879,
+  "houseGuarantee": {
+    "invariantViolations": 0,
+    "playerAheadMoments": 0,
+    "playerAheadSessions": 0,
+    "houseKeepsAtLeast": 0.06000000000000005
+  },
+  "winBuckets": {
+    "0": 377888,
+    "0-1x": 390572,
+    "1-5x": 194191,
+    "5-20x": 37143,
+    "20-100x": 206,
+    "100-500x": 0,
+    "500x+": 0
+  },
+  "elapsedSeconds": 41.213,
+  "caveats": [
+    "Rounds are drawn from the plain engine and rejected when the reserve cannot pay them; outcomes depend on the session balance and are not independent draws.",
+    "Effective RTP is bounded above by rtpCap. It is below the cap when the reserve is still empty, especially in short sessions.",
+    "The interval uses session RTPs as independent units; it is a normal approximation.",
+    "Paytable and several mechanics are interpretations, not the original; see engine/ASSUMPTIONS.md."
+  ]
+}

@@ -22,32 +22,32 @@
  {
   "test": "Mensagem BIG WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('BIGWIN115,16 CR', 138, 268)"
+  "detail": "('BIGWIN115,58 CR', 138, 268)"
  },
  {
   "test": "Mensagem MEGA WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MEGAWIN115,11 CR', 139, 268)"
+  "detail": "('MEGAWIN115,56 CR', 139, 268)"
  },
  {
   "test": "Mensagem SUPER WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('SUPERWIN115,24 CR', 149, 268)"
+  "detail": "('SUPERWIN115,61 CR', 149, 268)"
  },
  {
   "test": "Mensagem EPIC WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('EPICWIN115,50 CR', 138, 268)"
+  "detail": "('EPICWIN115,60 CR', 138, 268)"
  },
  {
   "test": "Mensagem QUANTUM WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('QUANTUMWIN115,51 CR', 243, 268)"
+  "detail": "('QUANTUMWIN115,62 CR', 243, 268)"
  },
  {
   "test": "Mensagem MAX WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MAXWIN115,55 CR', 138, 268)"
+  "detail": "('MAXWIN115,56 CR', 138, 268)"
  },
  {
   "test": "Mensagem ENERGOON ACTIVATED sem caixa e dentro da grelha",
@@ -77,62 +77,62 @@
  {
   "test": "Repetição determinística semente 3333 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.12, 'got': 0.12, 'casc': 1}"
+  "detail": "{'exp': 0, 'got': -0.0, 'casc': 0}"
  },
  {
   "test": "Repetição determinística semente 555555 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.03, 'got': 0.03, 'casc': 1}"
+  "detail": "{'exp': 0.22, 'got': 0.22, 'casc': 4}"
  },
  {
   "test": "Repetição determinística semente 1 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.07, 'got': 0.07, 'casc': 1}"
+  "detail": "{'exp': 0, 'got': -0.0, 'casc': 0}"
  },
  {
   "test": "Repetição determinística semente 5 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.12, 'got': 0.12, 'casc': 1}"
+  "detail": "{'exp': 0.05, 'got': 0.05, 'casc': 2}"
  },
  {
   "test": "Repetição determinística semente 19 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.02, 'got': 0.02, 'casc': 1}"
+  "detail": "{'exp': 0.18, 'got': 0.18, 'casc': 5}"
  },
  {
   "test": "Repetição determinística semente 20 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.32, 'got': 0.32, 'casc': 6}"
+  "detail": "{'exp': 0.02, 'got': 0.02, 'casc': 1}"
  },
  {
   "test": "Repetição determinística semente 104 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.63, 'got': 0.63, 'casc': 8}"
+  "detail": "{'exp': 0, 'got': 0, 'casc': 0}"
  },
  {
   "test": "Repetição determinística semente 171 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0, 'got': 0, 'casc': 0}"
+  "detail": "{'exp': 0, 'got': -0.0, 'casc': 0}"
  },
  {
   "test": "Repetição determinística semente 454 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.02, 'got': 0.02, 'casc': 1}"
+  "detail": "{'exp': 0, 'got': -0.0, 'casc': 0}"
  },
  {
   "test": "Repetição determinística semente 668 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.02, 'got': 0.02, 'casc': 1}"
+  "detail": "{'exp': 0.04, 'got': 0.04, 'casc': 1}"
  },
  {
   "test": "Repetição determinística semente 316 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0, 'got': -0.0, 'casc': 0}"
+  "detail": "{'exp': 1.04, 'got': 1.04, 'casc': 10}"
  },
  {
   "test": "Repetição determinística semente 499 (motor = interface)",
   "ok": true,
-  "detail": "{'exp': 0.12, 'got': 0.12, 'casc': 3}"
+  "detail": "{'exp': 0, 'got': -0.0, 'casc': 0}"
  },
  {
   "test": "Patamares 10/20/50/100/250/1000",
@@ -157,12 +157,12 @@
  {
   "test": "Saldo válido e finito",
   "ok": true,
-  "detail": "992"
+  "detail": "996.76"
  },
  {
   "test": "Reserva da casa: total pago <= 94% do apostado",
   "ok": true,
-  "detail": "{'bets': 14.39999999999998, 'paid': 6.3999999999999995, 'cap': 0.94, 'rounds': 72}"
+  "detail": "{'bets': 14.39999999999998, 'paid': 11.160000000000002, 'cap': 0.94, 'rounds': 72}"
  },
  {
   "test": "Maior long task < 400 ms (Chrome headless)",
@@ -187,6 +187,6 @@
  {
   "test": "Demo Gargantoon não altera saldo e sem erros",
   "ok": true,
-  "detail": "(992, 992, [])"
+  "detail": "(996.76, 996.76, [])"
  }
 ]

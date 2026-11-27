@@ -33,13 +33,15 @@
   const DEFAULTS = {
     minCluster: 5,                 // [UNVERIFIED] slotcatalog says 5, casinos.com says 3
     maxWin: 5083,                  // x bet, stated by both sources
-    // Original tuning. With equal weights and the rules below, 5-clusters were rare (16% hit rate)
-    // and the Quantumeter never reached level 1 in 100k rounds, so low symbols are weighted
-    // heavier and wild sources are more frequent. Chosen by looking at feature frequencies
-    // only (sim/explore results in DEVELOPMENT_LOG.md), never by looking at the RTP.
-    symbolWeights: [0.35, 0.45, 0.6, 0.9, 1.5, 1.9, 2.3, 2.8],
+    // V5.1 calibration "lh4" (owner decision, 2026-11-27), chosen for the house reserve (rtpCap 0.94):
+    // low symbols much heavier and fewer wilds after a cascade, so most of the return comes from
+    // frequent small wins the session reserve can pay. Without the reserve this config overpays
+    // heavily (raw RTP far above 100 %); it is only meant to run through playGovernedRound.
+    // Previous tuning (V5.0, feature-frequency based): symbolWeights [0.35,0.45,0.6,0.9,1.5,1.9,2.3,2.8],
+    // pUnchargedAfterCascade 0.35. See DEVELOPMENT_LOG.md, sessions 4c and 4d.
+    symbolWeights: [0.15, 0.25, 0.35, 0.5, 2.4, 2.8, 3.4, 4.0],
     startUnchargedCum: [0.05, 0.25, 0.55, 0.80, 1], // P(0..4 uncharged wilds at spin start)
-    pUnchargedAfterCascade: 0.35,  // [UNVERIFIED] sources only say "or after a cascade"
+    pUnchargedAfterCascade: 0.15,  // [UNVERIFIED] sources only say "or after a cascade"
     pFluct: 1,                     // [UNVERIFIED] "may become" fluctuating
     fluctThreshold: 4,             // [UNVERIFIED] threshold not stated by any source
     fluctWildsMax: 3,              // "up to 3 Electric Wilds"

@@ -138,3 +138,26 @@ Owner said "continua"; Claude took option (a) (lower raw volatility, keep the do
 0 reserve violations in every probe.
 **Findings.** (1) Lowering volatility alone (fewer wilds, lower maxWin, higher Fluctometer threshold) *lowers* governed RTP, because it lowers raw RTP too. (2) Raising the cap barely helps the current game: the bottleneck is the start of each session, when the reserve is small and every win above it is rejected. (3) Governed RTP near 94 % in 1 000-round sessions needs a raw game that overpays heavily (≈250–450 % raw RTP from frequent small low-symbol wins), so the reserve, not the paytable, sets the return, and large wins (Gargantoon, QUANTUM, MAX) practically disappear (max ≈ 40–85x). (4) With a hard cap of 0.94, effective RTP is always below 94 %, and lower in short sessions (100 rounds: ≤ 85 % in every candidate).
 **Decision needed from the owner** before any `DEFAULTS` change: which trade-off to validate with 4 000 000 rounds on new seeds (see chat).
+
+## Session 4d (Claude, 2026-11-27) — V5.1 calibration "lh4" with house reserve 0.94 (owner decision), branch only, NOT merged to main
+**Owner choice:** candidate lh4 from session 4c, reserve cap 0.94 (house keeps ≥ 6 % of everything wagered at every moment of every session).
+**Change in `engine/engine.js` `DEFAULTS`:** `symbolWeights` [0.35,0.45,0.6,0.9,1.5,1.9,2.3,2.8] → **[0.15,0.25,0.35,0.5,2.4,2.8,3.4,4.0]**; `pUnchargedAfterCascade` 0.35 → **0.15**. Unchanged: documented paytable (360/360), four reactors, Wilds, cascades, `maxWin` 5 083x, graphics, music, sounds. `index.html`: info-menu RTP sentence updated with the measured figures below; engine cache `?v=53`.
+**Unlike V5.0, these values were chosen by looking at the RTP under the reserve** (session 4c probes), not by feature frequencies.
+### Tests executed
+- `node --test tests/engine.test.js tests/trace.test.js tests/governor.test.js`: 31/31.
+- `python3 tests/ui-tests.py`: 38/38 (Chrome headless; includes deterministic replay engine = UI, reserve check, longest task < 400 ms → 0 ms). Not run: Safari, iPhone, audio by ear, GitHub Pages.
+### Validation on new seeds (never used for tuning), bet = 1, independent sessions with a fresh reserve; 95 % CI on session RTPs (normal approximation)
+| session length | sessions × rounds | seed | effective RTP | 95 % CI | session RTP min–max | per-round SD | max win | hit rate | rerolls/round |
+|---|---|---|---|---|---|---|---|---|---|
+| 100 | 10 000 × 1 000 000 | 20261202 | **85.34 %** | 85.23–85.45 % | 56.90–93.95 % | 1.70 | 34.6x | 62.21 % | 0.156 |
+| 1 000 | 4 000 × 4 000 000 | 20261201 | **93.13 %** | 93.11–93.15 % | 89.74–94.00 % | 1.88 | 48.6x | 62.80 % | 0.139 |
+| 10 000 | 200 × 2 000 000 | 20261203 | **93.92 %** | 93.92–93.93 % | 93.79–94.00 % | 1.90 | 45.1x | 62.88 % | 0.137 |
+House guarantee in all 7 000 000 governed rounds: 0 rounds with paid > 0.94 × wagered, 0 moments and 0 sessions with the player ahead. Win sizes (1 000-round run): 0x 37.2 %, 0–1x 38.5 %, 1–5x 19.8 %, 5–20x 4.4 %, 20–100x 0.04 %, ≥ 100x none.
+Raw engine without the reserve (reference only, never used by the game): 4 000 000 rounds, seed 20261204, RTP 454.67 % (CI 452.85–456.49 %), SD 18.58, max 1 218.2x, hit rate 67.35 %, 4.29 cascades/round, Gargantoon in 7.21 % of rounds, Quantumeter L4 4.93 %. Files: `sim/results-v5.1-lh4-*.json`.
+### Honest reading
+- **RTP 94.00 % target:** reached only approximately and only for long sessions: 93.1 % at 1 000 rounds, 93.9 % at 10 000; 85.3 % at 100 rounds. With a hard 0.94 cap it can never be exceeded and never be exactly reached.
+- **Volatility is now low:** per-round SD ≈ 1.9 bets (V5.0 raw: 11.1); no governed win ≥ 100x in 7 M rounds, so BIG/MEGA WIN still appear but SUPER/EPIC/QUANTUM/MAX WIN tiers and large Gargantoon/Quantumeter payouts effectively never pay. Features still trigger visually in rounds that pay small amounts; rounds whose total would exceed the reserve are re-drawn.
+- Outcomes depend on the session balance and are not independent draws; this is stated in the info menu. Free Play only.
+- The interval is narrow because session RTPs are tightly bounded by the cap; it describes this engine, not the original game.
+### Remaining
+- Safari / iPhone / audio / GitHub Pages checks; owner review of the low-volatility feel; merge to `main` only on the owner's instruction.
