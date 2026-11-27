@@ -1,0 +1,26 @@
+; Reactor Rush V5.1 — Godot graphics front-end. Game rules and maths come from Reactor-Rush/engine/engine.js
+; (loaded in the Web export through web/rr_bridge.js). Godot 4.3, Compatibility renderer (WebGL 2).
+
+config_version=5
+
+[application]
+
+config/name="Reactor Rush V5.1"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+
+[display]
+
+window/size/viewport_width=1920
+window/size/viewport_height=1080
+window/stretch/mode="disabled"
+
+[gui]
+
+theme/custom_font="res://assets/fonts/FiraSans-Black.ttf"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.03, 0.02, 0.09, 1)

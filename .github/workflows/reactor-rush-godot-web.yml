@@ -1,0 +1,94 @@
+name: Reactor Rush Godot Web
+# Exports the Godot graphics front-end to Web (WebGL 2) and tests it in Chromium.
+# Branch only: nothing is published to main or GitHub Pages from here.
+on:
+  push:
+    branches: [reactor-rush-paytable-validation]
+    paths:
+      - 'Reactor-Rush-Godot/**'
+      - 'Reactor-Rush/engine/engine.js'
+      - '.github/workflows/reactor-rush-godot-web.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reactor-rush-godot-web
+  cancel-in-progress: true
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.3
+    steps:
+      - uses: actions/checkout@v4
+      - name: Export templates
+        run: |
+          mkdir -p ~/.local/share/godot/export_templates
+          if [ ! -d ~/.local/share/godot/export_templates/4.3.stable ]; then mv /root/.local/share/godot/export_templates/4.3.stable ~/.local/share/godot/export_templates/; fi
+          ls ~/.local/share/godot/export_templates
+          godot --version
+      - name: Import assets
+        working-directory: Reactor-Rush-Godot
+        run: |
+          timeout 300 godot --headless --path . --import 2>&1 | tee ../godot-import.log || true
+          timeout 300 godot --headless --path . --editor --quit 2>&1 | tee -a ../godot-import.log || true
+          ls .godot | head
+      - name: Check scripts
+        working-directory: Reactor-Rush-Godot
+        run: |
+          fail=0
+          for f in scripts/*.gd; do
+            out=$(timeout 120 godot --headless --path . --check-only --script "res://$f" 2>&1 || true)
+            echo "== $f"; echo "$out" | tail -25
+            if echo "$out" | grep -E "Parse Error|Compile Error|SCRIPT ERROR" >/dev/null; then fail=1; fi
+          done
+          exit $fail
+      - name: Export Web
+        working-directory: Reactor-Rush-Godot
+        run: |
+          mkdir -p build/web
+          timeout 600 godot --headless --path . --export-release "Web" build/web/index.html 2>&1 | tee ../godot-export.log
+          cp ../Reactor-Rush/engine/engine.js web/rr_bridge.js build/web/
+          ls -la build/web
+          test -s build/web/index.wasm
+          test -s build/web/index.pck
+          grep -q 'engine.js' build/web/index.html
+      - uses: actions/upload-artifact@v4
+        with:
+          name: reactor-rush-godot-web
+          path: Reactor-Rush-Godot/build/web
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: godot-logs
+          path: '*.log'
+
+  smoke:
+    needs: export
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: reactor-rush-godot-web
+          path: web
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Browser test (WebGL 2, SwiftShader)
+        run: |
+          npm init -y >/dev/null
+          npm i playwright@1.47.2 >/dev/null
+          npx playwright install --with-deps chromium >/dev/null
+          (cd web && python3 -m http.server 8080 >/dev/null 2>&1 &)
+          sleep 2
+          OUT=smoke node Reactor-Rush-Godot/ci/smoke.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: godot-web-smoke
+          path: smoke
