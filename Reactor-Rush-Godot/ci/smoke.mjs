@@ -46,9 +46,24 @@ for (const [name, vp] of [['landscape', { width: 1280, height: 720 }], ['portrai
   const errs = logs.filter(l => /SCRIPT ERROR|Parse Error|pageerror|USER ERROR|Invalid call|Attempt to call/i.test(l));
   rec(name + ': no script errors in the console', errs.length === 0, errs.slice(0, 8));
   fs.writeFileSync(`${out}/${name}-console.txt`, logs.join('\n'));
+  console.log('@@CONSOLE ' + name + '\n' + logs.slice(0, 40).join('\n'));
   await page.close();
 }
 fs.writeFileSync(`${out}/results.json`, JSON.stringify(results, null, 2));
+// Print small JPEG copies of the screenshots into the log (for reviewers who cannot download artifacts).
+if (process.env.LOG_SHOTS) {
+  const b2 = await chromium.launch();
+  const pg = await b2.newPage({ viewport: { width: 960, height: 960 } });
+  for (const f of fs.readdirSync(out).filter(f => f.endsWith('.png')).sort()) {
+    const data = fs.readFileSync(`${out}/${f}`).toString('base64');
+    await pg.setContent(`<html><body style="margin:0;background:#000"><img id="i" src="data:image/png;base64,${data}" style="max-width:960px;max-height:960px;display:block"></body></html>`);
+    const box = await pg.locator('#i').boundingBox();
+    const jpg = (await pg.locator('#i').screenshot({ type: 'jpeg', quality: 70 })).toString('base64');
+    console.log(`@@SHOT ${f} ${Math.round(box.width)}x${Math.round(box.height)} ${jpg.length}`);
+    for (let i = 0; i < jpg.length; i += 3000) console.log('@@B64 ' + f + ' ' + jpg.slice(i, i + 3000));
+  }
+  await b2.close();
+}
 await browser.close();
 console.log(results.filter(r => r.ok).length + ' / ' + results.length + ' passed');
 process.exit(fail ? 1 : 0);
