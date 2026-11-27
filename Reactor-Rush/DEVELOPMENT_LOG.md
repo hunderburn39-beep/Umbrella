@@ -122,3 +122,19 @@ Files: `sim/results-governor-len100-1M.json`, `sim/results-governor-len1000-4M.j
 **Result vs target:** the 94.00 % RTP target is **not met** as a player-facing figure. The reserve caps RTP at 94 % but, with this volatile engine, the effective RTP is far lower in realistic sessions (about 48 % at 100 rounds, 77 % at 1 000, 89 % at 10 000) because the large wins that make up most of the raw 105 % RTP are rejected while the reserve is small. The "house never loses" guarantee holds; "RTP 94 %" does not.
 **Options (owner decision, not applied):** (a) lower the raw volatility (symbol weights, wild rates, Quantumeter charging, a lower `maxWin`) so more of the RTP comes from small and medium wins that the reserve can pay, then re-measure; (b) raise `rtpCap` above 0.94, which lowers the guaranteed house margin; (c) accept the reserve as is and describe the game honestly as a session-limited payout. Option (a) is the one that moves effective RTP toward 94 % without weakening the guarantee.
 **Remaining:** decision on (a)/(b)/(c); Actions run for this commit; browser/iPhone/audio checks; nothing pushed to `main`.
+
+## Session 4c (Claude, 2026-11-27) — exploration: effective RTP under the house reserve (no game change)
+Owner said "continua"; Claude took option (a) (lower raw volatility, keep the documented paytable and the 0.94 reserve) and ran quick probes. **Nothing in the engine, `DEFAULTS` or `index.html` was changed.** Scripts: `sim/explore-governor/` (`node grid.js grid1.txt` etc.; labels `name@cap`). Each probe: 300 000 raw rounds (seed 9101), 2 000 × 100 governed (seed 9102), 300 × 1 000 governed (seed 9103). Exploration only, not a validation; numbers have roughly ±1–2 pts noise.
+| candidate | change vs DEFAULTS | cap | raw RTP | governed RTP, 100-round sessions | governed RTP, 1 000-round sessions | max win in 1 000-round sessions |
+|---|---|---|---|---|---|---|
+| base | none | 0.94 | 103.0 % | 48.3 % | 76.3 % | 260.6x |
+| cap500 | maxWin 500 | 0.94 | 99.9 % | 48.5 % | 76.4 % | — |
+| pc20 / pc10 | pUnchargedAfterCascade 0.20 / 0.10 | 0.94 | 94.3 / 83.1 % | 46.9 / 46.4 % | 71.2 / 68.9 % | — |
+| ft6 | fluctThreshold 6 | 0.94 | 38.2 % | 31.6 % | 36.3 % | — |
+| base | none | 0.99 | 103.0 % | 49.8 % | 78.9 % | 260.6x |
+| lh1 | symbolWeights [0.3,0.4,0.55,0.8,1.8,2.2,2.6,3.1] | 0.94 / 0.99 | 156.7 % | 60.8 / 63.0 % | 88.8 / 92.7 % | 140.6x |
+| lh2 | symbolWeights [0.25,0.35,0.5,0.7,2.0,2.4,2.9,3.4] | 0.94 / 0.97 | 246.2 % | 73.1 / 74.7 % | 91.7 / 94.4 % | 84.1x |
+| lh4_pc15 | symbolWeights [0.15,0.25,0.35,0.5,2.4,2.8,3.4,4.0], pUnchargedAfterCascade 0.15 | 0.94 | 452.6 % | 85.3 % | 93.2 % | 41.9x |
+0 reserve violations in every probe.
+**Findings.** (1) Lowering volatility alone (fewer wilds, lower maxWin, higher Fluctometer threshold) *lowers* governed RTP, because it lowers raw RTP too. (2) Raising the cap barely helps the current game: the bottleneck is the start of each session, when the reserve is small and every win above it is rejected. (3) Governed RTP near 94 % in 1 000-round sessions needs a raw game that overpays heavily (≈250–450 % raw RTP from frequent small low-symbol wins), so the reserve, not the paytable, sets the return, and large wins (Gargantoon, QUANTUM, MAX) practically disappear (max ≈ 40–85x). (4) With a hard cap of 0.94, effective RTP is always below 94 %, and lower in short sessions (100 rounds: ≤ 85 % in every candidate).
+**Decision needed from the owner** before any `DEFAULTS` change: which trade-off to validate with 4 000 000 rounds on new seeds (see chat).

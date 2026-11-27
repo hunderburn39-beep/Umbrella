@@ -1,0 +1,10 @@
+base|{}
+cap500|{"maxWin":500}
+pc20|{"pUnchargedAfterCascade":0.20}
+pc10|{"pUnchargedAfterCascade":0.10}
+ft6|{"fluctThreshold":6}
+st_low|{"startUnchargedCum":[0.15,0.45,0.75,0.92,1]}
+lowheavy|{"symbolWeights":[0.3,0.4,0.55,0.8,1.8,2.2,2.6,3.1]}
+lowheavy2|{"symbolWeights":[0.25,0.35,0.5,0.7,2.0,2.4,2.9,3.4]}
+pc20_ft6|{"pUnchargedAfterCascade":0.20,"fluctThreshold":6}
+lh_pc20|{"symbolWeights":[0.3,0.4,0.55,0.8,1.8,2.2,2.6,3.1],"pUnchargedAfterCascade":0.20}
