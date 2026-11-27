@@ -22,32 +22,32 @@
  {
   "test": "Mensagem BIG WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('BIGWIN115,61 CR', 138, 282)"
+  "detail": "('BIGWIN115,41 CR', 138, 282)"
  },
  {
   "test": "Mensagem MEGA WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MEGAWIN115,07 CR', 139, 282)"
+  "detail": "('MEGAWIN115,34 CR', 139, 282)"
  },
  {
   "test": "Mensagem SUPER WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('SUPERWIN115,18 CR', 149, 282)"
+  "detail": "('SUPERWIN115,53 CR', 149, 282)"
  },
  {
   "test": "Mensagem EPIC WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('EPICWIN115,20 CR', 138, 282)"
+  "detail": "('EPICWIN115,61 CR', 138, 282)"
  },
  {
   "test": "Mensagem QUANTUM WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('QUANTUMWIN115,48 CR', 243, 282)"
+  "detail": "('QUANTUMWIN115,67 CR', 243, 282)"
  },
  {
   "test": "Mensagem MAX WIN sem caixa e dentro da grelha",
   "ok": true,
-  "detail": "('MAXWIN115,55 CR', 138, 282)"
+  "detail": "('MAXWIN115,54 CR', 138, 282)"
  },
  {
   "test": "Mensagem ENERGOON ACTIVATED sem caixa e dentro da grelha",
@@ -188,6 +188,11 @@
   "test": "Arte animada dos reatores presente (Quantumeter e Fluctometer)",
   "ok": true,
   "detail": "[1, 4, 1, 4, True]"
+ },
+ {
+  "test": "Fluctometer mostra a mesma imagem das peças (8 símbolos)",
+  "ok": true,
+  "detail": "[True, True, True, True, True, True, True, True]"
  },
  {
   "test": "Demo Gargantoon não altera saldo e sem erros",

@@ -69,6 +69,11 @@ async def main():
         rec('16:9 desktop: grelha preenche a moldura',abs(g4[0]-g4[2])<=1.5 and abs(g4[1]-g4[3])<=1.5 and 0.8<=g4[0]/g4[1]<=1.2 and g4[4]=='contain',g4)
         art=await pg.evaluate("[document.querySelectorAll('#rrP1 .rq-bg svg').length,document.querySelectorAll('#rrTubes .tube .rq-core').length,document.querySelectorAll('#rrP2 .rq-bg svg').length,document.querySelectorAll('#rrReactors .rq-pod').length,!!document.querySelector('#rrP2 .rq-portal')]")
         rec('Arte animada dos reatores presente (Quantumeter e Fluctometer)',art==[1,4,1,4,True],art)
+        same=await pg.evaluate("""(async()=>{const u=document.getElementById('rrFluctUse'),o=document.querySelector('.rq-fl-orb'),out=[];
+          for(let t=0;t<8;t++){u.setAttribute('href','#rr-t'+t);await new Promise(r=>setTimeout(r,30));
+            const c=document.querySelector('#grid .cell[data-symbol="t'+t+'"]');out.push(!!o&&getComputedStyle(o).backgroundImage!=='none'&&(!c||getComputedStyle(c).backgroundImage===getComputedStyle(o).backgroundImage))}
+          return out})()""")
+        rec('Fluctometer mostra a mesma imagem das peças (8 símbolos)',all(same) and len(same)==8,same)
         # demo Gargantoon
         await pg.set_viewport_size({'width':844,'height':390}); await pg.wait_for_timeout(500)
         bal=await pg.evaluate("window.__rr.state().balance")

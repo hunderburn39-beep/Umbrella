@@ -57,6 +57,42 @@
     const fl = p2.querySelector('.rr-fluct');
     if (fl) fl.insertBefore(el('span', 'rq-portal'), fl.firstChild);
     p2.querySelectorAll('.rr-reactors .rx').forEach(x => x.insertBefore(el('span', 'rq-pod', POD), x.firstChild));
+    fluctOrb(fl);
+  }
+
+  // The floating-symbol icon must show the same artwork as the pieces on the board.
+  // The old SVG (<use href="#rr-tN">) stays in place and keeps being updated by the game;
+  // an image layer on top shows the board image of that symbol.
+  const imgCache = {};
+  function boardImage(sym) {
+    const live = document.querySelector('#grid .cell[data-symbol="' + sym + '"]');
+    if (live) { const bg = getComputedStyle(live).backgroundImage; if (bg && bg !== 'none') return (imgCache[sym] = bg); }
+    if (imgCache[sym]) return imgCache[sym];
+    let found = '';
+    const needle = '.cell[data-symbol="' + sym + '"]';
+    const rr33 = document.documentElement.classList.contains('rr33');
+    const scan = rules => { for (const r of rules) {
+      if (r.cssRules && !r.selectorText) { if (!r.media || matchMedia(r.media.mediaText).matches) scan(r.cssRules); continue; }
+      if (!r.selectorText || !r.selectorText.includes(needle)) continue;
+      if (!rr33 && r.selectorText.includes('.rr33') && !r.selectorText.includes(':not(.rr33)')) continue;
+      const bg = r.style && r.style.backgroundImage; if (bg && bg !== 'none' && bg.includes('url(')) found = bg; } };
+    for (const s of document.styleSheets) { try { scan(s.cssRules); } catch (e) { /* cross-origin sheet */ } }
+    return found ? (imgCache[sym] = found) : '';
+  }
+  function fluctOrb(fl) {
+    const use = document.getElementById('rrFluctUse'), svg = fl && fl.querySelector('svg');
+    if (!use || !svg || fl.querySelector('.rq-fl-orb')) return;
+    const orb = el('span', 'rq-fl-orb');
+    svg.insertAdjacentElement('afterend', orb);
+    const sync = () => {
+      const sym = (use.getAttribute('href') || '').replace('#rr-', '');
+      const bg = boardImage(sym);
+      orb.style.backgroundImage = bg || '';
+      orb.dataset.symbol = sym;
+      fl.classList.toggle('rq-has-orb', !!bg);
+    };
+    new MutationObserver(sync).observe(use, { attributes: true, attributeFilter: ['href'] });
+    sync();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', decorate); else decorate();
 })();

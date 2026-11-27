@@ -67,6 +67,11 @@
 .rq-portal:before,.rq-portal:after{content:"";position:absolute;inset:0;border-radius:50%;border:.2cqw solid transparent;border-top-color:#7ff3ff;border-bottom-color:#c070ff;animation:rqSpin 2.4s linear infinite}
 .rq-portal:after{inset:14%;border-top-color:#ffe27a;border-bottom-color:transparent;border-left-color:#ff6fd8;animation-duration:3.6s;animation-direction:reverse}
 .rr-fluct svg{position:relative;z-index:1}
+/* floating symbol shown with the same artwork as the board pieces (old SVG kept underneath, hidden) */
+.rq-fl-orb{position:absolute;z-index:2;left:0;top:50%;width:3.4cqw;aspect-ratio:1;translate:0 -50%;pointer-events:none;
+ background:center/contain no-repeat;filter:drop-shadow(0 0 .5cqw #7ff3ffaa);animation:rqBob 1.8s ease-in-out infinite}
+.rr-fluct.rq-has-orb svg{opacity:0}
+@keyframes rqBob{50%{transform:translateY(-8%) scale(1.04)}}
 .rr-fbar{background:linear-gradient(180deg,#050822,#0e1546 50%,#050822);box-shadow:inset 0 0 .6cqw #000}
 .rr-fbar:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;
  background:linear-gradient(180deg,#ffffff38,transparent 40%),repeating-linear-gradient(90deg,transparent 0 9.9%,#ffffff22 9.9% 10%)}
@@ -94,6 +99,7 @@
 
 @media(orientation:portrait){
  .rq-portal{width:8.4cqw;left:-.6cqw}
+ .rq-fl-orb{width:6.5cqw}
  .rr-tubes .tube i{display:none}
  .rr-tubes .tube b{font-size:2.6cqw;color:#fff;bottom:50%;transform:translateY(50%)}
  .rq-cap{display:none}
@@ -115,5 +121,5 @@ html.rr-skin:not(.rr33) .app .cell{background-size:contain}
 
 @media(prefers-reduced-motion:reduce){
  .rq-bg *,.rq-bg:after,.rr-tubes .tube:before,.rr-tubes .tube:after,.rq-core:before,.rq-core:after,.rq-portal:before,.rq-portal:after,
- .rr-fbar i,.rr-fbar i:after,.rq-pod *,.rr-tubes .tube.on .rq-arc,.rr-tubes .tube.on .rq-arc polyline{animation:none!important}
+ .rr-fbar i,.rr-fbar i:after,.rq-pod *,.rq-fl-orb,.rr-tubes .tube.on .rq-arc,.rr-tubes .tube.on .rq-arc polyline{animation:none!important}
 }

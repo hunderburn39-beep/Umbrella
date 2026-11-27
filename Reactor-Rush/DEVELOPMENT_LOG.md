@@ -173,3 +173,8 @@ Raw engine without the reserve (reference only, never used by the game): 4 000 0
 - All new animations stop under `prefers-reduced-motion`.
 **Board:** in landscape the arena now covers the frame opening (left 25.45 cqw, top 9.3 cqh, 40.65 cqw × 69.7 cqh; was a 68.8 cqh square), in portrait the grid now fills the full arena height (was a square leaving empty bands). Cells are no longer forced square; symbol images use `background-size: contain`, so they are not stretched. Only the approved skin; the uploaded `rr33` skin is untouched.
 **Tests:** `tests/ui-tests.py` 39/39 (Chrome headless). The four "grelha quadrada" checks were replaced by "grelha preenche a moldura" checks (grid = arena box, aspect 0.8–1.2, contain); one new check that the reactor art is present. Longest task 0 ms. Engine unchanged (31/31 last run). Not checked: Safari, iPhone, audio, GitHub Pages.
+
+## Session 5b (Claude, 2026-11-27) — Fluctometer icon uses the board artwork
+**Owner request:** the character next to the Fluctometer bar must be the same as the pieces on the board. It was the old SVG sprite (`<use href="#rr-tN">`), not the skin's piece images.
+**Change (`reactor-panels.js`, `reactor-panels.css`, cache `?v=2`):** an image layer `.rq-fl-orb` sits on the old SVG and shows the board image of the current floating symbol, taken from a live board cell with the same `data-symbol` (fallback: the matching skin CSS rule). A MutationObserver follows the `href` the game already updates, so nothing in the game code changed. The old SVG stays in the DOM, hidden. Gentle bob animation; stops under reduced motion.
+**Tests:** `tests/ui-tests.py` 40/40 (new check: the icon image equals the board image for all 8 symbols). Not checked: Safari, iPhone, audio.
